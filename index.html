@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quantum Clinical Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: periwinkle colour field with soft orbs; a glossy white 3D brain lit from inside in orange is the one bold moment.
+   Everything else is bright white liquid glass (borrowed from YDS Sand & Glass: white gradient fill, blur + saturation, white rim, 118° sweep, no grey shadows). */
+:root{
+  --bg:#e3e7f4; --bg-2:#d6dcf1; --bg-3:#eef1f9;
+  --ink:#161d45; --ink-2:#4a527a; --ink-3:#8990b2; --ghost:#b9bfd8;
+  --blue:#2f55d4; --glow:#ff6a2b; --glow-2:#e8452a; --glow-soft:#ffe3d2;
+  --hair:rgba(22,29,69,.12); --hair-2:rgba(22,29,69,.22);
+  --glass-fill:linear-gradient(118deg,rgba(255,255,255,.68),rgba(255,255,255,.40));
+  --glass-rim:rgba(255,255,255,.9);
+  --display:"Inter Tight","Inter","Helvetica Neue",Arial,sans-serif;
+  --body:"Inter","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --r:22px; --gut:clamp(16px,4vw,56px); --max:1260px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.6;overflow-x:hidden}
+a{color:inherit}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-.03em;line-height:1}
+p{margin:0}
+.wrap{max-width:var(--max);margin-inline:auto;padding-inline:var(--gut)}
+.kicker{display:inline-flex;flex-direction:column;gap:8px;font:600 11.5px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2)}
+.kicker::after{content:"";width:28px;height:2px;border-radius:2px;background:var(--glow)}
+
+/* colour field */
+.field{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(120% 90% at 50% 0%,var(--bg-3),var(--bg) 55%,var(--bg-2))}
+.field i{position:absolute;border-radius:50%;filter:blur(70px)}
+.field i:nth-child(1){width:46vw;height:46vw;right:-6vw;top:-10vw;background:rgba(255,140,90,.28)}
+.field i:nth-child(2){width:40vw;height:40vw;left:-12vw;top:30vh;background:rgba(120,140,235,.30)}
+.field i:nth-child(3){width:36vw;height:36vw;right:8vw;bottom:-14vw;background:rgba(150,170,255,.30)}
+
+/* liquid glass */
+.glass{position:relative;isolation:isolate;background:var(--glass-fill);backdrop-filter:blur(22px) saturate(170%);-webkit-backdrop-filter:blur(22px) saturate(170%);border:1px solid var(--glass-rim);border-radius:var(--r);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.35),0 18px 40px -22px rgba(70,90,190,.35)}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;background:linear-gradient(118deg,rgba(255,255,255,.75) 0%,rgba(255,255,255,0) 32%,rgba(255,255,255,0) 68%,rgba(255,255,255,.35) 100%);pointer-events:none}
+
+.btn{white-space:nowrap;display:inline-flex;align-items:center;gap:.7em;border-radius:999px;padding:.95em 1.5em;font:600 15px/1 var(--body);text-decoration:none;border:1px solid transparent;cursor:pointer;transition:transform .25s,box-shadow .25s,background .25s}
+.btn:hover{transform:translateY(-2px)}
+.btn:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.btn-glow{background:linear-gradient(135deg,var(--glow),var(--glow-2));color:#fff;box-shadow:0 10px 26px -10px rgba(232,69,42,.7)}
+.btn-ink{background:var(--ink);color:#fff}
+.btn-glass{color:var(--ink)}
+.btn .ic{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.25);font:600 13px/1 var(--mono)}
+.btn-glass .ic{background:var(--ink);color:#fff}
+
+/* NAV */
+.nav{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);z-index:60;margin-top:12px}
+.nav .bar{display:flex;align-items:center;gap:22px;height:62px;padding-inline:18px 8px;border-radius:999px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font:700 15.5px/1.05 var(--display);letter-spacing:-.01em}
+.brand small{display:block;font:500 10px/1.3 var(--mono);letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase}
+.qmark{width:32px;height:32px;flex:none}
+.nav ul{display:flex;gap:24px;list-style:none;margin:0 0 0 auto;padding:0}
+.nav ul a{text-decoration:none;color:var(--ink-2);font-size:14.5px}
+.nav ul a:hover{color:var(--ink)}
+.nav .phone{font:500 13px var(--mono);color:var(--ink-2);user-select:all}
+@media (max-width:1020px){.nav ul,.nav .phone{display:none}.nav .btn{margin-left:auto}}
+.brand .short{display:none}
+@media (max-width:520px){.brand .full{display:none}.brand .short{display:inline}.brand small{display:none}.nav .btn{padding:.8em 1.1em;font-size:14px}}
+
+/* HERO */
+.hero{position:relative}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:12px;align-items:center;padding-block:40px 30px}
+.hero-copy{display:grid;gap:24px;position:relative;z-index:3}
+.hero h1{font-size:clamp(46px,6.4vw,92px);font-weight:800;text-transform:uppercase;letter-spacing:-.045em;line-height:.92}
+.hero h1 .soft{color:var(--ghost)}
+.hero .lede{max-width:38ch;color:var(--ink-2);font-size:17.5px}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px}
+.mini{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:440px}
+.mini .glass{padding:14px 16px;border-radius:18px}
+.mini b{display:block;font:700 26px/1 var(--display);letter-spacing:-.03em}
+.mini span{display:block;font-size:12.5px;color:var(--ink-2);margin-top:6px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:500 13px/1 var(--body);padding:.62em 1em;border-radius:999px;border:1px solid var(--glass-rim);background:rgba(255,255,255,.45);color:var(--ink-2);cursor:pointer;transition:all .25s;backdrop-filter:blur(10px)}
+.chip[aria-pressed="true"]{color:#fff;background:var(--ink);border-color:var(--ink)}
+.chip .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--glow);margin-right:7px;vertical-align:1px}
+.stage{position:relative;aspect-ratio:1/1;max-width:100%;max-height:720px;justify-self:center;width:100%}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1}
+.ring{position:absolute;inset:9%;border-radius:50%;border:1px solid rgba(255,255,255,.85);z-index:0}
+.ring::before{content:"";position:absolute;inset:-5%;border-radius:50%;border:1px dashed rgba(22,29,69,.14)}
+.ring::after{content:"";position:absolute;left:50%;bottom:-6%;width:56%;height:9%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(60,70,150,.22),transparent)}
+.bigword{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:800 clamp(120px,22vw,300px)/1 var(--display);letter-spacing:-.06em;color:rgba(255,255,255,.55);-webkit-text-stroke:1px rgba(22,29,69,.05);z-index:0;user-select:none;pointer-events:none}
+.corner{position:absolute;right:2%;bottom:3%;z-index:3;font:600 11px/1.5 var(--body);letter-spacing:.14em;text-transform:uppercase;text-align:right;color:var(--ink)}
+.pager{position:absolute;left:2%;bottom:3%;z-index:3;display:flex;align-items:center;gap:12px;font:500 12px var(--mono);color:var(--ink-3)}
+.pager b{color:var(--ink);font-weight:500}
+.pager i{width:46px;height:1px;background:var(--hair-2);position:relative;overflow:hidden}
+.pager i::after{content:"";position:absolute;inset:0;background:var(--ink);transform-origin:left;transform:scaleX(var(--p,0))}
+@media (max-width:900px){.hero .wrap{grid-template-columns:1fr}.stage{order:-1;max-width:560px}}
+
+/* ANNOTATIONS (borrowed from the YDS exploded-axo markup: lettered badges, equal-width boxes, 1–2 word names) */
+.notes{position:absolute;inset:0;z-index:2;pointer-events:none}
+.notes svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.notes line,.notes polyline{stroke:var(--ink);stroke-width:1;fill:none;stroke-dasharray:3 3;opacity:.55}
+.anc{position:absolute;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:rgba(255,255,255,.85);border:1px solid var(--ink);display:grid;place-items:center;font:600 9.5px/1 var(--mono);color:var(--ink);transition:opacity .3s,background .3s}
+.anc.hot{background:var(--glow);border-color:var(--glow);color:#fff;box-shadow:0 0 0 5px rgba(255,106,43,.2)}
+.note{position:absolute;width:168px;padding:9px 12px 10px;border-radius:14px;transition:opacity .35s,border-color .3s}
+.note .t{display:flex;align-items:center;gap:8px;font:600 13px/1.2 var(--body);color:var(--ink)}
+.note .t i{flex:none;width:18px;height:18px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font:600 9.5px/1 var(--mono);font-style:normal}
+.note .f{margin-top:4px;font-size:11.5px;line-height:1.4;color:var(--ink-2)}
+.note.hot{border-color:var(--glow)}
+.note.hot .t i{background:var(--glow)}
+@media (max-width:720px){.note,.notes svg{display:none}}
+
+/* SECTIONS */
+section{position:relative}
+.sec{padding-block:clamp(72px,9vw,124px)}
+.sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:end;margin-bottom:44px}
+.sec-head h2{font-size:clamp(36px,5vw,66px);font-weight:800;text-transform:uppercase;letter-spacing:-.045em;line-height:.95;margin-top:18px}
+.sec-head h2 .soft{color:var(--ghost)}
+.sec-head p{color:var(--ink-2);max-width:48ch}
+@media (max-width:860px){.sec-head{grid-template-columns:1fr}}
+
+/* ENROLLMENT */
+.studies{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px}
+.study{padding:clamp(22px,3vw,34px);display:grid;gap:18px;align-content:start;min-width:0}
+.live{display:inline-flex;align-items:center;gap:9px;font:600 11.5px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--glow-2)}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--glow);box-shadow:0 0 0 0 rgba(255,106,43,.55);animation:ping 2.2s infinite}
+@keyframes ping{70%{box-shadow:0 0 0 10px rgba(255,106,43,0)}100%{box-shadow:0 0 0 0 rgba(255,106,43,0)}}
+.study h3{font-size:clamp(26px,2.8vw,36px);font-weight:700}
+.study p{color:var(--ink-2)}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.fact{background:rgba(255,255,255,.55);border:1px solid var(--glass-rim);border-radius:14px;padding:12px}
+.fact b{display:block;font:700 22px/1 var(--display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.fact span{display:block;font-size:12px;color:var(--ink-2);margin-top:6px;line-height:1.35}
+.checks{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.checks li{display:grid;grid-template-columns:20px minmax(0,1fr);gap:10px;font-size:15px;color:var(--ink-2)}
+.checks li::before{content:"";width:16px;height:16px;margin-top:3px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#fff 0 3px,var(--glow) 3.5px)}
+.label{font:600 11px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--glow-2)}
+.timeline{display:grid;gap:8px}
+.tl{position:relative;height:54px}
+.tl .ph{position:absolute;top:18px;height:14px;border-radius:7px}
+.tl .ph.tx{left:0;width:66.6%;background:linear-gradient(90deg,var(--glow-soft),#ffd0b5)}
+.tl .ph.fu{left:66.6%;width:33.4%;background:rgba(47,85,212,.14)}
+.tl .v{position:absolute;top:19px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#fff;border:2px solid var(--ink)}
+.tl .m{position:absolute;top:40px;font:500 10.5px var(--mono);color:var(--ink-3);transform:translateX(-50%)}
+.tl .cap{position:absolute;top:0;font:600 11px/1 var(--body);color:var(--ink-2)}
+.note-sm{font-size:12.5px;color:var(--ink-3)}
+.study .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+@media (max-width:980px){.studies{grid-template-columns:1fr}}
+@media (max-width:560px){.facts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:16px}
+.step{padding:20px;display:grid;gap:10px;align-content:start;border-radius:18px}
+.step .n{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:#fff;font:600 12px var(--mono)}
+.step h3{font-size:19px;font-weight:700;letter-spacing:-.02em}
+.step p{font-size:14px;color:var(--ink-2)}
+@media (max-width:1020px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.steps{grid-template-columns:1fr}}
+.covered{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
+.cov{padding:18px 20px;border-radius:18px;display:grid;grid-template-columns:38px minmax(0,1fr);gap:14px;align-items:start}
+.cov svg{width:38px;height:38px}
+.cov b{display:block;font-weight:600;font-size:15px}
+.cov span{display:block;font-size:13.5px;color:var(--ink-2);margin-top:3px}
+@media (max-width:900px){.covered{grid-template-columns:1fr}}
+
+/* EXPLORER */
+.explorer{display:grid;grid-template-columns:minmax(0,.62fr) minmax(0,1.38fr);gap:28px;align-items:start}
+.cond-list{list-style:none;margin:0;padding:6px;border-radius:var(--r)}
+.cond-list button{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;padding:12px 14px;border-radius:14px;font:600 16px/1.2 var(--body);color:var(--ink-2);transition:background .2s,color .2s}
+.cond-list button:hover{background:rgba(255,255,255,.55);color:var(--ink)}
+.cond-list button[aria-selected="true"]{background:var(--ink);color:#fff}
+.tag{font:600 10px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;padding:.55em .75em;border-radius:999px;background:rgba(22,29,69,.06);color:var(--ink-3);white-space:nowrap}
+.tag.on{background:var(--glow);color:#fff}
+.cond-list button[aria-selected="true"] .tag:not(.on){background:rgba(255,255,255,.15);color:#fff}
+.ex-stage{position:sticky;top:96px;display:grid;gap:12px}
+.ex-canvas{position:relative;aspect-ratio:16/11;max-width:100%;border-radius:28px;overflow:hidden}
+.ex-canvas canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;cursor:grab}
+.ex-bar{display:flex;align-items:center;gap:16px;padding:12px 18px;border-radius:999px}
+.ex-bar label{font:600 11px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
+.ex-bar input[type=range]{flex:1;accent-color:var(--glow);min-width:0}
+.ex-info{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px;padding:22px 24px}
+.ex-info h3{font-size:26px;font-weight:700;margin-bottom:8px}
+.ex-info p{color:var(--ink-2);font-size:15px}
+.ex-meta{display:grid;gap:10px;align-content:start}
+.ex-meta div{font-size:13px;color:var(--ink-2)}
+.ex-meta div b{display:block;font:600 10.5px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px}
+.ex-info .btn{margin-top:14px}
+.legend{display:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 14px;padding:14px 18px;font-size:13px;color:var(--ink-2)}
+.legend b{font:600 11px var(--mono);color:var(--ink);margin-right:6px}
+@media (max-width:1020px){.explorer{grid-template-columns:1fr}.ex-stage{position:relative;top:0;order:-1}.ex-info{grid-template-columns:1fr}.cond-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:720px){.legend{display:grid}}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.stat{padding:24px;display:grid;gap:8px;align-content:start}
+.stat b{font:800 clamp(44px,5.4vw,72px)/1 var(--display);letter-spacing:-.05em;font-variant-numeric:tabular-nums}
+.stat span{color:var(--ink-2);font-size:14.5px}
+.gauge{width:58px;height:58px}
+@media (max-width:860px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* SPLIT */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.panel{padding:clamp(28px,4vw,48px);display:grid;gap:18px;align-content:start;min-width:0}
+.panel h3{font-size:clamp(28px,3.4vw,44px);font-weight:800;text-transform:uppercase;letter-spacing:-.04em;line-height:.95}
+.panel p{color:var(--ink-2)}
+.panel ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.panel li{display:grid;grid-template-columns:20px minmax(0,1fr);gap:10px;color:var(--ink-2)}
+.panel li::before{content:"";width:8px;height:8px;margin-top:9px;border-radius:50%;background:var(--glow)}
+.p-ink{background:linear-gradient(150deg,#1b2357,#121942);color:#fff;border-radius:var(--r);box-shadow:0 24px 50px -30px rgba(22,29,69,.8)}
+.p-ink p,.p-ink li{color:#c3c9e6}
+.p-ink .kicker{color:#c3c9e6}
+@media (max-width:860px){.split{grid-template-columns:1fr}}
+
+/* MARQUEE */
+.marquee{overflow:hidden;padding-block:26px;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.track{display:flex;width:max-content;will-change:transform;transform:translate3d(0,0,0)}
+.track span{display:inline-flex;align-items:center;gap:40px;padding-right:40px;font:700 28px/1 var(--display);letter-spacing:-.03em;color:var(--ink-3);white-space:nowrap}
+.track span::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--ghost)}
+.track span.cro{color:var(--ink)}
+
+/* STORIES */
+.quotes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.quote{padding:26px;display:grid;gap:18px;align-content:space-between;margin:0}
+.quote p{font-size:16px;line-height:1.6}
+.quote footer{display:flex;justify-content:space-between;gap:12px;font:600 11px/1.4 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.quote footer b{color:var(--ink)}
+@media (max-width:900px){.quotes{grid-template-columns:1fr}}
+
+/* FAQ */
+.faq{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:36px}
+.faq-list{padding:8px 26px;border-radius:var(--r)}
+details{border-bottom:1px solid var(--hair)}
+details:last-child{border-bottom:0}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:16px;padding:18px 0;font:600 17px/1.35 var(--body)}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font:500 20px/1 var(--mono);color:var(--glow-2);transition:transform .25s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{color:var(--ink-2);padding-bottom:18px;max-width:62ch}
+@media (max-width:860px){.faq{grid-template-columns:1fr}}
+
+/* QUALIFY */
+.qualify{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:36px;align-items:start}
+.form{padding:clamp(24px,3.5vw,40px);display:grid;gap:18px}
+.progress{display:flex;gap:6px}
+.progress i{flex:1;height:4px;border-radius:4px;background:rgba(22,29,69,.1)}
+.progress i.on{background:linear-gradient(90deg,var(--glow),var(--glow-2))}
+.form label{display:grid;gap:8px;font-weight:600;font-size:14.5px}
+.form input,.form select{font:16px var(--body);padding:14px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.95);background:rgba(255,255,255,.75);color:var(--ink);width:100%}
+.form .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form .consent{display:grid;grid-template-columns:20px minmax(0,1fr);gap:10px;font-weight:400;font-size:13.5px;color:var(--ink-2)}
+.form .consent input{width:18px;height:18px;padding:0;margin-top:2px;accent-color:var(--glow)}
+.form .nav-btns{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.form .hint{font:500 12px var(--mono);color:var(--ink-3)}
+.form .err{color:#b3261e;font-size:14px}
+.done{display:grid;gap:10px}
+.done h3{font-size:30px;font-weight:700}
+.contact-lines{display:grid;gap:14px;margin-top:26px}
+.contact-lines div{font:600 10.5px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.contact-lines b{display:block;margin-top:6px;color:var(--ink);font:500 18px/1.3 var(--body);letter-spacing:0;text-transform:none;user-select:all}
+@media (max-width:860px){.qualify{grid-template-columns:1fr}.form .row{grid-template-columns:1fr}}
+
+footer.site{padding-block:40px 36px;color:var(--ink-2);font-size:14px}
+footer.site .wrap>.glass{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:28px;padding:32px}
+footer.site h4{font:600 11px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--ink);margin:0 0 12px}
+footer.site ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+footer.site a{text-decoration:none}
+footer.site a:hover{color:var(--ink)}
+.legal{grid-column:1/-1;border-top:1px solid var(--hair);padding-top:18px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--ink-3)}
+@media (max-width:760px){footer.site .wrap>.glass{grid-template-columns:1fr 1fr}}
+
+@media (prefers-reduced-motion:reduce){.live i{animation:none}}
+</style>
+
+<div class="field" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<nav class="nav" aria-label="Main">
+  <div class="wrap">
+    <div class="bar glass">
+      <a class="brand" href="#top">
+        <svg class="qmark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="19" cy="19" r="14" fill="none" stroke="#161d45" stroke-width="3"/><circle cx="19" cy="19" r="5" fill="#ff6a2b"/><path d="M27 27l8 8" stroke="#161d45" stroke-width="3.4" stroke-linecap="round"/></svg>
+        <span><span class="full">Quantum Clinical Research</span><span class="short">QC Research</span><small>Pasadena · Neurology</small></span>
+      </a>
+      <ul>
+        <li><a href="#enroll">Now enrolling</a></li>
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#conditions">Conditions</a></li>
+        <li><a href="#sponsors">Sponsors</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <span class="phone">(626) 250-2070</span>
+      <a class="btn btn-glow" href="#qualify">See if you qualify</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-copy">
+      <span class="kicker">Phase 2 &amp; 3 neurology trials · Formerly SC3 Research Group</span>
+      <h1>Neurology<br><span class="soft">research,</span><br>close to home</h1>
+      <p class="lede">Two studies are enrolling now at our Pasadena clinic, for generalized myasthenia gravis and Alzheimer's disease. Take a 60-second prescreen and a coordinator will walk you through the rest.</p>
+      <div class="cta-row">
+        <a class="btn btn-glow" href="#qualify"><span class="ic">→</span>See if you qualify</a>
+        <a class="btn btn-glass glass" href="#enroll"><span class="ic">i</span>Current studies</a>
+      </div>
+      <div class="mini">
+        <div class="glass"><b>2</b><span>studies now enrolling</span></div>
+        <div class="glass"><b>15+</b><span>years of clinical research</span></div>
+      </div>
+      <div>
+        <p class="kicker" style="margin-bottom:12px">Tap a condition to see where it acts</p>
+        <div class="chips" id="heroChips"></div>
+      </div>
+    </div>
+    <div class="stage" id="heroStage">
+            <div class="ring" aria-hidden="true"></div>
+      <canvas id="heroCanvas" aria-label="3D model of the human brain with the region linked to the selected condition glowing orange"></canvas>
+      <div class="notes" id="heroNotes" aria-hidden="true"><svg></svg></div>
+      <div class="pager" aria-hidden="true"><b id="pgNow">01</b><i id="pgBar"></i><span id="pgAll">05</span></div>
+      <div class="corner">Your study,<br>close to home</div>
+    </div>
+  </div>
+</header>
+
+<section class="sec" id="enroll" style="padding-top:clamp(40px,6vw,80px)">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="kicker">Study enrollment</span>
+        <h2>Now <span class="soft">enrolling</span></h2>
+      </div>
+      <p>We're enrolling participants for two studies right now. Each one has its own eligibility rules, so the first step is always a short prescreen. You can withdraw from a study at any time.</p>
+    </div>
+    <div class="studies">
+      <article class="study glass">
+        <span class="live"><i></i>Now enrolling · Phase III</span>
+        <h3>Generalized myasthenia gravis (gMG)</h3>
+        <p>A 9-month study of an investigational oral, once-daily treatment that blocks a specific immune-system protein linked to gMG muscle weakness. It is compared with a placebo over a 6-month treatment phase, followed by follow-up visits.</p>
+        <div class="facts">
+          <div class="fact"><b>18–85</b><span>age range</span></div>
+          <div class="fact"><b>~9 mo</b><span>study length</span></div>
+          <div class="fact"><b>~11</b><span>clinic visits</span></div>
+          <div class="fact"><b>1×/day</b><span>oral treatment</span></div>
+        </div>
+        <div>
+          <p class="label" style="margin-bottom:12px">You may be eligible if you</p>
+          <ul class="checks">
+            <li>Are between 18 and 85 years old</li>
+            <li>Have a confirmed gMG diagnosis with positive AChR antibodies</li>
+            <li>Have significant non-ocular symptoms, such as muscle weakness or fatigue</li>
+            <li>Have been on a stable gMG treatment for at least 6 months (for example NSISTs, IVIG/PLEX, FcRn antagonists or rituximab)</li>
+          </ul>
+        </div>
+        <div class="timeline" aria-label="Study timeline: 6-month treatment phase then follow-up to month 9">
+          <p class="label">Study timeline</p>
+          <div class="tl" id="tl">
+            <span class="cap" style="left:0">Treatment phase · 6 months</span>
+            <span class="cap" style="left:67.5%">Follow-up</span>
+            <span class="ph tx"></span><span class="ph fu"></span>
+          </div>
+          <p class="note-sm">Visit spacing is illustrative. Your coordinator gives you the exact schedule. A recent thymectomy (within 6 months), some recent treatments or an active infection may pause eligibility.</p>
+        </div>
+        <div class="row">
+          <a class="btn btn-glow" href="#qualify" data-cond="mg"><span class="ic">→</span>Take the 60-second prescreen</a>
+        </div>
+      </article>
+      <article class="study glass">
+        <span class="live"><i></i>Now enrolling</span>
+        <h3>Alzheimer's disease</h3>
+        <p>We are enrolling participants for an Alzheimer's disease study at our Pasadena clinic. Eligibility, the visit schedule and what the study involves are explained during your prescreen and a call with our study coordinator.</p>
+        <div>
+          <p class="label" style="margin-bottom:12px">What to expect</p>
+          <ul class="checks">
+            <li>A short online prescreen, then a call with a coordinator</li>
+            <li>A screening visit at our clinic to confirm eligibility</li>
+            <li>Study-related evaluations and care at no cost</li>
+            <li>Family members and caregivers can start the prescreen on someone's behalf</li>
+          </ul>
+        </div>
+        <div class="row">
+          <a class="btn btn-glow" href="#qualify" data-cond="ad"><span class="ic">→</span>Start the prescreen</a>
+        </div>
+        <p class="note-sm">Not eligible for a current study? Leave your details and we'll contact you when a matching study opens.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="how" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="kicker">How enrollment works</span>
+        <h2>Five steps, <span class="soft">no surprises</span></h2>
+      </div>
+      <p>We explain each step before it happens, and nothing study-related starts until you've signed the consent form.</p>
+    </div>
+    <div class="steps">
+      <div class="step glass"><span class="n">1</span><h3>Prescreen</h3><p>Answer a few questions online in about a minute. Your information stays confidential.</p></div>
+      <div class="step glass"><span class="n">2</span><h3>Coordinator call</h3><p>A study coordinator reviews your answers and medical history with you and answers your questions.</p></div>
+      <div class="step glass"><span class="n">3</span><h3>Informed consent</h3><p>You learn the study's purpose, risks and benefits. Take your time, and bring family if you like.</p></div>
+      <div class="step glass"><span class="n">4</span><h3>Screening visit</h3><p>Exams and tests at our Pasadena clinic confirm you meet the study criteria.</p></div>
+      <div class="step glass"><span class="n">5</span><h3>Study visits</h3><p>Regular visits track your health and the treatment, then follow-up after the study ends.</p></div>
+    </div>
+    <div class="covered">
+      <div class="cov glass"><svg viewBox="0 0 38 38" aria-hidden="true"><circle cx="19" cy="19" r="18" fill="#fff"/><path d="M12 19.5l4.5 4.5L26 14" stroke="#ff6a2b" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg><div><b>No cost for study care</b><span>Study-related evaluations and medical care are free.</span></div></div>
+      <div class="cov glass"><svg viewBox="0 0 38 38" aria-hidden="true"><circle cx="19" cy="19" r="18" fill="#fff"/><path d="M19 11v16M14 15.5c0-2 2.2-3 5-3s5 1 5 3-2 2.6-5 3.2-5 1.4-5 3.4 2.2 3 5 3 5-1 5-3" stroke="#ff6a2b" stroke-width="2" fill="none" stroke-linecap="round"/></svg><div><b>Compensation</b><span>Many studies pay for your time and travel. Details are shared before you enroll.</span></div></div>
+      <div class="cov glass"><svg viewBox="0 0 38 38" aria-hidden="true"><circle cx="19" cy="19" r="18" fill="#fff"/><path d="M19 28s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z" stroke="#ff6a2b" stroke-width="2" fill="none"/><circle cx="19" cy="17" r="2.4" fill="#ff6a2b"/></svg><div><b>Easy to reach</b><span>960 E. Green St., Pasadena. Close to public transit, with plenty of parking.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="conditions" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="kicker">12 areas of study</span>
+        <h2>Research <span class="soft">mapped to</span> the brain</h2>
+      </div>
+      <p>Each condition we study affects a different part of the nervous system. Pick one to light up the region involved, drag to turn the model, and slide to explode it into its parts.</p>
+    </div>
+    <div class="explorer">
+      <ul class="cond-list glass" id="condList" role="tablist" aria-label="Conditions"></ul>
+      <div class="ex-stage">
+        <div class="ex-canvas glass" id="exStage">
+          <canvas id="exCanvas" aria-label="Interactive 3D brain with labelled regions"></canvas>
+          <div class="notes" id="exNotes" aria-hidden="true"><svg></svg></div>
+        </div>
+        <div class="ex-bar glass">
+          <label for="explode">Assembled</label>
+          <input type="range" id="explode" min="0" max="100" value="0">
+          <label for="explode">Exploded</label>
+        </div>
+        <div class="legend glass" id="legend"></div>
+        <div class="ex-info glass" id="exInfo"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:0" aria-label="At a glance">
+  <div class="wrap stats">
+    <div class="stat glass"><svg class="gauge" viewBox="0 0 58 58" aria-hidden="true"><circle cx="29" cy="29" r="24" fill="none" stroke="rgba(22,29,69,.1)" stroke-width="5"/><circle cx="29" cy="29" r="24" fill="none" stroke="#ff6a2b" stroke-width="5" stroke-linecap="round" stroke-dasharray="113 151" transform="rotate(-90 29 29)"/></svg><b data-count="15" data-plus="1">15+</b><span>years running clinical research</span></div>
+    <div class="stat glass"><svg class="gauge" viewBox="0 0 58 58" aria-hidden="true"><circle cx="29" cy="29" r="24" fill="none" stroke="rgba(22,29,69,.1)" stroke-width="5"/><circle cx="29" cy="29" r="24" fill="none" stroke="#2f55d4" stroke-width="5" stroke-linecap="round" stroke-dasharray="151 151" transform="rotate(-90 29 29)"/></svg><b data-count="12">12</b><span>neurological conditions studied</span></div>
+    <div class="stat glass"><svg class="gauge" viewBox="0 0 58 58" aria-hidden="true"><circle cx="29" cy="29" r="24" fill="none" stroke="rgba(22,29,69,.1)" stroke-width="5"/><circle cx="29" cy="29" r="24" fill="none" stroke="#161d45" stroke-width="5" stroke-linecap="round" stroke-dasharray="130 151" transform="rotate(-90 29 29)"/></svg><b data-count="31">31</b><span>pharma and biotech sponsors</span></div>
+    <div class="stat glass"><svg class="gauge" viewBox="0 0 58 58" aria-hidden="true"><circle cx="29" cy="29" r="24" fill="none" stroke="rgba(22,29,69,.1)" stroke-width="5"/><circle cx="29" cy="29" r="24" fill="none" stroke="#ff6a2b" stroke-width="5" stroke-linecap="round" stroke-dasharray="60 151" transform="rotate(-90 29 29)"/></svg><b data-count="5">5</b><span>global CRO partners</span></div>
+  </div>
+</section>
+
+<section class="sec" id="sponsors" style="padding-top:0">
+  <div class="wrap split">
+    <article class="panel glass">
+      <span class="kicker">For patients &amp; caregivers</span>
+      <h3>Access new treatments with expert care</h3>
+      <p>Taking part helps move neurology research forward, and you get close medical attention throughout.</p>
+      <ul>
+        <li>Early access to investigational therapies under medical supervision</li>
+        <li>Free study-related evaluations and care</li>
+        <li>Compensation for time and travel in many studies</li>
+        <li>A coordinator who knows your name and your schedule</li>
+      </ul>
+      <div><a class="btn btn-ink" href="#qualify">See if you qualify <span class="ic">→</span></a></div>
+    </article>
+    <article class="panel p-ink">
+      <span class="kicker">For sponsors &amp; CROs</span>
+      <h3>A focused neurology site that enrolls</h3>
+      <p>We specialise in Phase 2 &amp; 3 neurology studies: MS, myasthenia gravis, Alzheimer's, Parkinson's and more. Our Clinical Trial Manager brings 15+ years of site operations.</p>
+      <ul>
+        <li>One point of coordination between site, sponsor and CRO</li>
+        <li>Regulatory compliance and timelines handled in-house</li>
+        <li>Referral base across Pasadena and the San Gabriel Valley</li>
+        <li>Data integrity and participant safety as standard</li>
+      </ul>
+      <div><a class="btn btn-glow" href="#qualify" data-sponsor="1">Request site capabilities <span class="ic">→</span></a></div>
+    </article>
+  </div>
+</section>
+
+<div class="marquee" aria-label="Sponsors and CRO partners"><div class="track" id="track"></div></div>
+
+<section class="sec" id="stories">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="kicker">Volunteer stories</span>
+        <h2>Real voices, <span class="soft">real impact</span></h2>
+      </div>
+      <p>Patients and caregivers on what it was like to take part in a study at our clinic.</p>
+    </div>
+    <div class="quotes">
+      <figure class="quote glass"><p>“When I was diagnosed with Myasthenia Gravis, I felt uncertain about my future. Joining a clinical trial at Quantum Clinical Research gave me hope and a renewed sense of purpose.”</p><footer><b>David</b><span>Myasthenia gravis</span></footer></figure>
+      <figure class="quote glass"><p>“The team at Quantum Clinical Research treated me with so much respect and care. They made the process smooth and always kept me informed.”</p><footer><b>Michael</b><span>Parkinson's disease</span></footer></figure>
+      <figure class="quote glass"><p>“As a caregiver for my mother who has Alzheimer's Disease, I wanted to do more to support research into this devastating illness. The staff made the experience so seamless and welcoming.”</p><footer><b>Ann</b><span>Alzheimer's caregiver</span></footer></figure>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="faq" style="padding-top:0">
+  <div class="wrap faq">
+    <div>
+      <span class="kicker">Questions</span>
+      <h2 style="font-size:clamp(34px,4.4vw,58px);font-weight:800;text-transform:uppercase;letter-spacing:-.045em;line-height:.95;margin-top:18px">Before you <span style="color:var(--ghost)">enroll</span></h2>
+    </div>
+    <div class="faq-list glass">
+      <details open><summary>What happens during enrollment?</summary><p>We explain the study in detail, you sign an informed consent form, and then you complete the screening tests and assessments that confirm you're eligible.</p></details>
+      <details><summary>How do I know if I qualify?</summary><p>Each study has its own criteria, such as age, diagnosis and current treatment. Start with the prescreen and our team will review your eligibility with you.</p></details>
+      <details><summary>Are clinical trials safe?</summary><p>Participant safety is our top priority. Every trial follows strict ethical guidelines and is approved and monitored by regulatory bodies and an Institutional Review Board (IRB).</p></details>
+      <details><summary>Will I be paid for taking part?</summary><p>Many studies offer compensation for your time and effort. The details vary by study and are explained before you enroll.</p></details>
+      <details><summary>Can I leave a study after joining?</summary><p>Yes. Participation is voluntary, and you can withdraw at any time for any reason without penalty.</p></details>
+      <details><summary>What is a clinical trial?</summary><p>A research study with volunteers that evaluates the safety, effectiveness and potential benefits of a new treatment, therapy or intervention.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="qualify" style="padding-top:0">
+  <div class="wrap qualify">
+    <div>
+      <span class="kicker">Start here</span>
+      <h2 style="font-size:clamp(38px,5vw,66px);font-weight:800;text-transform:uppercase;letter-spacing:-.045em;line-height:.95;margin-top:18px">See if a study <span style="color:var(--ghost)">fits you</span></h2>
+      <p style="color:var(--ink-2);margin-top:18px;max-width:42ch">Three quick steps. A coordinator reviews your answers and contacts you. Your information is used only to check eligibility.</p>
+      <div class="contact-lines">
+        <div>Phone<b>(626) 250-2070</b></div>
+        <div>Email<b>info@qc-research.com</b></div>
+        <div>Clinic<b>960 E. Green St., Suite 310, Pasadena, CA 91106</b></div>
+      </div>
+    </div>
+    <form class="form glass" id="qform" novalidate>
+      <div class="progress" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+      <div class="fstep">
+        <label for="q-cond">Which study or condition are you interested in?
+          <select id="q-cond" required></select>
+        </label>
+      </div>
+      <div class="fstep" hidden>
+        <div class="row">
+          <label for="q-zip">ZIP code<input id="q-zip" inputmode="numeric" maxlength="5" placeholder="91106" required></label>
+          <label for="q-who">I am a…
+            <select id="q-who"><option>Patient</option><option>Caregiver or family member</option><option>Referring physician</option><option>Sponsor / CRO</option></select>
+          </label>
+        </div>
+      </div>
+      <div class="fstep" hidden>
+        <label for="q-name">Full name<input id="q-name" autocomplete="name" required></label>
+        <div class="row">
+          <label for="q-phone">Phone<input id="q-phone" type="tel" autocomplete="tel" required></label>
+          <label for="q-email">Email<input id="q-email" type="email" autocomplete="email"></label>
+        </div>
+        <label class="consent" for="q-consent"><input id="q-consent" type="checkbox" required><span>I agree to let Quantum Clinical Research securely review my information to check eligibility for clinical trials.</span></label>
+      </div>
+      <p class="err" id="qerr" hidden></p>
+      <div class="nav-btns">
+        <button type="button" class="btn btn-glass glass" id="qback" hidden>Back</button>
+        <span class="hint" id="qhint">Step 1 of 3</span>
+        <button type="submit" class="btn btn-ink" id="qnext">Continue <span class="ic">→</span></button>
+      </div>
+      <div class="done" id="qdone" hidden>
+        <h3>Thanks, we'll be in touch.</h3>
+        <p style="color:var(--ink-2)">Design prototype: this form isn't connected yet, so nothing was sent. On the live site it will go to the study coordinator.</p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="glass">
+      <div>
+        <a class="brand" href="#top">
+          <svg class="qmark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="19" cy="19" r="14" fill="none" stroke="#161d45" stroke-width="3"/><circle cx="19" cy="19" r="5" fill="#ff6a2b"/><path d="M27 27l8 8" stroke="#161d45" stroke-width="3.4" stroke-linecap="round"/></svg>
+          <span>Quantum Clinical Research</span>
+        </a>
+        <p style="max-width:32ch;margin-top:14px">Clinical research center in Pasadena, California, advancing treatments for neurological conditions.</p>
+      </div>
+      <div><h4>Patients</h4><ul><li><a href="#enroll">Now enrolling</a></li><li><a href="#how">How it works</a></li><li><a href="#conditions">Conditions</a></li><li><a href="#stories">Volunteer stories</a></li></ul></div>
+      <div><h4>Research</h4><ul><li><a href="#sponsors">Sponsors &amp; CROs</a></li><li><a href="#faq">Patient safety</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+      <div><h4>Visit</h4><ul><li>960 E. Green St., Suite 310</li><li>Pasadena, CA 91106</li><li>(626) 250-2070</li><li>info@qc-research.com</li></ul></div>
+      <div class="legal"><span>© 2026 Quantum Clinical Research, Inc.</span><span>HIPAA Policy · Terms · ADA Disclaimer · Site map</span></div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+(function(){
+const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MOBILE=innerWidth<760;
+
+/* ---------- content ---------- */
+// regions: 0 frontal, 1 parietal, 2 occipital, 3 temporal, 4 hippocampus, 5 basal ganglia, 6 cerebellum, 7 brainstem, 8 motor cortex
+const REG=[
+ {n:"Frontal lobe",f:"Planning, judgment, personality"},
+ {n:"Parietal lobe",f:"Touch and sense of space"},
+ {n:"Occipital lobe",f:"Processes what you see"},
+ {n:"Temporal lobe",f:"Hearing, language, memory"},
+ {n:"Hippocampus",f:"Forms new memories"},
+ {n:"Basal ganglia",f:"Starts and smooths movement"},
+ {n:"Cerebellum",f:"Balance and coordination"},
+ {n:"Brainstem",f:"Breathing, heart rate, swallowing"},
+ {n:"Motor cortex",f:"Plans voluntary movement"}];
+const LETTER_ORDER=[8,1,0,2,5,3,4,6,7]; // A..I, top to bottom in the default view
+const CONDS=[
+ {id:"mg",name:"Myasthenia gravis",on:true,r:{7:1,8:.75},where:"Nerve-to-muscle junction, motor pathways",desc:"A chronic autoimmune disease that weakens muscles by blocking signals between nerves and muscles. Our Phase III study tests an oral, once-daily investigational treatment."},
+ {id:"ad",name:"Alzheimer's disease",on:true,r:{4:1,3:.7},where:"Hippocampus and medial temporal lobe",desc:"Research to better understand, treat and manage Alzheimer's disease, including memory and daily function. Our Alzheimer's study is enrolling now."},
+ {id:"pd",name:"Parkinson's disease",r:{5:1,7:.6},where:"Basal ganglia and substantia nigra",desc:"Studies aimed at improving motor function and easing symptoms such as tremor, stiffness and slowed movement."},
+ {id:"ms",name:"Multiple sclerosis",r:{0:.5,1:.5,2:.5,3:.5,8:.5,6:.4,7:.5},where:"White matter throughout the brain and spinal cord",desc:"Investigating treatments that slow progression and improve quality of life for people living with MS."},
+ {id:"ep",name:"Epilepsy",r:{3:1,4:.7},where:"Temporal lobe, the most common seizure focus",desc:"Developing new treatments to control seizures and make daily life more predictable."},
+ {id:"mig",name:"Migraine",r:{2:.85,7:1},where:"Brainstem and occipital cortex",desc:"Evaluating therapies that prevent and manage chronic and episodic migraine."},
+ {id:"de",name:"Dementia",r:{0:1,3:.75},where:"Frontal and temporal cortex",desc:"Exploring therapies that manage symptoms and support cognitive function."},
+ {id:"et",name:"Essential tremor",r:{6:1,7:.5},where:"Cerebellum and its circuits",desc:"Studying new treatments that reduce tremor and improve motor control."},
+ {id:"hd",name:"Huntington's disease",r:{5:1,0:.4},where:"Striatum (caudate and putamen)",desc:"Research toward effective therapies for this inherited neurodegenerative disorder."},
+ {id:"st",name:"Post-stroke recovery",r:{8:1,1:.6},where:"Motor cortex and sensorimotor network",desc:"Interventions that help recovery and improve outcomes for stroke survivors."},
+ {id:"msa",name:"Multiple system atrophy",r:{6:1,7:.9,5:.6},where:"Cerebellum, brainstem and striatum",desc:"Research to slow progression and relieve symptoms of MSA."},
+ {id:"amy",name:"Amyloidosis",r:{7:.7},where:"Peripheral and autonomic nerves",desc:"Investigating new therapies that target and manage this rare protein disorder."}];
+
+/* ---------- noise ---------- */
+const P=new Uint8Array(512);(function(){let s=1234567;const p=[...Array(256).keys()];for(let i=255;i>0;i--){s=(s*16807)%2147483647;const j=s%(i+1);[p[i],p[j]]=[p[j],p[i]]}for(let i=0;i<512;i++)P[i]=p[i&255]})();
+const G3=[[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],[1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],[0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]];
+function noise(x,y,z){const F=1/3,Gc=1/6;const s=(x+y+z)*F;const i=Math.floor(x+s),j=Math.floor(y+s),k=Math.floor(z+s);const t=(i+j+k)*Gc;
+ const x0=x-i+t,y0=y-j+t,z0=z-k+t;let i1,j1,k1,i2,j2,k2;
+ if(x0>=y0){if(y0>=z0){i1=1;j1=0;k1=0;i2=1;j2=1;k2=0}else if(x0>=z0){i1=1;j1=0;k1=0;i2=1;j2=0;k2=1}else{i1=0;j1=0;k1=1;i2=1;j2=0;k2=1}}
+ else{if(y0<z0){i1=0;j1=0;k1=1;i2=0;j2=1;k2=1}else if(x0<z0){i1=0;j1=1;k1=0;i2=0;j2=1;k2=1}else{i1=0;j1=1;k1=0;i2=1;j2=1;k2=0}}
+ const x1=x0-i1+Gc,y1=y0-j1+Gc,z1=z0-k1+Gc,x2=x0-i2+2*Gc,y2=y0-j2+2*Gc,z2=z0-k2+2*Gc,x3=x0-1+.5,y3=y0-1+.5,z3=z0-1+.5;
+ const ii=i&255,jj=j&255,kk=k&255;let n=0;
+ const c=(gi,X,Y,Z)=>{let tt=.6-X*X-Y*Y-Z*Z;if(tt<0)return 0;tt*=tt;const g=G3[gi%12];return tt*tt*(g[0]*X+g[1]*Y+g[2]*Z)};
+ n+=c(P[ii+P[jj+P[kk]]],x0,y0,z0);n+=c(P[ii+i1+P[jj+j1+P[kk+k1]]],x1,y1,z1);n+=c(P[ii+i2+P[jj+j2+P[kk+k2]]],x2,y2,z2);n+=c(P[ii+1+P[jj+1+P[kk+1]]],x3,y3,z3);
+ return 32*n}
+const sm=(a,b,x)=>{let t=(x-a)/(b-a);t=t<0?0:t>1?1:t;return t*t*(3-2*t)};
+
+/* ---------- icosphere ---------- */
+function ico(detail){const t=(1+Math.sqrt(5))/2;const v=[[-1,t,0],[1,t,0],[-1,-t,0],[1,-t,0],[0,-1,t],[0,1,t],[0,-1,-t],[0,1,-t],[t,0,-1],[t,0,1],[-t,0,-1],[-t,0,1]].map(a=>{const l=Math.hypot(...a);return[a[0]/l,a[1]/l,a[2]/l]});
+ let f=[[0,11,5],[0,5,1],[0,1,7],[0,7,10],[0,10,11],[1,5,9],[5,11,4],[11,10,2],[10,7,6],[7,1,8],[3,9,4],[3,4,2],[3,2,6],[3,6,8],[3,8,9],[4,9,5],[2,4,11],[6,2,10],[8,6,7],[9,8,1]];
+ for(let d=0;d<detail;d++){const cache=new Map(),nf=[];const mid=(a,b)=>{const key=a<b?a*1e6+b:b*1e6+a;let m=cache.get(key);if(m!==undefined)return m;const A=v[a],B=v[b];let x=A[0]+B[0],y=A[1]+B[1],z=A[2]+B[2];const l=Math.hypot(x,y,z);v.push([x/l,y/l,z/l]);m=v.length-1;cache.set(key,m);return m};
+  for(const [a,b,c] of f){const ab=mid(a,b),bc=mid(b,c),ca=mid(c,a);nf.push([a,ab,ca],[b,bc,ab],[c,ca,bc],[ab,bc,ca])}f=nf}
+ return{v,f}}
+
+/* ---------- brain geometry (built once, shared by both scenes) ---------- */
+function buildParts(){
+ const parts=[];
+ function finish(pos,crease,reg,faces,base){
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('aCrease',new THREE.BufferAttribute(crease,1));
+  const all=new Uint32Array(faces.length*3);faces.forEach((f,i)=>{all[i*3]=f[0];all[i*3+1]=f[1];all[i*3+2]=f[2]});g.setIndex(new THREE.BufferAttribute(all,1));g.computeVertexNormals();
+  const by={};faces.forEach(f=>{const r=(reg[f[0]]===reg[f[1]]||reg[f[0]]===reg[f[2]])?reg[f[0]]:reg[f[1]];(by[r]=by[r]||[]).push(f[0],f[1],f[2])});
+  for(const r in by){const sg=new THREE.BufferGeometry();sg.setAttribute('position',g.attributes.position);sg.setAttribute('normal',g.attributes.normal);sg.setAttribute('aCrease',g.attributes.aCrease);sg.setIndex(by[r]);parts.push({geo:sg,region:+r,side:base.side})}
+  return g}
+ // cerebral hemispheres
+ const H=ico(MOBILE?5:6);const N=H.v.length;
+ const R=new Float32Array(N*3),C=new Float32Array(N),RG=new Uint8Array(N);
+ for(let i=0;i<N;i++){const [x,y,z]=H.v[i];
+  let X=(x>0?x*.6:x*.12)*(1-.16*Math.max(0,z)**2-.08*Math.max(0,-z)**2)+.035;
+  let Y=y>-.15?y*.66:-.099+(y+.15)*.33;let Z=z*.97;
+  const tb=Math.exp(-(((Z-.1)/.36)**2))*sm(.12,.5,X)*sm(.1,-.4,y);Y-=.12*tb;X+=.05*tb;
+  Y-=.05*Math.max(0,Z)**3;
+  const q=noise(X*1.7+3,Y*1.7,Z*1.7)*.35;
+  const g1=Math.abs(noise((X+q)*3.5,(Y+q)*3.5,(Z-q)*3.5)),s1=1-sm(0,.14,g1);
+  const g2=Math.abs(noise(X*7.5+7,Y*7.5,Z*7.5)),s2=(1-sm(0,.09,g2))*.35;
+  const yl=-.11+(.42-Z)*(.21/.62),dl=Math.abs(Y-yl);const syl=(1-sm(0,.035,dl))*sm(.2,.45,X)*sm(-.3,-.15,Z)*sm(.5,.38,Z);
+  const zc=.13-.16*Y,cs=(1-sm(0,.022,Math.abs(Z-zc)))*sm(.02,.12,Y)*sm(-.05,.1,x);
+  const med=x<0?.45:1;let cr=Math.min(1,Math.max(s1,s2,syl,cs*.9))*med;
+  const nx=(X-.035)/.36,ny=Y/.44,nz=Z/.94;const nl=Math.hypot(nx,ny,nz)||1;
+  const disp=.05*(1-cr)-.018*syl;
+  R[i*3]=X+nx/nl*disp;R[i*3+1]=Y+ny/nl*disp;R[i*3+2]=Z+nz/nl*disp;C[i]=cr;
+  let rg;if(X>.18&&Z<.5&&Z>-.5&&Y<yl)rg=3;else if(Math.abs(Z-zc)<.075&&Y>.05)rg=8;else if(Z>zc)rg=0;else if(Z<-.5)rg=2;else rg=1;RG[i]=rg}
+ for(const side of [1,-1]){const pos=new Float32Array(R);if(side<0)for(let i=0;i<N;i++)pos[i*3]*=-1;const faces=side>0?H.f:H.f.map(f=>[f[0],f[2],f[1]]);finish(pos,C,RG,faces,{side})}
+ // cerebellum
+ const Cb=ico(MOBILE?4:5),M=Cb.v.length,cp=new Float32Array(M*3),cc=new Float32Array(M),cr2=new Uint8Array(M).fill(6);
+ for(let i=0;i<M;i++){const [x,y,z]=Cb.v[i];const s=Math.sin(y*30+noise(x*3,y*3,z*3)*2.2);let cr=sm(-.1,-.85,s);const verm=1-sm(0,.07,Math.abs(x));cr=Math.max(cr,verm*.9);
+  const d=.022*(1-cr);const X=x*(.5+d),Y=y*(.24+d)-.43+(.06*Math.max(0,-z)),Z=z*(.3+d)-.6;cp[i*3]=X;cp[i*3+1]=Y;cp[i*3+2]=Z;cc[i]=cr*.8}
+ finish(cp,cc,cr2,Cb.f,{side:0});
+ // brainstem
+ const Bs=ico(4),K=Bs.v.length,bp=new Float32Array(K*3),bc=new Float32Array(K),br=new Uint8Array(K).fill(7);
+ const ca=Math.cos(-.32),sa=Math.sin(-.32);
+ for(let i=0;i<K;i++){const [x,y,z]=Bs.v[i];let X=x*.12*(1+.25*Math.max(0,y)),Y=y*.42,Z=z*.13;const yy=Y*ca-Z*sa,zz=Y*sa+Z*ca;bp[i*3]=X;bp[i*3+1]=yy-.62;bp[i*3+2]=zz-.3;bc[i]=.15*(1-sm(0,.2,Math.abs(noise(x*4,y*4,z*4))))}
+ finish(bp,bc,br,Bs.f,{side:0});
+ // deep structures (seen when exploded)
+ function blob(cx,cy,cz,rx,ry,rz,rot,region,side){const B=ico(3),n=B.v.length,p=new Float32Array(n*3),c=new Float32Array(n),r=new Uint8Array(n).fill(region);const co=Math.cos(rot),si=Math.sin(rot);
+  for(let i=0;i<n;i++){const [x,y,z]=B.v[i];let X=x*rx,Z=z*rz;const X2=X*co+Z*si,Z2=-X*si+Z*co;p[i*3]=(cx+X2)*side;p[i*3+1]=cy+y*ry;p[i*3+2]=cz+Z2;c[i]=.1}
+  finish(p,c,r,side>0?B.f:B.f.map(f=>[f[0],f[2],f[1]]),{side})}
+ for(const s of [1,-1]){blob(.2,.02,.1,.09,.11,.17,.15,5,s);blob(.3,-.2,-.06,.05,.05,.21,.35,4,s)}
+ return parts}
+
+// glow centres (right side; shader mirrors |x|) and label anchors
+const GC=[[.38,.18,.62],[.36,.42,-.22],[.28,.15,-.82],[.6,-.25,.12],[.3,-.2,-.06],[.2,.02,.1],[.25,-.42,-.62],[.04,-.62,-.3],[.33,.55,.1]];
+const ANC=[[.4,.26,.72],[.5,.42,-.36],[.27,.2,-.9],[.68,-.2,.08],[.33,-.18,-.12],[.22,.06,.18],[.36,-.5,-.72],[.1,-.86,-.38],[.47,.53,.1]];
+const XD=[[.35,.25,.9],[.35,.85,-.3],[.3,.1,-.95],[.95,-.35,.15],[.6,-.7,0],[.4,.9,.2],[0,-.6,-1],[0,-1,-.1],[.3,1,.1]];
+let PARTS=null;
+
+function makeMaterial(){
+ const m=new THREE.MeshPhysicalMaterial({color:0xf3f4fb,roughness:.42,metalness:0,clearcoat:.9,clearcoatRoughness:.18,side:THREE.DoubleSide});
+ const U={uGP:{value:GC.map(c=>new THREE.Vector3(...c))},uGA:{value:new Array(9).fill(0)},uGlowCol:{value:new THREE.Color(1.0,.42,.17)},uPulse:{value:1}};
+ m.onBeforeCompile=sh=>{Object.assign(sh.uniforms,U);
+  sh.vertexShader='attribute float aCrease;varying float vCrease;varying float vGlow;uniform vec3 uGP[9];uniform float uGA[9];\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvCrease=aCrease;vec3 pp=vec3(abs(position.x),position.y,position.z);float gg=0.;for(int i=0;i<9;i++){vec3 d=pp-uGP[i];gg=max(gg,uGA[i]*exp(-dot(d,d)/0.14));}vGlow=gg;');
+  sh.fragmentShader='varying float vCrease;varying float vGlow;uniform vec3 uGlowCol;uniform float uPulse;\n'+sh.fragmentShader
+   .replace('#include <color_fragment>','#include <color_fragment>\ndiffuseColor.rgb*=1.0-0.30*vCrease;diffuseColor.rgb=mix(diffuseColor.rgb,vec3(1.,.42,.2),clamp(vGlow*1.15,0.,.95));')
+   .replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\ntotalEmissiveRadiance+=uGlowCol*vGlow*(0.4+1.1*vCrease)*uPulse;')};
+ m.userData.U=U;return m}
+
+function glowSprite(){const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');const g=x.createRadialGradient(64,64,0,64,64,64);
+ g.addColorStop(0,'rgba(255,100,40,.7)');g.addColorStop(.35,'rgba(240,75,35,.3)');g.addColorStop(.7,'rgba(232,69,42,.05)');g.addColorStop(1,'rgba(232,69,42,0)');x.fillStyle=g;x.fillRect(0,0,128,128);
+ const t=new THREE.CanvasTexture(c);return t}
+
+function BrainScene(canvas,notesEl,opts){
+ let renderer;try{renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'})}catch(e){return null}
+ renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.92;
+ if(!PARTS)PARTS=buildParts();
+ const scene=new THREE.Scene();/* lights only: no PMREM env, which renders black on some GPUs */
+ const cam=new THREE.PerspectiveCamera(30,1,.1,50);cam.position.set(0,0,opts.dist||4.6);
+ scene.add(new THREE.HemisphereLight(0xffffff,0xaab3d9,.55));
+ const key=new THREE.DirectionalLight(0xffffff,.95);key.position.set(-2,3,3);scene.add(key);
+ const rim=new THREE.DirectionalLight(0xc9d3ff,.9);rim.position.set(2.5,1,-3);scene.add(rim);
+ const fill=new THREE.DirectionalLight(0xffe6d8,.45);fill.position.set(3,-1.5,2);scene.add(fill);
+ const spec=new THREE.PointLight(0xffffff,.6,12);spec.position.set(-1.5,2.2,3.5);scene.add(spec);
+ const group=new THREE.Group();scene.add(group);
+ const mat=makeMaterial();const U=mat.userData.U;
+ const meshes=PARTS.map(p=>{const m=new THREE.Mesh(p.geo,mat);const d=XD[p.region];const sx=p.side||0;
+  m.userData.ex=new THREE.Vector3((p.region===6||p.region===7?0:d[0]*sx)+sx*.12,d[1],d[2]).multiplyScalar(p.region===4||p.region===5?.9:.62);
+  if(p.region===4||p.region===5)m.userData.deep=true;group.add(m);return m});
+ const inner=new THREE.PointLight(0xff7a3c,0,2.2);group.add(inner);
+ const spriteTex=glowSprite();const sprites=GC.map(()=>{const s=new THREE.Sprite(new THREE.SpriteMaterial({map:spriteTex,blending:THREE.NormalBlending,depthWrite:false,depthTest:false,transparent:true,opacity:0}));s.scale.set(.9,.9,1);group.add(s);return s});
+ const tgt=new Array(9).fill(0);let explodeT=0,explode=0,hot=new Set();
+ group.rotation.set(opts.tilt||.32,opts.rotY||-1.05,0);
+ let rotY=opts.rotY||-1.05,rotX=opts.tilt||.32,tx=0,ty=0,drag=null,dragY=0,visible=true,last=performance.now(),t0=last;
+ const el=canvas.parentElement;
+ function resize(){const r=canvas.getBoundingClientRect();if(!r.width)return;renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(r.width,r.height,false);cam.aspect=r.width/r.height;cam.updateProjectionMatrix()}
+ resize();addEventListener('resize',resize);
+ el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect();if(drag!==null){dragY+=(e.clientX-drag)*.006;dragY=Math.max(-1.1,Math.min(1.1,dragY));drag=e.clientX}else{tx=((e.clientY-r.top)/r.height-.5)*.25;ty=((e.clientX-r.left)/r.width-.5)*.35}});
+ el.addEventListener('pointerleave',()=>{tx=0;ty=0});
+ if(opts.drag){canvas.addEventListener('pointerdown',e=>{drag=e.clientX;canvas.setPointerCapture(e.pointerId);canvas.style.cursor='grabbing'});canvas.addEventListener('pointerup',()=>{drag=null;canvas.style.cursor='grab'});canvas.style.touchAction='pan-y'}
+ new IntersectionObserver(es=>{visible=es[0].isIntersecting},{rootMargin:'100px'}).observe(el);
+
+ // annotations
+ const svg=notesEl.querySelector('svg');let notes=[];
+ function setNotes(list){notesEl.querySelectorAll('.anc,.note').forEach(n=>n.remove());svg.innerHTML='';
+  notes=list.map(o=>{const a=document.createElement('div');a.className='anc';a.textContent=o.letter||'';notesEl.appendChild(a);
+   const b=document.createElement('div');b.className='note glass';b.innerHTML=`<div class="t">${o.letter?`<i>${o.letter}</i>`:''}${REG[o.r].n}</div><div class="f">${REG[o.r].f}</div>`;notesEl.appendChild(b);
+   const ln=document.createElementNS('http://www.w3.org/2000/svg','polyline');svg.appendChild(ln);return{...o,a,b,ln}})}
+ const v3=new THREE.Vector3(),nrm=new THREE.Vector3();
+ function placeNotes(){if(!notes.length)return;const W=el.clientWidth,Hh=el.clientHeight;const bw=168,pad=12;
+  const cols={L:[],R:[]};
+  notes.forEach(o=>{const anc=ANC[o.r];let sx=1;v3.set(anc[0]*sx,anc[1],anc[2]);
+   const part=meshes.find(m=>PARTS[meshes.indexOf(m)].region===o.r&&(PARTS[meshes.indexOf(m)].side===1||PARTS[meshes.indexOf(m)].side===0));
+   if(part)v3.add(part.position);v3.applyMatrix4(group.matrixWorld);
+   nrm.set(anc[0],anc[1]*.6,anc[2]).normalize().applyQuaternion(group.quaternion);
+   const p=v3.clone().project(cam);o.x=(p.x*.5+.5)*W;o.y=(-p.y*.5+.5)*Hh;o.vis=(o.r===4||o.r===5)?(explode>.3?1:.55):(nrm.z>-.15?1:.35);
+   (o.x<W*.5?cols.L:cols.R).push(o)});
+  const boxH=58,gap=8;
+  for(const k of ['L','R']){const c=cols[k].sort((a,b)=>a.y-b.y);let y=-1e9;
+   c.forEach(o=>{let by=Math.max(o.y-boxH/2,y+gap);by=Math.max(pad,Math.min(Hh-boxH-pad,by));y=by+boxH;o.by=by});
+   for(let i=c.length-1;i>=0;i--){if(c[i].by+boxH>Hh-pad)c[i].by=Hh-pad-boxH;if(i<c.length-1&&c[i].by+boxH+gap>c[i+1].by)c[i].by=c[i+1].by-boxH-gap}
+   c.forEach(o=>{const bx=k==='L'?pad:W-bw-pad;o.b.style.transform=`translate(${bx}px,${o.by}px)`;o.b.style.opacity=o.vis;
+    o.a.style.left=o.x+'px';o.a.style.top=o.y+'px';o.a.style.opacity=o.vis;
+    const ex=k==='L'?bx+bw:bx,ey=o.by+boxH/2,mx=k==='L'?ex+18:ex-18;o.ln.setAttribute('points',`${o.x},${o.y} ${mx},${ey} ${ex},${ey}`);o.ln.style.opacity=.55*o.vis;
+    const h=hot.has(o.r);o.a.classList.toggle('hot',h);o.b.classList.toggle('hot',h)})}}
+
+ function frame(now){requestAnimationFrame(frame);if(!visible)return;const dt=Math.min(.05,(now-last)/1000);last=now;const t=(now-t0)/1000;
+  let maxA=0,cx=0,cy=0,cz=0,sw=0;
+  for(let k=0;k<9;k++){U.uGA.value[k]+=(tgt[k]-U.uGA.value[k])*Math.min(1,dt*4);const a=U.uGA.value[k];maxA=Math.max(maxA,a);
+   const s=sprites[k];s.position.set(GC[k][0]*(k===6||k===7?0:1),GC[k][1],GC[k][2]);s.material.opacity=a*.85;const sc=.6+a*.3;s.scale.set(sc,sc,1);cx+=GC[k][0]*a;cy+=GC[k][1]*a;cz+=GC[k][2]*a;sw+=a}
+  if(sw>0){inner.position.set(cx/sw,cy/sw,cz/sw)}inner.intensity=maxA*1.1;
+  U.uPulse.value=REDUCED?1:.85+.15*Math.sin(t*2.2);
+  explode+=(explodeT-explode)*Math.min(1,dt*4);cam.position.z=(opts.dist||4.6)+explode*1.3;meshes.forEach(m=>{m.position.copy(m.userData.ex).multiplyScalar(explode);if(m.userData.deep)m.visible=explode>.04||true});
+  if(!REDUCED&&opts.sway&&drag===null)rotY+=0;const sway=REDUCED?0:Math.sin(t*.35)*(opts.sway||0);
+  group.rotation.x+=((rotX+tx)-group.rotation.x)*.06;group.rotation.y+=((rotY+ty+sway+dragY)-group.rotation.y)*.06;group.position.y=REDUCED?0:Math.sin(t*.8)*.02;
+  group.updateMatrixWorld();renderer.render(scene,cam);placeNotes()}
+ requestAnimationFrame(frame);
+ return{setRegions(m,hotList){for(let k=0;k<9;k++)tgt[k]=m&&m[k]?m[k]:0;hot=new Set(hotList||[])},setExplode(v){explodeT=v},setNotes};
+}
+
+/* ---------- hero ---------- */
+const heroIds=["mg","ad","pd","ms","ep"];const chipsEl=document.getElementById('heroChips');
+const hero=window.THREE?BrainScene(document.getElementById('heroCanvas'),document.getElementById('heroNotes'),{dist:4.25,sway:.28,tilt:.3,rotY:-1.05}):null;
+let hIdx=0,hTimer=null,hStart=performance.now();
+function topRegions(c,n){return Object.entries(c.r).sort((a,b)=>b[1]-a[1]).slice(0,n).map(e=>+e[0])}
+function showHero(id,user){const c=CONDS.find(x=>x.id===id);hIdx=heroIds.indexOf(id);hStart=performance.now();
+ chipsEl.querySelectorAll('.chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.id===id));
+ if(hero){const tops=c.id==="ms"?[0,8,3]:topRegions(c,2);hero.setNotes(tops.map(r=>({r})));hero.setRegions(c.r,tops)}
+ document.getElementById('pgNow').textContent=String(hIdx+1).padStart(2,'0');
+ if(user&&hTimer){clearInterval(hTimer);hTimer=null}}
+heroIds.forEach(id=>{const c=CONDS.find(x=>x.id===id);const b=document.createElement('button');b.type='button';b.className='chip';b.dataset.id=id;b.innerHTML=(c.on?'<span class="dot"></span>':'')+c.name;b.onclick=()=>showHero(id,true);chipsEl.appendChild(b)});
+document.getElementById('pgAll').textContent=String(heroIds.length).padStart(2,'0');
+showHero("mg");
+if(!REDUCED)hTimer=setInterval(()=>showHero(heroIds[(hIdx+1)%heroIds.length]),5200);
+(function bar(){const p=hTimer?Math.min(1,(performance.now()-hStart)/5200):1;document.getElementById('pgBar').style.setProperty('--p',p);requestAnimationFrame(bar)})();
+
+/* ---------- explorer ---------- */
+const list=document.getElementById('condList'),info=document.getElementById('exInfo'),legend=document.getElementById('legend');
+const ex=window.THREE?BrainScene(document.getElementById('exCanvas'),document.getElementById('exNotes'),{dist:6.1,drag:true,tilt:.26,rotY:-1.1,sway:.12}):null;
+const letters={};LETTER_ORDER.forEach((r,i)=>letters[r]=String.fromCharCode(65+i));
+if(ex)ex.setNotes(LETTER_ORDER.map(r=>({r,letter:letters[r]})));
+legend.innerHTML=LETTER_ORDER.map(r=>`<div><b>${letters[r]}</b>${REG[r].n}</div>`).join('');
+function selectCond(id){const c=CONDS.find(x=>x.id===id);
+ list.querySelectorAll('button').forEach(b=>b.setAttribute('aria-selected',b.dataset.id===id));
+ ex&&ex.setRegions(c.r,Object.keys(c.r).map(Number).filter(k=>c.r[k]>=.6));
+ const regs=topRegions(c,3).map(r=>`${letters[r]} · ${REG[r].n}`).join('<br>');
+ info.innerHTML=`<div><h3>${c.name}</h3><p>${c.desc}</p><a class="btn ${c.on?'btn-glow':'btn-ink'}" href="#qualify" data-cond="${c.id}">${c.on?'Take the prescreen':'Get notified about studies'} <span class="ic">→</span></a></div>
+ <div class="ex-meta"><div><b>Where it acts</b>${c.where}</div><div><b>Regions on the model</b>${regs}</div><div><b>Status</b><span style="color:${c.on?'var(--glow-2)':'var(--ink)'};font-weight:600">${c.on?'Now enrolling':'Past and upcoming studies'}</span></div></div>`;
+ bindCondLinks(info)}
+CONDS.forEach(c=>{const li=document.createElement('li');const b=document.createElement('button');b.dataset.id=c.id;b.setAttribute('role','tab');
+ b.innerHTML=`<span>${c.name}</span><span class="tag ${c.on?'on':''}">${c.on?'Enrolling':'Studied'}</span>`;b.onclick=()=>selectCond(c.id);li.appendChild(b);list.appendChild(li)});
+document.getElementById('explode').addEventListener('input',e=>ex&&ex.setExplode(e.target.value/100));
+
+/* ---------- gMG timeline ---------- */
+(function(){const tl=document.getElementById('tl');const months=[0,.5,1,1.5,2,3,4,5,6,7.5,9];
+ months.forEach(m=>{const d=document.createElement('span');d.className='v';d.style.left=(m/9*100)+'%';tl.appendChild(d)});
+ [0,3,6,9].forEach(m=>{const s=document.createElement('span');s.className='m';s.style.left=(m/9*100)+'%';s.textContent='M'+m;if(m===0)s.style.transform='none';if(m===9)s.style.transform='translateX(-100%)';tl.appendChild(s)})})();
+
+/* ---------- sponsor strip: rAF-driven, sub-pixel, eases down on hover ---------- */
+(function(){const SP=["Novartis","Biogen","Amgen","Sanofi","AbbVie","Janssen","Bristol Myers Squibb","UCB","Otsuka","Jazz","Ionis","Biohaven","Acadia","Sage","Cerevel","Intra-Cellular","Alzheon","Prilenia","NeuroDerm","Revance","TG Therapeutics","Bukwang"],CRO=["IQVIA","ICON","Parexel","Syneos Health","WCT"];
+ const html=[...SP.map(s=>`<span>${s}</span>`),...CRO.map(s=>`<span class="cro">${s}</span>`)].join('');const tr=document.getElementById('track');tr.innerHTML=html+html;
+ let x=0,v=38,target=38,half=0,last=performance.now();const measure=()=>{half=tr.scrollWidth/2};measure();addEventListener('resize',measure);document.fonts&&document.fonts.ready.then(measure);
+ tr.parentElement.addEventListener('pointerenter',()=>target=8);tr.parentElement.addEventListener('pointerleave',()=>target=38);
+ if(REDUCED)return;(function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;v+=(target-v)*Math.min(1,dt*3);x-=v*dt;if(half&&-x>=half)x+=half;tr.style.transform=`translate3d(${x.toFixed(2)}px,0,0)`;requestAnimationFrame(loop)})(last)})();
+
+/* ---------- counters ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting||REDUCED)return;const b=e.target,n=+b.dataset.count,plus=b.dataset.plus;const s=performance.now();
+ (function tick(now){const p=Math.min(1,(now-s)/1300),v=Math.round(n*(1-Math.pow(1-p,3)));b.textContent=v+(plus?'+':'');if(p<1)requestAnimationFrame(tick)})(s);io.unobserve(b)}),{threshold:.6});
+document.querySelectorAll('[data-count]').forEach(b=>io.observe(b));
+
+/* ---------- form ---------- */
+const sel=document.getElementById('q-cond');
+sel.innerHTML=CONDS.filter(c=>c.on).map(c=>`<option value="${c.id}">${c.name} study (now enrolling)</option>`).join('')+CONDS.filter(c=>!c.on).map(c=>`<option value="${c.id}">${c.name}</option>`).join('')+'<option value="other">Other or not sure</option><option value="sponsor">I\'m a sponsor or CRO</option>';
+function bindCondLinks(root){root.querySelectorAll('[data-cond],[data-sponsor]').forEach(a=>a.addEventListener('click',()=>{if(a.dataset.cond)sel.value=a.dataset.cond;if(a.dataset.sponsor){sel.value='sponsor';document.getElementById('q-who').value='Sponsor / CRO'}}))}
+bindCondLinks(document);
+selectCond("ad");
+const form=document.getElementById('qform'),steps=[...form.querySelectorAll('.fstep')],bars=[...form.querySelectorAll('.progress i')],back=document.getElementById('qback'),next=document.getElementById('qnext'),hint=document.getElementById('qhint'),err=document.getElementById('qerr');let step=0;
+function show(){steps.forEach((s,i)=>s.hidden=i!==step);bars.forEach((b,i)=>b.classList.toggle('on',i<=step));back.hidden=step===0;hint.textContent=`Step ${step+1} of 3`;next.innerHTML=step===2?'Submit':'Continue <span class="ic">→</span>';err.hidden=true}
+back.onclick=()=>{step--;show()};
+form.addEventListener('submit',e=>{e.preventDefault();
+ if(step===1&&!/^\d{5}$/.test(document.getElementById('q-zip').value)){err.textContent='Enter a 5-digit ZIP code.';err.hidden=false;return}
+ if(step===2){if(!document.getElementById('q-name').value.trim()||!document.getElementById('q-phone').value.trim()){err.textContent='Add your name and phone so a coordinator can reach you.';err.hidden=false;return}
+  if(!document.getElementById('q-consent').checked){err.textContent='Check the consent box to continue.';err.hidden=false;return}
+  steps.forEach(s=>s.hidden=true);form.querySelector('.nav-btns').hidden=true;form.querySelector('.progress').hidden=true;err.hidden=true;document.getElementById('qdone').hidden=false;return}
+ step++;show()});
+show();
+
+/* ---------- smooth page scroll ---------- */
+if(window.Lenis&&!REDUCED){try{const lenis=new Lenis({lerp:.085,smoothWheel:true,wheelMultiplier:.95});(function raf(t){lenis.raf(t);requestAnimationFrame(raf)})(performance.now());
+ document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const id=a.getAttribute('href');const tgt=id.length>1&&document.querySelector(id);if(tgt){e.preventDefault();lenis.scrollTo(tgt,{offset:-90,duration:1.2})}}))}catch(e){}}
+})();
+</script>
+
+</html>
