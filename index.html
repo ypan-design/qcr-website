@@ -617,7 +617,7 @@ function prepBrain(gltf){let mesh;gltf.scene.updateMatrixWorld(true);gltf.scene.
 let BRAIN=null;const waiters=[];
 function onBrain(f){BRAIN?f(BRAIN):waiters.push(f)}
 function loadBrain(){if(!window.THREE||!THREE.GLTFLoader){document.getElementById('heroLoading').textContent='3D unavailable';return}
- new THREE.GLTFLoader().load('brain.json',gl=>{BRAIN=prepBrain(gl);waiters.splice(0).forEach(f=>f(BRAIN))},undefined,()=>{document.getElementById('heroLoading').textContent='Model unavailable'})}
+ new THREE.GLTFLoader().load('brain.gltf',gl=>{BRAIN=prepBrain(gl);waiters.splice(0).forEach(f=>f(BRAIN))},undefined,()=>{document.getElementById('heroLoading').textContent='Model unavailable'})}
 function roundTex(inner,outer){const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');const g=x.createRadialGradient(32,32,0,32,32,32);g.addColorStop(0,inner);g.addColorStop(.5,outer);g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,64,64);return new THREE.CanvasTexture(c)}
 
 /* ---------- HERO: glossy brain, inner light, scan line, orbit ring, sparks ---------- */
