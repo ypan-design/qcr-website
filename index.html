@@ -3,6 +3,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Quantum Clinical Research</title>
+<meta name="description" content="Phase 2 and 3 neurology clinical trials in Pasadena, CA. Now enrolling for generalized myasthenia gravis and Alzheimer's disease studies. Take a 60-second prescreen.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "MedicalClinic", "name": "Quantum Clinical Research", "url": "https://qc-research.com/", "telephone": "+1-626-250-2070", "email": "info@qc-research.com", "address": {"@type": "PostalAddress", "streetAddress": "960 E. Green St., Suite 310", "addressLocality": "Pasadena", "addressRegion": "CA", "postalCode": "91106", "addressCountry": "US"}, "medicalSpecialty": "Neurologic", "description": "Phase 2 and 3 neurology clinical trial site in Pasadena, California."}, {"@type": "MedicalTrial", "name": "Generalized myasthenia gravis Phase III study", "phase": "Phase 3", "status": "Recruiting", "healthCondition": {"@type": "MedicalCondition", "name": "Generalized myasthenia gravis"}, "location": {"@type": "MedicalClinic", "name": "Quantum Clinical Research"}}, {"@type": "MedicalTrial", "name": "Alzheimer's disease study", "status": "Recruiting", "healthCondition": {"@type": "MedicalCondition", "name": "Alzheimer's disease"}, "location": {"@type": "MedicalClinic", "name": "Quantum Clinical Research"}}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -11,7 +13,7 @@
    Accent: teal-blue for anything interactive; soft peach only for warmth and light. */
 :root{
   --bg:#e3e7f4; --bg-2:#d6dcf1; --bg-3:#eef1f9;
-  --ink:#161d45; --ink-2:#4a527a; --ink-3:#8990b2; --ghost:#b9bfd8;
+  --ink:#161d45; --ink-2:#4a527a; --ink-3:#666d93; --ghost:#b9bfd8;
   --teal:#2b8a9a; --teal-2:#22707e; --teal-soft:#d5ecef;
   --peach:#f2a982; --peach-2:#e48d66; --peach-soft:#fde9de;
   --slate:#5b6fc4;
@@ -111,7 +113,7 @@ p{margin:0}
 .hkn em{display:block;font-style:normal;font-size:12.5px;color:var(--ink-3);margin-top:2px}
 .hkn p{font-size:13.5px;line-height:1.5;color:var(--ink-2);margin-top:6px}
 .hkn .k.one{grid-column:1/-1}
-@media (max-width:1000px){.hero .wrap{grid-template-columns:1fr}.hstage-col{order:-1}.hero-copy{padding-top:0}}
+@media (max-width:1000px){.hero .wrap{grid-template-columns:1fr}.hero-copy{padding-top:0}}
 @media (max-width:600px){.hkn{grid-template-columns:1fr}.stage{aspect-ratio:1/1}}
 
 /* SECTIONS */
@@ -302,6 +304,66 @@ footer.site ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 footer.site a{text-decoration:none}
 .legal{grid-column:1/-1;border-top:1px solid var(--hair);padding-top:18px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--ink-3)}
 @media (max-width:760px){footer.site .wrap>.glass{grid-template-columns:1fr 1fr}}
+
+/* v7: architectural stage overlay, poster, mobile order */
+.stage .poster{position:absolute;inset:-4%;width:108%;height:108%;object-fit:cover;z-index:1;-webkit-mask-image:radial-gradient(closest-side,#000 62%,transparent 100%);mask-image:radial-gradient(closest-side,#000 62%,transparent 100%);transition:opacity .8s}
+.stage canvas{opacity:0;transition:opacity .8s}.stage.live canvas{opacity:1}.stage.live .poster{opacity:0}
+.hdim{position:absolute;inset:0;z-index:2;pointer-events:none;width:100%;height:100%;overflow:visible}
+.hdim .ring{fill:none;stroke:rgba(22,29,69,.16);stroke-width:1}
+.hdim .tk{stroke:rgba(22,29,69,.28);stroke-width:1}.hdim .tk.mj{stroke:rgba(22,29,69,.5)}
+.hdim .ax{stroke:rgba(22,29,69,.18);stroke-width:1;stroke-dasharray:10 4 2 4}
+.hdim text{font:500 9.5px var(--mono);letter-spacing:.12em;fill:var(--ink-3)}
+.hdim .rd{font-size:10.5px;fill:var(--ink-2)}
+.hkn-more{grid-column:1/-1;font:600 13px var(--body);color:var(--teal-2);text-decoration:none;justify-self:start}
+@media (max-width:1000px){.hero-copy{display:contents}.hero .wrap>.hero-copy>*{order:1}.hero .wrap>.hero-copy>.enrolling{order:3}.hstage-col{order:2}.hero .wrap{gap:22px}}
+@media (max-width:760px){.hchips .lbl{white-space:nowrap}.hchips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding-inline:16px}.hchips::-webkit-scrollbar{display:none}.chip{white-space:nowrap}.hdim text{display:none}}
+/* steps icons */
+.step .ico{width:34px;height:34px;color:var(--teal-2)}.step .ico svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.step .top{display:flex;align-items:center;justify-content:space-between}
+/* visit axonometric */
+.visit{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+.vsheet{padding:18px 18px 8px;border-radius:24px}
+#visitAxo svg{width:100%;height:auto;display:block}
+#visitAxo .slab{fill:#f6f7fd;stroke:rgba(22,29,69,.35);stroke-width:1}#visitAxo .slab-s{fill:#d9ddef}#visitAxo .slab-r{fill:#c9cee6}
+#visitAxo .room{fill:rgba(255,255,255,.0);transition:fill .35s}#visitAxo .room.on{fill:rgba(43,138,154,.2)}
+#visitAxo .grid{stroke:rgba(22,29,69,.06);stroke-width:.8}
+#visitAxo .bx polygon{stroke:rgba(22,29,69,.55);stroke-width:.7;stroke-linejoin:round}
+#visitAxo .ft{fill:#fff}#visitAxo .fl{fill:#e6e8f5}#visitAxo .fr{fill:#d3d7ec}
+#visitAxo .wall .ft{fill:#eef0fa}#visitAxo .lowf .ft{fill:#fff}
+#visitAxo .route{fill:none;stroke:var(--teal);stroke-width:2.2;stroke-dasharray:1;stroke-dashoffset:1;stroke-linecap:round;stroke-linejoin:round}
+#visitAxo.drawn .route{transition:stroke-dashoffset 2.6s cubic-bezier(.6,.1,.3,1);stroke-dashoffset:0}
+#visitAxo .start{fill:var(--teal)}
+#visitAxo .lab{font:500 9.5px var(--mono);letter-spacing:.1em;fill:var(--ink-3)}
+#visitAxo .stem,#visitAxo .ld{stroke:var(--ink);stroke-width:.9}#visitAxo .dot{fill:var(--ink);stroke:#fff;stroke-width:1.4}
+#visitAxo .kb{fill:rgba(255,255,255,.75);stroke:rgba(22,29,69,.12)}
+#visitAxo .kc{fill:var(--ink)}#visitAxo .kt{font:600 11px var(--mono);fill:#fff}
+#visitAxo .kh{font:600 11px var(--mono);letter-spacing:.08em;fill:var(--ink)}#visitAxo .kp{font:400 11.5px var(--body);fill:var(--ink-2)}
+#visitAxo .kn{transition:opacity .3s}#visitAxo .kn.on .kc,#visitAxo .kn.on .dot{fill:var(--teal)}#visitAxo .kn.on .kb{stroke:var(--teal);stroke-width:1.4}#visitAxo .kn.on .stem,#visitAxo .kn.on .ld{stroke:var(--teal);stroke-width:1.4}
+#visitAxo .tb line{stroke:rgba(22,29,69,.3)}#visitAxo .tb text{font:500 9px var(--mono);letter-spacing:.14em;fill:var(--ink-3)}
+.vlist{display:none;list-style:none;gap:8px;padding:0}
+.vlist li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.85);transition:border-color .3s}
+.vlist li.on{border-color:var(--teal)}.vlist .n{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:#fff;font:600 11px var(--mono)}.vlist li.on .n{background:var(--teal)}
+.vlist b{font:600 12px var(--mono);letter-spacing:.06em;text-transform:uppercase}.vlist p{font-size:14px;color:var(--ink-2);margin-top:3px}
+@media (max-width:760px){.vlist{display:grid}}
+/* people + safety */
+.people{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.person{padding:18px;border-radius:20px;display:grid;grid-template-columns:76px minmax(0,1fr);gap:16px;align-items:center}
+.ph{width:76px;height:76px;border-radius:50%;border:1.5px dashed rgba(22,29,69,.3);display:grid;place-items:center;background:rgba(255,255,255,.5);font:500 9px var(--mono);letter-spacing:.12em;color:var(--ink-3);text-transform:uppercase;text-align:center}
+.person b{display:block;font:600 12px var(--mono);letter-spacing:.07em;text-transform:uppercase}.person p{font-size:14px;color:var(--ink-2);margin-top:4px}
+.safety{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:12px}
+.sf{padding:16px 18px;border-radius:18px;display:grid;gap:6px}.sf svg{width:28px;height:28px;fill:none;stroke:var(--teal-2);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.sf b{font-size:15px;font-weight:700}.sf p{font-size:13.5px;color:var(--ink-2)}
+@media (max-width:1000px){.people{grid-template-columns:1fr}.safety{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.safety{grid-template-columns:1fr}}
+/* language switch */
+.lang{display:inline-flex;gap:4px;padding:4px;border-radius:999px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.9);margin-top:18px}
+.lang button{font:600 12px var(--body);padding:.5em .9em;border-radius:999px;border:0;background:none;color:var(--ink-2);cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.lowpower-note{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:500 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);text-align:center}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:8px}
+.note-irb{font-size:12.5px;color:var(--ink-3);margin-top:14px}
+
 @media (prefers-reduced-motion:reduce){.live i,.halo,.rays{animation:none}html{scroll-behavior:auto}}
 </style>
 
@@ -317,6 +379,7 @@ footer.site a{text-decoration:none}
       <ul>
         <li><a href="#enroll">Now enrolling</a></li>
         <li><a href="#how">How it works</a></li>
+        <li><a href="#visit">Your visit</a></li>
         <li><a href="#conditions">Brain map</a></li>
         <li><a href="#sponsors">Sponsors</a></li>
         <li><a href="#faq">FAQ</a></li>
@@ -346,6 +409,8 @@ footer.site a{text-decoration:none}
     <div class="hstage-col">
       <div class="hchips" id="heroChips"><span class="lbl">Show me</span></div>
       <div class="stage" id="heroStage">
+        <img class="poster" src="poster.jpg" alt="" decoding="async" fetchpriority="high">
+        <svg class="hdim" id="heroDim" aria-hidden="true"></svg>
         <canvas id="heroCanvas" aria-label="Rotating glass 3D brain; the regions linked to the selected condition are highlighted in colour inside it"></canvas>
         <div class="loading" id="heroLoading">Loading model</div>
         <div class="hint">Drag to turn</div>
@@ -405,6 +470,7 @@ footer.site a{text-decoration:none}
         <p class="note-sm">Not eligible for a current study? Leave your details and we'll contact you when a matching study opens.</p>
       </article>
     </div>
+    <p class="note-irb">Study descriptions on this page are short summaries. The full details, including risks, are in each study's IRB-approved consent form, which your coordinator reviews with you.</p>
   </div>
 </section>
 
@@ -415,16 +481,50 @@ footer.site a{text-decoration:none}
       <p>We explain each step before it happens, and nothing study-related starts until you've signed the consent form.</p>
     </div>
     <div class="steps5">
-      <div class="step glass"><span class="n">1</span><h3>Prescreen</h3><p>Answer a few questions online in about a minute. Your information stays confidential.</p></div>
-      <div class="step glass"><span class="n">2</span><h3>Coordinator call</h3><p>A study coordinator reviews your answers and medical history with you and answers your questions.</p></div>
-      <div class="step glass"><span class="n">3</span><h3>Informed consent</h3><p>You learn the study's purpose, risks and benefits. Take your time, and bring family if you like.</p></div>
-      <div class="step glass"><span class="n">4</span><h3>Screening visit</h3><p>Exams and tests at our Pasadena clinic confirm you meet the study criteria.</p></div>
-      <div class="step glass"><span class="n">5</span><h3>Study visits</h3><p>Regular visits track your health and the treatment, then follow-up after the study ends.</p></div>
+      <div class="step glass"><div class="top"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="9" y="3" width="14" height="26" rx="3"/><path d="M13 16l2.5 2.5L20 13"/><path d="M14 25.5h4"/></svg></span><span class="n">1</span></div><h3>Prescreen</h3><p>Answer a few questions online in about a minute. Your information stays confidential.</p></div>
+      <div class="step glass"><div class="top"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 18v-2a9 9 0 0118 0v2"/><rect x="5" y="17" width="5" height="8" rx="2"/><rect x="22" y="17" width="5" height="8" rx="2"/><path d="M24.5 25c0 3-3 4-7 4"/></svg></span><span class="n">2</span></div><h3>Coordinator call</h3><p>A study coordinator reviews your answers and medical history with you and answers your questions.</p></div>
+      <div class="step glass"><div class="top"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 4h12l5 5v19H8z"/><path d="M20 4v5h5"/><path d="M12 15h9M12 19h9M12 23h5"/></svg></span><span class="n">3</span></div><h3>Informed consent</h3><p>You learn the study's purpose, risks and benefits. Take your time, and bring family if you like.</p></div>
+      <div class="step glass"><div class="top"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M9 4v8a6 6 0 0012 0V4"/><path d="M15 18v4a6 6 0 0012 0v-2"/><circle cx="27" cy="17" r="2.6"/></svg></span><span class="n">4</span></div><h3>Screening visit</h3><p>Exams and tests at our Pasadena clinic confirm you meet the study criteria.</p></div>
+      <div class="step glass"><div class="top"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="5" y="7" width="22" height="20" rx="3"/><path d="M5 13h22M11 4v6M21 4v6"/><path d="M10 18h3M15 18h3M20 18h3M10 22h3M15 22h3"/></svg></span><span class="n">5</span></div><h3>Study visits</h3><p>Regular visits track your health and the treatment, then follow-up after the study ends.</p></div>
     </div>
     <div class="covered">
       <div class="cov glass"><svg viewBox="0 0 38 38" aria-hidden="true"><circle cx="19" cy="19" r="18" fill="#fff"/><path d="M12 19.5l4.5 4.5L26 14" stroke="#2b8a9a" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg><div><b>No cost for study care</b><span>Study-related evaluations and medical care are free.</span></div></div>
       <div class="cov glass"><svg viewBox="0 0 38 38" aria-hidden="true"><circle cx="19" cy="19" r="18" fill="#fff"/><path d="M19 11v16M14 15.5c0-2 2.2-3 5-3s5 1 5 3-2 2.6-5 3.2-5 1.4-5 3.4 2.2 3 5 3 5-1 5-3" stroke="#2b8a9a" stroke-width="2" fill="none" stroke-linecap="round"/></svg><div><b>Compensation</b><span>Many studies pay for your time and travel. Details are shared before you enroll.</span></div></div>
       <div class="cov glass"><svg viewBox="0 0 38 38" aria-hidden="true"><circle cx="19" cy="19" r="18" fill="#fff"/><path d="M19 28s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z" stroke="#2b8a9a" stroke-width="2" fill="none"/><circle cx="19" cy="17" r="2.4" fill="#2b8a9a"/></svg><div><b>Easy to reach</b><span>960 E. Green St., Pasadena. Close to public transit, with plenty of parking.</span></div></div>
+    </div>
+  </div>
+</section>
+
+
+<section class="sec" id="visit" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="kicker">A study visit, drawn</span><h2>What a visit <span class="soft">looks like</span></h2></div>
+      <p>Most visits follow the same route through our Pasadena clinic. Hover a room to see what happens there. Every study is different, and your coordinator gives you the exact plan for each visit.</p>
+    </div>
+    <div class="visit">
+      <div class="vsheet glass"><div id="visitAxo"></div></div>
+      <ol class="vlist" id="visitList"></ol>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="team" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="kicker">Who you'll meet</span><h2>People first, <span class="soft">then protocol</span></h2></div>
+      <p>A small team that knows each participant by name. Every study is reviewed and monitored by an independent ethics board before and while it runs.</p>
+    </div>
+    <div class="people">
+      <div class="person glass"><div class="ph">Photo</div><div><b>Principal investigator</b><p>The physician who leads each study and oversees your care at every visit.</p></div></div>
+      <div class="person glass"><div class="ph">Photo</div><div><b>Clinical trial manager</b><p>15+ years running research site operations, from start-up to close-out.</p></div></div>
+      <div class="person glass"><div class="ph">Photo</div><div><b>Study coordinators</b><p>Your point of contact for scheduling, reminders and any question between visits.</p></div></div>
+    </div>
+    <div class="safety">
+      <div class="sf glass"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3l10 4v8c0 7-4.5 11.5-10 14-5.5-2.5-10-7-10-14V7z"/><path d="M11.5 16l3 3 6-6.5"/></svg><b>Independent review</b><p>An Institutional Review Board approves and monitors each study.</p></div>
+      <div class="sf glass"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 4h12l5 5v19H8z"/><path d="M12 22c2-3 3 1 5-1.5s2 1 4 0"/></svg><b>Consent comes first</b><p>Nothing study-related starts until you've read and signed the consent form.</p></div>
+      <div class="sf glass"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M20 6h6v20h-6"/><path d="M14 10l-6 6 6 6M8 16h13"/></svg><b>Leave at any time</b><p>Participation is voluntary. You can withdraw for any reason, without penalty.</p></div>
+      <div class="sf glass"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="7" y="14" width="18" height="13" rx="2.5"/><path d="M11 14v-3a5 5 0 0110 0v3"/><circle cx="16" cy="20.5" r="1.6"/></svg><b>Private by design</b><p>Your health information is protected under HIPAA and shared only as the consent form describes.</p></div>
     </div>
   </div>
 </section>
@@ -525,22 +625,23 @@ footer.site a{text-decoration:none}
   <div class="wrap qualify">
     <div>
       <span class="kicker">Start here</span>
-      <h2 style="font-size:clamp(38px,5vw,66px);font-weight:800;text-transform:uppercase;letter-spacing:-.045em;line-height:.95;margin-top:18px">See if a study <span style="color:var(--ghost)">fits you</span></h2>
-      <p style="color:var(--ink-2);margin-top:18px;max-width:42ch">Three quick steps. A coordinator reviews your answers and contacts you. Your information is used only to check eligibility.</p>
+      <h2 data-i18n="h" style="font-size:clamp(38px,5vw,66px);font-weight:800;text-transform:uppercase;letter-spacing:-.045em;line-height:.95;margin-top:18px">See if a study <span style="color:var(--ghost)">fits you</span></h2>
+      <div class="lang" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="true">English</button><button type="button" data-lang="es" aria-pressed="false" lang="es">Español</button><button type="button" data-lang="zh" aria-pressed="false" lang="zh">中文</button></div>
+      <p data-i18n="intro" style="color:var(--ink-2);margin-top:18px;max-width:42ch">Three quick steps. A coordinator reviews your answers and contacts you. Your information is used only to check eligibility.</p>
       <div class="contact-lines"><div>Phone<b>(626) 250-2070</b></div><div>Email<b>info@qc-research.com</b></div><div>Clinic<b>960 E. Green St., Suite 310, Pasadena, CA 91106</b></div></div>
     </div>
     <form class="form glass" id="qform" novalidate>
       <div class="progress" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
-      <div class="fstep"><label for="q-cond">Which study or condition are you interested in?<select id="q-cond" required></select></label></div>
-      <div class="fstep" hidden><div class="row"><label for="q-zip">ZIP code<input id="q-zip" inputmode="numeric" maxlength="5" placeholder="91106" required></label><label for="q-who">I am a…<select id="q-who"><option>Patient</option><option>Caregiver or family member</option><option>Referring physician</option><option>Sponsor / CRO</option></select></label></div></div>
+      <div class="fstep"><label for="q-cond"><span data-i18n="cond">Which study or condition are you interested in?</span><select id="q-cond" required></select></label></div>
+      <div class="fstep" hidden><div class="row"><label for="q-zip"><span data-i18n="zip">ZIP code</span><input id="q-zip" inputmode="numeric" maxlength="5" placeholder="91106" required></label><label for="q-who"><span data-i18n="who">I am a…</span><select id="q-who"><option value="Patient" data-i18n="w1">Patient</option><option value="Caregiver or family member" data-i18n="w2">Caregiver or family member</option><option value="Referring physician" data-i18n="w3">Referring physician</option><option value="Sponsor / CRO" data-i18n="w4">Sponsor / CRO</option></select></label></div></div>
       <div class="fstep" hidden>
-        <label for="q-name">Full name<input id="q-name" autocomplete="name" required></label>
-        <div class="row"><label for="q-phone">Phone<input id="q-phone" type="tel" autocomplete="tel" required></label><label for="q-email">Email<input id="q-email" type="email" autocomplete="email"></label></div>
-        <label class="consent" for="q-consent"><input id="q-consent" type="checkbox" required><span>I agree to let Quantum Clinical Research securely review my information to check eligibility for clinical trials.</span></label>
+        <label for="q-name"><span data-i18n="name">Full name</span><input id="q-name" autocomplete="name" required></label>
+        <div class="row"><label for="q-phone"><span data-i18n="phone">Phone</span><input id="q-phone" type="tel" autocomplete="tel" required></label><label for="q-email"><span data-i18n="email">Email</span><input id="q-email" type="email" autocomplete="email"></label></div>
+        <label class="consent" for="q-consent"><input id="q-consent" type="checkbox" required><span data-i18n="consent">I agree to let Quantum Clinical Research securely review my information to check eligibility for clinical trials.</span></label>
       </div>
       <p class="err" id="qerr" hidden></p>
-      <div class="nav-btns"><button type="button" class="btn btn-glass glass" id="qback" hidden>Back</button><span class="hint" id="qhint">Step 1 of 3</span><button type="submit" class="btn btn-ink" id="qnext">Continue <span class="ic">→</span></button></div>
-      <div class="done" id="qdone" hidden><h3>Thanks, we'll be in touch.</h3><p style="color:var(--ink-2)">Design prototype: this form isn't connected yet, so nothing was sent. On the live site it will go to the study coordinator.</p></div>
+      <div class="nav-btns"><button type="button" class="btn btn-glass glass" id="qback" hidden data-i18n="back">Back</button><span class="hint" id="qhint">Step 1 of 3</span><button type="submit" class="btn btn-ink" id="qnext">Continue <span class="ic">→</span></button></div>
+      <div class="done" id="qdone" hidden><h3 data-i18n="thanks">Thanks, we'll be in touch.</h3><p data-i18n="proto" style="color:var(--ink-2)">Design prototype: this form isn't connected yet, so nothing was sent. On the live site it will go to the study coordinator.</p></div>
     </form>
   </div>
 </section>
@@ -549,6 +650,7 @@ footer.site a{text-decoration:none}
   <div class="wrap"><div class="glass">
     <div><a class="brand" href="#top"><svg class="qmark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="19" cy="19" r="14" fill="none" stroke="#161d45" stroke-width="3"/><circle cx="19" cy="19" r="5" fill="#2b8a9a"/><path d="M27 27l8 8" stroke="#161d45" stroke-width="3.4" stroke-linecap="round"/></svg><span>Quantum Clinical Research</span></a><p style="max-width:32ch;margin-top:14px">Clinical research center in Pasadena, California, advancing treatments for neurological conditions.</p></div>
     <div><h4>Patients</h4><ul><li><a href="#enroll">Now enrolling</a></li><li><a href="#how">How it works</a></li><li><a href="#conditions">Brain map</a></li><li><a href="#stories">Volunteer stories</a></li></ul></div>
+    <div><h4>Conditions</h4><ul id="footConds"></ul></div>
     <div><h4>Research</h4><ul><li><a href="#sponsors">Sponsors &amp; CROs</a></li><li><a href="#faq">Patient safety</a></li><li><a href="#faq">FAQ</a></li></ul></div>
     <div><h4>Visit</h4><ul><li>960 E. Green St., Suite 310</li><li>Pasadena, CA 91106</li><li>(626) 250-2070</li><li>info@qc-research.com</li></ul></div>
     <div class="legal"><span>© 2026 Quantum Clinical Research, Inc.</span><span>HIPAA Policy · Terms · ADA Disclaimer · Site map</span></div>
@@ -689,11 +791,6 @@ function Hero(){
     diffuseColor.rgb=mix(diffuseColor.rgb,vec3(0.086,0.114,0.27),clamp(edge,0.0,1.0)*0.55);
     float al=mix(0.46,0.96,pow(f1,1.1));al=max(al,ws*0.93);al=max(al,clamp(edge,0.0,1.0)*0.9);
     diffuseColor.rgb=mix(diffuseColor.rgb,diffuseColor.rgb*vec3(0.86,0.88,1.0),uGlass*(1.0-ws));diffuseColor.a=mix(1.0,al,uGlass);`)};
- // sparks
- const SN=MOBILE?90:180,sp=new Float32Array(SN*3),seed=[];for(let i=0;i<SN;i++)seed.push([1.2+Math.random()*.7,Math.random()*6.283,(Math.random()-.5)*2,Math.random()]);
- const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.BufferAttribute(sp,3));
- const scn=document.createElement('canvas');scn.width=scn.height=32;const sx=scn.getContext('2d');const sgr=sx.createRadialGradient(16,16,0,16,16,16);sgr.addColorStop(0,'rgba(255,255,255,1)');sgr.addColorStop(.4,'rgba(140,215,225,.7)');sgr.addColorStop(1,'rgba(140,215,225,0)');sx.fillStyle=sgr;sx.fillRect(0,0,32,32);
- scene.add(new THREE.Points(sg,new THREE.PointsMaterial({map:new THREE.CanvasTexture(scn),size:.045,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending})));
  // post: bloom + gamma
  let composer=null,bloom=null;
  if(THREE.EffectComposer&&THREE.UnrealBloomPass&&THREE.GammaCorrectionShader){composer=new THREE.EffectComposer(renderer);composer.addPass(new THREE.RenderPass(scene,cam));
@@ -749,6 +846,15 @@ function Hero(){
    const bx=o.side>0?W-bw:0,edge=o.side>0?bx:bw;o.box.style.transform=`translate(${bx}px,${(y-bh/2).toFixed(1)}px)`;
    const [ln,ring,dot]=o.g.children;ln.setAttribute('x1',o.x.toFixed(1));ln.setAttribute('x2',edge);ln.setAttribute('y1',y.toFixed(1));ln.setAttribute('y2',y.toFixed(1));
    ring.setAttribute('cx',o.x.toFixed(1));ring.setAttribute('cy',y.toFixed(1));dot.setAttribute('cx',o.x.toFixed(1));dot.setAttribute('cy',y.toFixed(1));o.g.style.opacity=(.4+.6*o.f).toFixed(2)})}
+ // architectural overlay: protractor ring that turns with the model, centre lines broken at the ring
+ const dim=document.getElementById('heroDim');let dimG=null,dimTxt=null;
+ function drawDim(){const W=el.clientWidth,H=el.clientHeight,cx=W/2,cy=H*.5,r=Math.min(W*.4,H*.47);let t='';
+  for(let a=0;a<360;a+=5){const mj=a%30===0,r1=r,r2=r+(mj?9:5),c=Math.cos(a*Math.PI/180),sn=Math.sin(a*Math.PI/180);t+=`<line class="tk${mj?' mj':''}" x1="${(cx+c*r1).toFixed(1)}" y1="${(cy+sn*r1).toFixed(1)}" x2="${(cx+c*r2).toFixed(1)}" y2="${(cy+sn*r2).toFixed(1)}"/>`}
+  dim.innerHTML=`<line class="ax" x1="0" y1="${cy}" x2="${cx-r-14}" y2="${cy}"/><line class="ax" x1="${cx+r+14}" y1="${cy}" x2="${W}" y2="${cy}"/><line class="ax" x1="${cx}" y1="0" x2="${cx}" y2="${cy-r-14}"/><line class="ax" x1="${cx}" y1="${cy+r+14}" x2="${cx}" y2="${H}"/>
+   <circle class="ring" cx="${cx}" cy="${cy}" r="${r}"/><g id="dimG" style="transform-origin:${cx}px ${cy}px">${t}</g><text x="${cx+r+18}" y="${cy-6}">A</text><text x="${cx-r-26}" y="${cy-6}">A</text>
+   <text x="14" y="${H-14}">SECTION A–A · </text><text class="rd" id="dimTxt" x="118" y="${H-14}">ROT 000°</text>`;
+  dimG=dim.querySelector('#dimG');dimTxt=dim.querySelector('#dimTxt')}
+ drawDim();addEventListener('resize',drawDim);let shown=false;
  const t0=performance.now();let last=t0;
  function frame(now){requestAnimationFrame(frame);if(!visible)return;const t=(now-t0)/1000,dt=Math.min(.05,(now-last)/1000);last=now;const tt=REDUCED?0:t;U.uTime.value=tt;
   const kk=Math.min(1,dt*3);U.uGlass.value+=(glassT-U.uGlass.value)*kk;U.uWA0.value+=(waT[0]-U.uWA0.value)*kk;U.uWA1.value+=(waT[1]-U.uWA1.value)*kk;core.material.opacity=U.uGlass.value*(.62+.12*Math.sin(tt*1.6));
@@ -756,8 +862,9 @@ function Hero(){
   if(drag===null){vel*=.94;spin+=vel;if(!REDUCED)spin+=dt*.22}
   root.rotation.set(.22,spin-.9,0);root.position.y=REDUCED?0:Math.sin(tt*.8)*.03;
   under.intensity=(1.2+.35*Math.sin(tt*1.6))*(U.uIdle.value/.42);
-  for(let i=0;i<SN;i++){const s=seed[i];const ang=s[1]+tt*.06*(1+s[3]);const y=(((s[2]+tt*.05*(.5+s[3])+1)%2)+2)%2-1;sp[i*3]=Math.cos(ang)*s[0];sp[i*3+1]=y;sp[i*3+2]=Math.sin(ang)*s[0]}sg.attributes.position.needsUpdate=true;
-  root.updateMatrixWorld();if(composer)composer.render();else renderer.render(scene,cam);place()}
+  root.updateMatrixWorld();if(composer)composer.render();else renderer.render(scene,cam);place();
+  if(dimG){const deg=((((spin-.9)*180/Math.PI)%360)+360)%360;dimG.style.transform=`rotate(${deg.toFixed(1)}deg)`;dimTxt.textContent='ROT '+String(Math.round(deg)).padStart(3,'0')+'°'}
+  if(BRAIN&&!shown){shown=true;el.classList.add('live')}}
  requestAnimationFrame(frame);
  return{set};
 }
@@ -767,7 +874,7 @@ let hIdx=0,hTimer=null;
 function heroSet(id,user){const c=CONDS.find(x=>x.id===id);hIdx=HERO_IDS.indexOf(id);
  chipsEl.querySelectorAll('.chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.id===id));
  heroView&&heroView.set(c.keys.map(k=>k[0]));
- heroKn.innerHTML=c.keys.map((k,j)=>`<div class="k glass${c.keys.length===1?' one':''}"><span class="kt" style="--c:${SLOT[j]}">${j+1}</span><div><b>${NAMES[k[0]]}</b><em>${ROLE[k[0]]}</em><p>${k[1]}</p></div></div>`).join('');
+ heroKn.innerHTML=c.keys.map((k,j)=>`<div class="k glass${c.keys.length===1?' one':''}"><span class="kt" style="--c:${SLOT[j]}">${j+1}</span><div><b>${NAMES[k[0]]}</b><em>${ROLE[k[0]]}</em><p>${k[1]}</p></div></div>`).join('')+`<a class="hkn-more" href="conditions/${c.id}.html">More about ${c.name} →</a>`;
  if(user&&hTimer){clearInterval(hTimer);hTimer=null}}
 HERO_IDS.forEach(id=>{const c=CONDS.find(x=>x.id===id);const b=document.createElement('button');b.type='button';b.className='chip';b.dataset.id=id;b.innerHTML=(c.on?'<span class="dot"></span>':'')+c.name;b.onclick=()=>heroSet(id,true);chipsEl.appendChild(b)});
 const more=document.createElement('a');more.className='chip-more';more.href='#conditions';more.textContent='All 12 →';chipsEl.appendChild(more);
@@ -783,7 +890,7 @@ function MapView(){
  scene.add(new THREE.HemisphereLight(0xffffff,0xc5cae0,.85));const k1=new THREE.DirectionalLight(0xffffff,.65);k1.position.set(-2,3,4);scene.add(k1);const k2=new THREE.DirectionalLight(0xffffff,.25);k2.position.set(3,-1,2);scene.add(k2);
  const root=new THREE.Group();scene.add(root);
  const U={uAmt:{value:new Array(9).fill(0)},uCol:{value:new Array(9).fill(0).map(()=>new THREE.Color(SLOT[0]))}};
- const mat=new THREE.MeshStandardMaterial({color:0xf1f2f7,roughness:.78,metalness:0,transparent:true});
+ const mat=new THREE.MeshStandardMaterial({color:0xeceefb,roughness:.78,metalness:0,transparent:true});
  mat.onBeforeCompile=sh=>{Object.assign(sh.uniforms,U);
   sh.vertexShader='attribute float aCrease;attribute float aRegion;attribute float aW0;attribute float aW1;varying float vW0;varying float vW1;varying float vCrease;varying float vReg;\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvW0=aW0;vW1=aW1;vCrease=aCrease;vReg=aRegion;');
   sh.fragmentShader='uniform float uAmt[9];uniform vec3 uCol[9];varying float vCrease;varying float vReg;\n'+sh.fragmentShader
@@ -792,7 +899,7 @@ function MapView(){
     for(int i=0;i<9;i++){if(abs(vReg-float(i))<0.5){am=uAmt[i];cc=uCol[i];}}
     float hatch=step(0.5,fract((gl_FragCoord.x-gl_FragCoord.y)/7.0));
     diffuseColor.rgb=mix(diffuseColor.rgb,cc*(1.0-0.18*vCrease),am*(0.42+0.33*hatch));`)};
- const deepMats={},parts=[];const cBase=new THREE.Color(0xf1f2f7),cGhost=new THREE.Color(0xb3bcda);
+ const deepMats={},parts=[];const cBase=new THREE.Color(0xeceefb),cGhost=new THREE.Color(0xb3bcda);
  const XD={0:[0,.35,.9],1:[0,.9,-.3],2:[0,.1,-.95],3:[0,-.45,.2],6:[0,-.5,-1],7:[0,-1,-.1],8:[0,1,.05]};
  function blobGeo(d,side){const g=new THREE.SphereGeometry(1,28,18);g.scale(d.r[0],d.r[1],d.r[2]);g.rotateY(d.rot*side);g.translate(d.c[0]*side,d.c[1],d.c[2]);return g}
  let active=[],explodeT=0,ex=0,ghostT=0,ghost=0,visible=true,tx=0,ty=0,drag=null,dragY=0;const t0=performance.now();let last=t0;
@@ -881,17 +988,97 @@ sel.innerHTML=CONDS.filter(c=>c.on).map(c=>`<option value="${c.id}">${c.name} st
 function bindCondLinks(root){root.querySelectorAll('[data-cond],[data-sponsor]').forEach(a=>a.addEventListener('click',()=>{if(a.dataset.cond)sel.value=a.dataset.cond;if(a.dataset.sponsor){sel.value='sponsor';document.getElementById('q-who').value='Sponsor / CRO'}}))}
 bindCondLinks(document);
 const form=document.getElementById('qform'),steps=[...form.querySelectorAll('.fstep')],bars=[...form.querySelectorAll('.progress i')],back=document.getElementById('qback'),next=document.getElementById('qnext'),hint=document.getElementById('qhint'),err=document.getElementById('qerr');let step=0;
-function show(){steps.forEach((s,i)=>s.hidden=i!==step);bars.forEach((b,i)=>b.classList.toggle('on',i<=step));back.hidden=step===0;hint.textContent=`Step ${step+1} of 3`;next.innerHTML=step===2?'Submit':'Continue <span class="ic">→</span>';err.hidden=true}
+function show(){steps.forEach((s,i)=>s.hidden=i!==step);bars.forEach((b,i)=>b.classList.toggle('on',i<=step));back.hidden=step===0;hint.textContent=(typeof T==='function'?T('step'):'Step {n} of 3').replace('{n}',step+1);next.innerHTML=step===2?(typeof T==='function'?T('submit'):'Submit'):(typeof T==='function'?T('next'):'Continue')+' <span class="ic">→</span>';err.hidden=true}
 back.onclick=()=>{step--;show()};
 form.addEventListener('submit',e=>{e.preventDefault();
- if(step===1&&!/^\d{5}$/.test(document.getElementById('q-zip').value)){err.textContent='Enter a 5-digit ZIP code.';err.hidden=false;return}
- if(step===2){if(!document.getElementById('q-name').value.trim()||!document.getElementById('q-phone').value.trim()){err.textContent='Add your name and phone so a coordinator can reach you.';err.hidden=false;return}
-  if(!document.getElementById('q-consent').checked){err.textContent='Check the consent box to continue.';err.hidden=false;return}
+ if(step===1&&!/^\d{5}$/.test(document.getElementById('q-zip').value)){err.textContent=T('e1');err.hidden=false;return}
+ if(step===2){if(!document.getElementById('q-name').value.trim()||!document.getElementById('q-phone').value.trim()){err.textContent=T('e2');err.hidden=false;return}
+  if(!document.getElementById('q-consent').checked){err.textContent=T('e3');err.hidden=false;return}
   steps.forEach(s=>s.hidden=true);form.querySelector('.nav-btns').hidden=true;form.querySelector('.progress').hidden=true;err.hidden=true;document.getElementById('qdone').hidden=false;return}
  step++;show()});
+
+/* ---------- language: prescreen in English, Spanish, Chinese ---------- */
+const I18N={
+ es:{h:'¿Hay un estudio <span style="color:var(--ghost)">para usted?</span>',intro:'Tres pasos rápidos. Un coordinador revisa sus respuestas y se comunica con usted. Su información se usa solo para verificar si es elegible.',cond:'¿Qué estudio o condición le interesa?',zip:'Código postal',who:'Soy…',w1:'Paciente',w2:'Cuidador o familiar',w3:'Médico que refiere',w4:'Patrocinador o CRO',name:'Nombre completo',phone:'Teléfono',email:'Correo electrónico',consent:'Acepto que Quantum Clinical Research revise mi información de forma segura para verificar si soy elegible para estudios clínicos.',back:'Atrás',next:'Continuar',submit:'Enviar',step:'Paso {n} de 3',thanks:'Gracias, nos comunicaremos con usted.',proto:'Prototipo de diseño: este formulario aún no está conectado, así que no se envió nada.',e1:'Escriba un código postal de 5 dígitos.',e2:'Agregue su nombre y teléfono para que un coordinador pueda comunicarse con usted.',e3:'Marque la casilla de consentimiento para continuar.',open:' (estudio abierto)',other:'Otro o no estoy seguro',sponsor:'Soy patrocinador o CRO',
+  names:{ad:'Enfermedad de Alzheimer',mg:'Miastenia gravis',pd:'Enfermedad de Parkinson',ms:'Esclerosis múltiple',ep:'Epilepsia',mig:'Migraña',de:'Demencia',et:'Temblor esencial',hd:'Enfermedad de Huntington',st:'Recuperación después de un derrame cerebral',msa:'Atrofia multisistémica',amy:'Amiloidosis'}},
+ zh:{h:'看看是否有<span style="color:var(--ghost)">适合您的研究</span>',intro:'只需三步。研究协调员会查看您的回答并与您联系。您的信息仅用于确认您是否符合条件。',cond:'您对哪项研究或疾病感兴趣？',zip:'邮政编码',who:'我是…',w1:'患者',w2:'照护者或家属',w3:'转诊医生',w4:'申办方或CRO',name:'姓名',phone:'电话',email:'电子邮箱',consent:'我同意 Quantum Clinical Research 安全地查看我的信息，以确认我是否符合临床试验的条件。',back:'返回',next:'继续',submit:'提交',step:'第 {n} 步，共 3 步',thanks:'谢谢，我们会尽快与您联系。',proto:'设计原型：此表单尚未连接，因此未发送任何信息。',e1:'请输入5位数的邮政编码。',e2:'请填写姓名和电话，以便协调员与您联系。',e3:'请勾选同意框后继续。',open:'（正在招募）',other:'其他或不确定',sponsor:'我是申办方或CRO',
+  names:{ad:'阿尔茨海默病',mg:'重症肌无力',pd:'帕金森病',ms:'多发性硬化',ep:'癫痫',mig:'偏头痛',de:'痴呆',et:'特发性震颤',hd:'亨廷顿病',st:'中风后康复',msa:'多系统萎缩',amy:'淀粉样变性'}}};
+const EN={};document.querySelectorAll('#qualify [data-i18n]').forEach(n=>EN[n.dataset.i18n]=n.innerHTML);
+Object.assign(EN,{next:'Continue',submit:'Submit',step:'Step {n} of 3',e1:'Enter a 5-digit ZIP code.',e2:'Add your name and phone so a coordinator can reach you.',e3:'Check the consent box to continue.',open:' study (now enrolling)',other:'Other or not sure',sponsor:"I'm a sponsor or CRO",names:Object.fromEntries(CONDS.map(c=>[c.id,c.name]))});
+let LANG='en';const T=k=>(LANG==='en'?EN:I18N[LANG])[k];
+function setLang(l){LANG=l;const d=l==='en'?EN:I18N[l];document.getElementById('qualify').lang=l==='zh'?'zh-Hans':l;
+ document.querySelectorAll('#qualify [data-i18n]').forEach(n=>{if(d[n.dataset.i18n]!=null)n.innerHTML=d[n.dataset.i18n]});
+ const v=sel.value;sel.innerHTML=CONDS.filter(c=>c.on).map(c=>`<option value="${c.id}">${d.names[c.id]}${d.open}</option>`).join('')+CONDS.filter(c=>!c.on).map(c=>`<option value="${c.id}">${d.names[c.id]}</option>`).join('')+`<option value="other">${d.other}</option><option value="sponsor">${d.sponsor}</option>`;sel.value=v;
+ document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lang===l));show()}
+document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
 show();
 
+/* ---------- VISIT: axonometric of a study visit, keynotes on straight leaders ---------- */
+(function(){
+ const host=document.getElementById('visitAxo');if(!host)return;
+ const S=21,X0=290,Y0=118,iso=(x,y,z=0)=>[X0+(x-y)*.866*S,Y0+(x+y)*.5*S-z*S];
+ const P=pts=>pts.map(p=>p.map(v=>v.toFixed(1)).join(',')).join(' ');
+ const ROOMS=[
+  {id:1,name:'Check-in',x:0,y:0,w:5.5,d:5.5,t:'Your coordinator meets you and walks you through the day.'},
+  {id:2,name:'Consent room',x:5.5,y:0,w:5.5,d:5.5,t:'A quiet room to read the consent form. Family is welcome.'},
+  {id:3,name:'Exam room',x:11,y:0,w:5.5,d:5.5,t:'Neurological exam, vital signs and study assessments.'},
+  {id:4,name:'Lab',x:16.5,y:0,w:5.5,d:5.5,t:'Blood draws and any samples the study calls for.'},
+  {id:5,name:'Lounge',x:0,y:7.5,w:9,d:5.5,t:'Rest, ask questions and book your next visit.'},
+  {id:0,name:'Coordinator',x:9,y:7.5,w:5,d:5.5},{id:0,name:'Treatment bay',x:14,y:7.5,w:8,d:5.5}];
+ const BOX=[[1,1.8,3.2,.7,.9],[2.2,.8,.6,.6,.5],[6.8,1.6,2.8,1.4,.7],[7,.9,.5,.5,.45],[8.7,.9,.5,.5,.45],[7,3.2,.5,.5,.45],[8.7,3.2,.5,.5,.45],
+  [12,1,1,2.6,.8],[13.9,2,.5,.5,.5],[14.6,.3,1.6,.6,.9],[17.3,1.6,1,1.1,.8],[19.4,.3,2.2,.6,.9],[21,.3,.6,.6,1.7],
+  [.8,11.3,3.6,1,.6],[5.3,8.8,1,1,.6],[7,8.8,1,1,.6],[5.5,10.6,2,1,.35],[10,8.5,2.6,1,.75],[10.9,9.8,.6,.6,.5],[15.4,9,1.2,1.7,.7],[18.4,9,1.2,1.7,.7]];
+ const T=.16,LOW=1.0,HIGH=2.3,PART=[];
+ // corridor-side partitions with door gaps at each room centre
+ [[0,5.5],[5.5,11],[11,16.5],[16.5,22]].forEach(([a,b])=>{const m=(a+b)/2;PART.push([a,5.5-T,m-.7-a,T,LOW],[m+.7,5.5-T,b-m-.7,T,LOW])});
+ [[0,9],[9,14],[14,22]].forEach(([a,b])=>{const m=(a+b)/2;PART.push([a,7.5,m-.7-a,T,LOW],[m+.7,7.5,b-m-.7,T,LOW])});
+ [5.5,11,16.5].forEach(x=>PART.push([x-T/2,0,T,5.5,LOW]));[9,14].forEach(x=>PART.push([x-T/2,7.5,T,5.5,LOW]));
+ const back=[[0,-T,22,T,HIGH],[-T,-T,T,5.5+T,HIGH],[-T,7.5,T,5.5,HIGH]],front=[[22,-T,T,13+T,.55],[-T,13,22+T,T,.55]];
+ function box(b,cls){const[x,y,w,d,h]=b,z=0;const top=[iso(x,y,h),iso(x+w,y,h),iso(x+w,y+d,h),iso(x,y+d,h)],L=[iso(x,y+d,0),iso(x+w,y+d,0),iso(x+w,y+d,h),iso(x,y+d,h)],R=[iso(x+w,y,0),iso(x+w,y+d,0),iso(x+w,y+d,h),iso(x+w,y,h)];
+  return `<g class="${cls||'bx'}"><polygon class="fl" points="${P(L)}"/><polygon class="fr" points="${P(R)}"/><polygon class="ft" points="${P(top)}"/></g>`}
+ const depth=b=>b[0]+b[2]/2+b[1]+b[3]/2;
+ const route=[[-2,6.5],[2.75,6.5],[2.75,3.6],[2.75,6.5],[8.25,6.5],[8.25,3.4],[8.25,6.5],[13.75,6.5],[13.75,3.4],[13.75,6.5],[19.25,6.5],[19.25,3.4],[19.25,6.5],[4.5,6.5],[4.5,10]];
+ function build(wide){
+  const W=wide?1040:700,H=wide?560:520;let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Axonometric drawing of a study visit at the clinic: check-in, consent room, exam room, lab and lounge">`;
+  s+=`<polygon class="slab-s" points="${P([iso(0,13,0),iso(22,13,0),iso(22,13,-.45),iso(0,13,-.45)])}"/><polygon class="slab-r" points="${P([iso(22,0,0),iso(22,13,0),iso(22,13,-.45),iso(22,0,-.45)])}"/>`;
+  s+=`<polygon class="slab" points="${P([iso(0,0),iso(22,0),iso(22,13),iso(0,13)])}"/>`;
+  ROOMS.forEach(r=>{s+=`<polygon class="room${r.id?' r'+r.id:''}" data-r="${r.id}" points="${P([iso(r.x,r.y),iso(r.x+r.w,r.y),iso(r.x+r.w,r.y+r.d),iso(r.x,r.y+r.d)])}"/>`});
+  // floor grid
+  for(let x=1;x<22;x++)s+=`<line class="grid" x1="${iso(x,0)[0]}" y1="${iso(x,0)[1]}" x2="${iso(x,13)[0]}" y2="${iso(x,13)[1]}"/>`;
+  back.forEach(b=>s+=box(b,'bx wall'));
+  [...PART.map(b=>[b,'bx part']),...BOX.map(b=>[b,'bx'])].sort((a,b)=>depth(a[0])-depth(b[0])).forEach(([b,c])=>s+=box(b,c));
+  s+=`<polyline class="route" pathLength="1" points="${P(route.map(p=>iso(p[0],p[1],.02)))}"/>`;
+  const st=iso(-2,6.5);s+=`<circle class="start" cx="${st[0]}" cy="${st[1]}" r="4"/><text class="lab" x="${st[0]-8}" y="${st[1]+18}" text-anchor="end">ENTRY · SUITE 310</text>`;
+  front.forEach(b=>s+=box(b,'bx wall lowf'));
+  ROOMS.filter(r=>!r.id).forEach(r=>{const c=iso(r.x+r.w/2,r.y+r.d-.9);s+=`<text class="lab" x="${c[0]}" y="${c[1]}" text-anchor="middle">${r.name.toUpperCase()}</text>`});
+  // keynotes
+  const KR=ROOMS.filter(r=>r.id),anc=KR.map(r=>{const c=r.id===5?iso(r.x+2.2,r.y+3.2,0):iso(r.x+r.w/2,r.y+r.d/2,0);return{r,x:c[0],y:c[1]}});
+  if(wide){const KX=770,rows=[...anc].sort((a,b)=>a.y-b.y);let yy=60;rows.forEach(a=>{a.ky=Math.max(yy,Math.min(a.y-70,a.y));yy=a.ky+86});
+   // keep rows within sheet
+   const over=rows[rows.length-1].ky-(H-70);if(over>0)rows.forEach(a=>a.ky-=over);
+   anc.forEach(a=>{const ky=a.ky;s+=`<g class="kn" data-r="${a.r.id}"><line class="stem" x1="${a.x}" y1="${a.y}" x2="${a.x}" y2="${ky}"/><line class="ld" x1="${a.x}" y1="${ky}" x2="${KX}" y2="${ky}"/><circle class="dot" cx="${a.x}" cy="${a.y}" r="3.4"/>
+    <rect class="kb" x="${KX}" y="${ky-30}" width="250" height="64" rx="10"/><circle class="kc" cx="${KX+22}" cy="${ky}" r="11"/><text class="kt" x="${KX+22}" y="${ky+4}" text-anchor="middle">${a.r.id}</text>
+    <text class="kh" x="${KX+42}" y="${ky-10}">${a.r.name.toUpperCase()}</text>${wrap(a.r.t,34).map((l,i)=>`<text class="kp" x="${KX+42}" y="${ky+7+i*15}">${l}</text>`).join('')}</g>`})}
+  else anc.forEach(a=>{s+=`<g class="kn" data-r="${a.r.id}"><line class="stem" x1="${a.x}" y1="${a.y}" x2="${a.x}" y2="${a.y-34}"/><circle class="dot" cx="${a.x}" cy="${a.y}" r="3.4"/><circle class="kc" cx="${a.x}" cy="${a.y-46}" r="12"/><text class="kt" x="${a.x}" y="${a.y-42}" text-anchor="middle">${a.r.id}</text></g>`});
+  // title block
+  s+=`<g class="tb"><line x1="${wide?40:20}" y1="${H-26}" x2="${wide?740:680}" y2="${H-26}"/><text x="${wide?40:20}" y="${H-10}">QCR · STUDY VISIT · AXONOMETRIC · ILLUSTRATIVE, NOT TO SCALE</text></g>`;
+  return s+'</svg>'}
+ function wrap(t,n){const w=t.split(' '),o=[];let l='';w.forEach(x=>{if((l+' '+x).trim().length>n){o.push(l.trim());l=x}else l+=' '+x});o.push(l.trim());return o.slice(0,2)}
+ let wide=null,active=1,timer=null,user=false;
+ function render(){const wd=host.clientWidth>=760;if(wd===wide)return;wide=wd;host.innerHTML=build(wd);bind();mark(active)}
+ const list=document.getElementById('visitList');
+ list.innerHTML=ROOMS.filter(r=>r.id).map(r=>`<li data-r="${r.id}"><span class="n">${r.id}</span><div><b>${r.name}</b><p>${r.t}</p></div></li>`).join('');
+ function mark(id){active=id;host.querySelectorAll('[data-r]').forEach(n=>n.classList.toggle('on',+n.dataset.r===id));list.querySelectorAll('li').forEach(n=>n.classList.toggle('on',+n.dataset.r===id))}
+ function bind(){host.querySelectorAll('.kn,.room').forEach(n=>{const id=+n.dataset.r;if(!id)return;n.addEventListener('mouseenter',()=>{user=true;mark(id)})})}
+ list.querySelectorAll('li').forEach(n=>{n.addEventListener('mouseenter',()=>{user=true;mark(+n.dataset.r)});n.addEventListener('click',()=>{user=true;mark(+n.dataset.r)})});
+ render();addEventListener('resize',()=>{clearTimeout(timer);timer=setTimeout(render,150)});
+ new IntersectionObserver(es=>{if(es[0].isIntersecting){host.classList.add('drawn');if(!REDUCED&&!host._cyc)host._cyc=setInterval(()=>{if(!user)mark(active%5+1)},2600)}},{threshold:.35}).observe(host);
+})();
+
+document.getElementById('footConds').innerHTML=CONDS.map(c=>`<li><a href="conditions/${c.id}.html">${c.name}</a></li>`).join('');
 select('ad');
-loadBrain();
+const LOWPOWER=!heroView||(navigator.connection&&navigator.connection.saveData)||(MOBILE&&(navigator.deviceMemory||4)<=2);
+if(LOWPOWER){document.getElementById('heroLoading').style.opacity=0;const f=document.getElementById('exStage');if(f){const n=document.createElement('div');n.className='lowpower-note';n.textContent='3D model paused to save data';f.appendChild(n)}}
+else loadBrain();
 })();
 </script>
