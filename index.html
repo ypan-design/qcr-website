@@ -439,7 +439,6 @@ footer.site a{text-decoration:none}
       <ul>
         <li><a href="#enroll" data-t="n1">Now enrolling</a></li>
         <li><a href="#how" data-t="n2">How it works</a></li>
-        <li><a href="#visit" data-t="n3">Your visit</a></li>
         <li><a href="#conditions" data-t="n4">Brain map</a></li>
         <li><a href="#sponsors" data-t="n5">Sponsors</a></li>
         <li><a href="#faq" data-t="n6">FAQ</a></li>
@@ -557,19 +556,6 @@ footer.site a{text-decoration:none}
   </div>
 </section>
 
-
-<section class="sec" id="visit" style="padding-top:0">
-  <div class="wrap">
-    <div class="sec-head">
-      <div><span class="kicker" data-t="k3">A study visit, drawn</span><h2 data-t="t3">What a visit <span class="soft">looks like</span></h2></div>
-      <p data-t="p3">Most visits follow the same route through our Pasadena clinic. Hover a room to see what happens there. Every study is different, and your coordinator gives you the exact plan for each visit.</p>
-    </div>
-    <div class="visit">
-      <div class="vsheet glass"><div id="visitAxo"></div></div>
-      <ol class="vlist" id="visitList"></ol>
-    </div>
-  </div>
-</section>
 
 <section class="sec" id="team" style="padding-top:0">
   <div class="wrap">
@@ -1079,67 +1065,7 @@ function setLang(l){LANG=l;const d=l==='en'?EN:I18N[l];document.getElementById('
 document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
 show();
 
-/* ---------- VISIT: axonometric of a study visit, keynotes on straight leaders ---------- */
-(function(){
- const host=document.getElementById('visitAxo');if(!host)return;
- const S=21,X0=290,Y0=118,iso=(x,y,z=0)=>[X0+(x-y)*.866*S,Y0+(x+y)*.5*S-z*S];
- const P=pts=>pts.map(p=>p.map(v=>v.toFixed(1)).join(',')).join(' ');
- const ROOMS=[
-  {id:1,name:'Check-in',x:0,y:0,w:5.5,d:5.5,t:'Your coordinator meets you and walks you through the day.'},
-  {id:2,name:'Consent room',x:5.5,y:0,w:5.5,d:5.5,t:'A quiet room to read the consent form. Family is welcome.'},
-  {id:3,name:'Exam room',x:11,y:0,w:5.5,d:5.5,t:'Neurological exam, vital signs and study assessments.'},
-  {id:4,name:'Lab',x:16.5,y:0,w:5.5,d:5.5,t:'Blood draws and any samples the study calls for.'},
-  {id:5,name:'Lounge',x:0,y:7.5,w:9,d:5.5,t:'Rest, ask questions and book your next visit.'},
-  {id:0,name:'Coordinator',x:9,y:7.5,w:5,d:5.5},{id:0,name:'Treatment bay',x:14,y:7.5,w:8,d:5.5}];
- const BOX=[[1,1.8,3.2,.7,.9],[2.2,.8,.6,.6,.5],[6.8,1.6,2.8,1.4,.7],[7,.9,.5,.5,.45],[8.7,.9,.5,.5,.45],[7,3.2,.5,.5,.45],[8.7,3.2,.5,.5,.45],
-  [12,1,1,2.6,.8],[13.9,2,.5,.5,.5],[14.6,.3,1.6,.6,.9],[17.3,1.6,1,1.1,.8],[19.4,.3,2.2,.6,.9],[21,.3,.6,.6,1.7],
-  [.8,11.3,3.6,1,.6],[5.3,8.8,1,1,.6],[7,8.8,1,1,.6],[5.5,10.6,2,1,.35],[10,8.5,2.6,1,.75],[10.9,9.8,.6,.6,.5],[15.4,9,1.2,1.7,.7],[18.4,9,1.2,1.7,.7]];
- const T=.16,LOW=1.0,HIGH=2.3,PART=[];
- // corridor-side partitions with door gaps at each room centre
- [[0,5.5],[5.5,11],[11,16.5],[16.5,22]].forEach(([a,b])=>{const m=(a+b)/2;PART.push([a,5.5-T,m-.7-a,T,LOW],[m+.7,5.5-T,b-m-.7,T,LOW])});
- [[0,9],[9,14],[14,22]].forEach(([a,b])=>{const m=(a+b)/2;PART.push([a,7.5,m-.7-a,T,LOW],[m+.7,7.5,b-m-.7,T,LOW])});
- [5.5,11,16.5].forEach(x=>PART.push([x-T/2,0,T,5.5,LOW]));[9,14].forEach(x=>PART.push([x-T/2,7.5,T,5.5,LOW]));
- const back=[[0,-T,22,T,HIGH],[-T,-T,T,5.5+T,HIGH],[-T,7.5,T,5.5,HIGH]],front=[[22,-T,T,13+T,.55],[-T,13,22+T,T,.55]];
- function box(b,cls){const[x,y,w,d,h]=b,z=0;const top=[iso(x,y,h),iso(x+w,y,h),iso(x+w,y+d,h),iso(x,y+d,h)],L=[iso(x,y+d,0),iso(x+w,y+d,0),iso(x+w,y+d,h),iso(x,y+d,h)],R=[iso(x+w,y,0),iso(x+w,y+d,0),iso(x+w,y+d,h),iso(x+w,y,h)];
-  return `<g class="${cls||'bx'}"><polygon class="fl" points="${P(L)}"/><polygon class="fr" points="${P(R)}"/><polygon class="ft" points="${P(top)}"/></g>`}
- const depth=b=>b[0]+b[2]/2+b[1]+b[3]/2;
- const route=[[-2,6.5],[2.75,6.5],[2.75,3.6],[2.75,6.5],[8.25,6.5],[8.25,3.4],[8.25,6.5],[13.75,6.5],[13.75,3.4],[13.75,6.5],[19.25,6.5],[19.25,3.4],[19.25,6.5],[4.5,6.5],[4.5,10]];
- function build(wide){
-  const W=wide?1040:700,H=wide?560:520;let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Axonometric drawing of a study visit at the clinic: check-in, consent room, exam room, lab and lounge">`;
-  s+=`<polygon class="slab-s" points="${P([iso(0,13,0),iso(22,13,0),iso(22,13,-.45),iso(0,13,-.45)])}"/><polygon class="slab-r" points="${P([iso(22,0,0),iso(22,13,0),iso(22,13,-.45),iso(22,0,-.45)])}"/>`;
-  s+=`<polygon class="slab" points="${P([iso(0,0),iso(22,0),iso(22,13),iso(0,13)])}"/>`;
-  ROOMS.forEach(r=>{s+=`<polygon class="room${r.id?' r'+r.id:''}" data-r="${r.id}" points="${P([iso(r.x,r.y),iso(r.x+r.w,r.y),iso(r.x+r.w,r.y+r.d),iso(r.x,r.y+r.d)])}"/>`});
-  // floor grid
-  for(let x=1;x<22;x++)s+=`<line class="grid" x1="${iso(x,0)[0]}" y1="${iso(x,0)[1]}" x2="${iso(x,13)[0]}" y2="${iso(x,13)[1]}"/>`;
-  back.forEach(b=>s+=box(b,'bx wall'));
-  [...PART.map(b=>[b,'bx part']),...BOX.map(b=>[b,'bx'])].sort((a,b)=>depth(a[0])-depth(b[0])).forEach(([b,c])=>s+=box(b,c));
-  s+=`<polyline class="route" pathLength="1" points="${P(route.map(p=>iso(p[0],p[1],.02)))}"/>`;
-  const st=iso(-2,6.5);s+=`<circle class="start" cx="${st[0]}" cy="${st[1]}" r="4"/><text class="lab" x="${st[0]-8}" y="${st[1]+18}" text-anchor="end">ENTRY · SUITE 310</text>`;
-  front.forEach(b=>s+=box(b,'bx wall lowf'));
-  ROOMS.filter(r=>!r.id).forEach(r=>{const c=iso(r.x+r.w/2,r.y+r.d-.9);s+=`<text class="lab" x="${c[0]}" y="${c[1]}" text-anchor="middle">${r.name.toUpperCase()}</text>`});
-  // keynotes
-  const KR=ROOMS.filter(r=>r.id),anc=KR.map(r=>{const c=r.id===5?iso(r.x+2.2,r.y+3.2,0):iso(r.x+r.w/2,r.y+r.d/2,0);return{r,x:c[0],y:c[1]}});
-  if(wide){const KX=770,rows=[...anc].sort((a,b)=>a.y-b.y);let yy=60;rows.forEach(a=>{a.ky=Math.max(yy,Math.min(a.y-70,a.y));yy=a.ky+86});
-   // keep rows within sheet
-   const over=rows[rows.length-1].ky-(H-70);if(over>0)rows.forEach(a=>a.ky-=over);
-   anc.forEach(a=>{const ky=a.ky;s+=`<g class="kn" data-r="${a.r.id}"><line class="stem" x1="${a.x}" y1="${a.y}" x2="${a.x}" y2="${ky}"/><line class="ld" x1="${a.x}" y1="${ky}" x2="${KX}" y2="${ky}"/><circle class="dot" cx="${a.x}" cy="${a.y}" r="3.4"/>
-    <rect class="kb" x="${KX}" y="${ky-30}" width="250" height="64" rx="10"/><circle class="kc" cx="${KX+22}" cy="${ky}" r="11"/><text class="kt" x="${KX+22}" y="${ky+4}" text-anchor="middle">${a.r.id}</text>
-    <text class="kh" x="${KX+42}" y="${ky-10}">${a.r.name.toUpperCase()}</text>${wrap(a.r.t,34).map((l,i)=>`<text class="kp" x="${KX+42}" y="${ky+7+i*15}">${l}</text>`).join('')}</g>`})}
-  else anc.forEach(a=>{s+=`<g class="kn" data-r="${a.r.id}"><line class="stem" x1="${a.x}" y1="${a.y}" x2="${a.x}" y2="${a.y-34}"/><circle class="dot" cx="${a.x}" cy="${a.y}" r="3.4"/><circle class="kc" cx="${a.x}" cy="${a.y-46}" r="12"/><text class="kt" x="${a.x}" y="${a.y-42}" text-anchor="middle">${a.r.id}</text></g>`});
-  // title block
-  s+=`<g class="tb"><line x1="${wide?40:20}" y1="${H-26}" x2="${wide?740:680}" y2="${H-26}"/><text x="${wide?40:20}" y="${H-10}">QCR · STUDY VISIT · AXONOMETRIC · ILLUSTRATIVE, NOT TO SCALE</text></g>`;
-  return s+'</svg>'}
- function wrap(t,n){const w=t.split(' '),o=[];let l='';w.forEach(x=>{if((l+' '+x).trim().length>n){o.push(l.trim());l=x}else l+=' '+x});o.push(l.trim());return o.slice(0,2)}
- let wide=null,active=1,timer=null,user=false;
- function render(){const wd=host.clientWidth>=760;if(wd===wide)return;wide=wd;host.innerHTML=build(wd);bind();mark(active)}
- const list=document.getElementById('visitList');
- list.innerHTML=ROOMS.filter(r=>r.id).map(r=>`<li data-r="${r.id}"><span class="n">${r.id}</span><div><b>${r.name}</b><p>${r.t}</p></div></li>`).join('');
- function mark(id){active=id;host.querySelectorAll('[data-r]').forEach(n=>n.classList.toggle('on',+n.dataset.r===id));list.querySelectorAll('li').forEach(n=>n.classList.toggle('on',+n.dataset.r===id))}
- function bind(){host.querySelectorAll('.kn,.room').forEach(n=>{const id=+n.dataset.r;if(!id)return;n.addEventListener('mouseenter',()=>{user=true;mark(id)})})}
- list.querySelectorAll('li').forEach(n=>{n.addEventListener('mouseenter',()=>{user=true;mark(+n.dataset.r)});n.addEventListener('click',()=>{user=true;mark(+n.dataset.r)})});
- render();addEventListener('resize',()=>{clearTimeout(timer);timer=setTimeout(render,150)});
- new IntersectionObserver(es=>{if(es[0].isIntersecting){host.classList.add('drawn');if(!REDUCED&&!host._cyc)host._cyc=setInterval(()=>{if(!user)mark(active%5+1)},2600)}},{threshold:.35}).observe(host);
-})();
+
 
 /* ---------- site language widget (nav) ---------- */
 const TT={"n1": {"es": "Inscripciones abiertas", "zh": "正在招募"}, "n2": {"es": "Cómo funciona", "zh": "参与流程"}, "n3": {"es": "Su visita", "zh": "就诊流程"}, "n4": {"es": "Mapa del cerebro", "zh": "脑部图谱"}, "n5": {"es": "Patrocinadores", "zh": "申办方"}, "n6": {"es": "Preguntas", "zh": "常见问题"}, "nq": {"es": "Vea si califica", "zh": "资格筛查"}, "hk": {"es": "Ensayos de neurología de fase 2 y 3 · Pasadena", "zh": "神经科二期和三期临床试验 · 帕萨迪纳"}, "h1": {"es": "Investigación<br><span class=\"soft\">neurológica,</span><br>cerca de casa", "zh": "神经科<br><span class=\"soft\">研究，</span><br>就在您身边"}, "hl": {"es": "Una clínica de investigación neurológica en Pasadena. Elija una condición para ver qué partes del cerebro afecta, o haga una preevaluación de 60 segundos para uno de nuestros estudios abiertos.", "zh": "位于帕萨迪纳的神经科研究诊所。选择一种疾病，看看它影响大脑的哪些部位；或花60秒完成我们正在招募研究的初步筛查。"}, "hq": {"es": "Vea si califica", "zh": "看看您是否符合条件"}, "ha": {"es": "Las 12 condiciones", "zh": "全部12种疾病"}, "ne": {"es": "Inscripciones abiertas", "zh": "正在招募"}, "sm": {"es": "Mostrar", "zh": "查看"}, "dg": {"es": "Arrastre para girar · haga clic para enfocar", "zh": "拖动旋转 · 点击聚焦"}, "at": {"es": "Recorrido", "zh": "自动导览"}, "rs": {"es": "Restablecer", "zh": "重置"}, "k1": {"es": "Inscripción en estudios", "zh": "研究招募"}, "t1": {"es": "Inscripciones <span class=\"soft\">abiertas</span>", "zh": "正在<span class=\"soft\">招募</span>"}, "p1": {"es": "Ahora estamos inscribiendo participantes para dos estudios. Cada uno tiene sus propios requisitos, así que el primer paso siempre es una breve preevaluación. Puede retirarse de un estudio en cualquier momento.", "zh": "我们目前正在为两项研究招募参与者。每项研究都有各自的参与条件，所以第一步总是一个简短的初步筛查。您可以随时退出研究。"}, "k2": {"es": "Cómo funciona la inscripción", "zh": "招募流程"}, "t2": {"es": "Cinco pasos, <span class=\"soft\">sin sorpresas</span>", "zh": "五个步骤，<span class=\"soft\">清清楚楚</span>"}, "p2": {"es": "Le explicamos cada paso antes de que ocurra, y nada relacionado con el estudio comienza hasta que usted firme el formulario de consentimiento.", "zh": "每一步开始前我们都会先向您说明。在您签署知情同意书之前，不会开始任何研究相关的程序。"}, "k3": {"es": "Una visita del estudio, dibujada", "zh": "研究就诊示意图"}, "t3": {"es": "Cómo es <span class=\"soft\">una visita</span>", "zh": "一次就诊<span class=\"soft\">是什么样的</span>"}, "p3": {"es": "La mayoría de las visitas siguen la misma ruta por nuestra clínica en Pasadena. Pase el cursor sobre una sala para ver qué sucede allí. Cada estudio es diferente, y su coordinador le dará el plan exacto de cada visita.", "zh": "大多数就诊都会按同样的路线经过我们帕萨迪纳的诊所。将鼠标移到房间上可查看那里会做什么。每项研究都不同，您的协调员会告诉您每次就诊的具体安排。"}, "k4": {"es": "A quién conocerá", "zh": "您会见到谁"}, "t4": {"es": "Primero las personas, <span class=\"soft\">luego el protocolo</span>", "zh": "以人为先，<span class=\"soft\">再谈流程</span>"}, "p4": {"es": "Un equipo pequeño que conoce a cada participante por su nombre. Cada estudio es revisado y supervisado por un comité de ética independiente antes y durante su realización.", "zh": "一个能叫出每位参与者名字的小团队。每项研究在开始前和进行中都由独立的伦理委员会审查和监督。"}, "k5": {"es": "12 áreas de estudio", "zh": "12个研究领域"}, "t5": {"es": "La investigación <span class=\"soft\">en el mapa</span> del cerebro", "zh": "研究<span class=\"soft\">对应到</span>大脑"}, "p5": {"es": "Desplácese por las condiciones que estudiamos. El modelo marca las partes del cerebro que afecta cada una, y las notas explican qué hacen esas partes y cómo las cambia la condición.", "zh": "滚动浏览我们研究的疾病。模型会标出每种疾病影响的大脑部位，图注说明这些部位的作用以及疾病如何改变它们。"}, "k6": {"es": "Historias de voluntarios", "zh": "志愿者故事"}, "t6": {"es": "Voces reales, <span class=\"soft\">impacto real</span>", "zh": "真实的声音，<span class=\"soft\">真实的影响</span>"}, "p6": {"es": "Pacientes y cuidadores cuentan cómo fue participar en un estudio en nuestra clínica.", "zh": "患者和照护者讲述在我们诊所参与研究的经历。"}, "k7": {"es": "Preguntas", "zh": "问题"}, "t7": {"es": "Antes de <span style=\"color:var(--ghost)\">inscribirse</span>", "zh": "参与<span style=\"color:var(--ghost)\">之前</span>"}};const TEN={};document.querySelectorAll('[data-t]').forEach(n=>TEN[n.dataset.t]=n.innerHTML);
