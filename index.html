@@ -67,34 +67,43 @@ p{margin:0}
 @media (max-width:520px){.brand .full{display:none}.brand .short{display:inline}.brand small{display:none}.nav .btn{padding:.8em 1.1em;font-size:14px}}
 
 /* HERO */
-.hero .wrap{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8px;align-items:center;padding-block:36px 24px}
-.hero-copy{display:grid;gap:24px;position:relative;z-index:3}
-.hero h1{font-size:clamp(46px,6.2vw,90px);font-weight:800;text-transform:uppercase;letter-spacing:-.045em;line-height:.92}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);gap:20px;align-items:start;padding-block:36px 24px}
+.hero-copy{display:grid;gap:22px;position:relative;z-index:3;padding-top:24px}
+.hero h1{font-size:clamp(44px,5.8vw,86px);font-weight:800;text-transform:uppercase;letter-spacing:-.045em;line-height:.92}
 .hero h1 .soft{color:var(--ghost)}
-.hero .lede{max-width:38ch;color:var(--ink-2);font-size:17.5px}
+.hero .lede{max-width:38ch;color:var(--ink-2);font-size:17px}
 .cta-row{display:flex;flex-wrap:wrap;gap:12px}
-.stage{position:relative;aspect-ratio:1/1;width:100%;max-width:100%;max-height:740px;justify-self:center}
-.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:2}
-.halo{position:absolute;inset:6%;border-radius:50%;z-index:0;background:radial-gradient(closest-side,rgba(255,214,190,.95),rgba(242,169,130,.35) 38%,rgba(43,138,154,.14) 62%,transparent 72%);animation:breathe 7s ease-in-out infinite}
-@keyframes breathe{50%{transform:scale(1.05);opacity:.85}}
-.rays{position:absolute;inset:0;z-index:0;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 8%,rgba(255,255,255,.55) 10%,transparent 14% 38%,rgba(255,255,255,.4) 41%,transparent 45% 70%,rgba(255,255,255,.5) 73%,transparent 77%);mask-image:radial-gradient(closest-side,transparent 30%,#000 52%,transparent 74%);-webkit-mask-image:radial-gradient(closest-side,transparent 30%,#000 52%,transparent 74%);animation:spin 40s linear infinite;opacity:.8}
-@keyframes spin{to{transform:rotate(360deg)}}
-.floor{position:absolute;left:22%;right:22%;bottom:5%;height:7%;border-radius:50%;z-index:1;background:radial-gradient(closest-side,rgba(60,70,150,.22),transparent)}
+.enrolling{padding:16px 18px;border-radius:20px;display:grid;gap:4px;max-width:440px}
+.enrolling h4{margin:0 0 6px;display:flex;align-items:center;gap:8px;font:600 10.5px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--teal-2)}
+.enrolling h4 i{width:8px;height:8px;border-radius:50%;background:#e4573d;box-shadow:0 0 0 0 rgba(228,87,61,.5);animation:ping 2.4s infinite}
+.enrolling a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--hair);text-decoration:none}
+.enrolling a:first-of-type{border-top:0}
+.enrolling b{display:block;font-weight:600;font-size:15px;line-height:1.3}
+.enrolling small{display:block;font-size:12.5px;color:var(--ink-3);margin-top:2px}
+.enrolling .go{font:600 12px/1 var(--body);color:var(--teal-2);white-space:nowrap}
+.hstage-col{display:grid;gap:12px;min-width:0}
+.hchips{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.hchips .lbl{font:500 10.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-right:4px}
+.chip{font:500 13px/1 var(--body);padding:.62em 1em;border-radius:999px;border:1px solid var(--glass-rim);background:rgba(255,255,255,.5);color:var(--ink-2);cursor:pointer;transition:all .25s}
+.chip[aria-pressed="true"]{color:#fff;background:var(--ink);border-color:var(--ink)}
+.chip .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#e4573d;margin-right:7px;vertical-align:1px}
+.chip-more{font:600 13px/1 var(--body);color:var(--teal-2);text-decoration:none;margin-left:4px}
+.stage{position:relative;aspect-ratio:1.15/1;width:100%;max-width:100%}
+.stage canvas{position:absolute;inset:-4%;width:108%;height:108%;display:block;z-index:1;-webkit-mask-image:radial-gradient(closest-side,#000 62%,transparent 100%);mask-image:radial-gradient(closest-side,#000 62%,transparent 100%)}
 .loading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);transition:opacity .4s}
-.hcard{position:absolute;z-index:4;padding:12px 14px;border-radius:16px;font-size:12.5px}
-.hcard h4{margin:0 0 8px;font:600 10.5px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
-.hcard.c1{right:0;top:7%;width:228px}
-.hcard.c1 div{display:grid;grid-template-columns:10px minmax(0,1fr);gap:8px;align-items:center;color:var(--ink);font-weight:500;line-height:1.35;margin-top:6px}
-.hcard.c1 i{width:8px;height:8px;border-radius:50%;background:var(--peach);box-shadow:0 0 0 4px rgba(242,169,130,.25)}
-.hcard.c2{left:0;bottom:12%;width:196px}
-.hcard.c2 svg{display:block;width:100%;height:40px}
-.hcard.c2 span{display:block;margin-top:4px;color:var(--ink-2)}
-.hcard.c3{right:3%;bottom:14%;display:flex;align-items:center;gap:12px}
-.hcard.c3 b{display:block;font:700 24px/1 var(--display);letter-spacing:-.03em}
-.hcard.c3 span{color:var(--ink-2)}
-.hcard.c3 svg{width:46px;height:46px}
-@media (max-width:900px){.hero .wrap{grid-template-columns:1fr}.stage{order:-1;max-width:600px}}
-@media (max-width:600px){.hcard.c2,.hcard.c3{display:none}.hcard.c1{top:auto;bottom:0;right:50%;transform:translateX(50%)}}
+.hmark{position:absolute;z-index:3;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;display:grid;place-items:center;font:600 12px/1 var(--mono);color:#fff;background:var(--c);border:2px solid #fff;box-shadow:0 0 0 1px var(--ink),0 0 18px 2px var(--c);transition:opacity .35s;pointer-events:none}
+.hmark::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:1px solid var(--c);opacity:.7;animation:ring 2.4s ease-out infinite}
+@keyframes ring{from{transform:scale(.6);opacity:.8}to{transform:scale(1.5);opacity:0}}
+.hint{position:absolute;right:2%;bottom:3%;z-index:3;font:500 10.5px/1.5 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);text-align:right}
+.hkn{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.hkn .k{padding:14px 16px;border-radius:18px;display:grid;grid-template-columns:30px minmax(0,1fr);column-gap:12px;align-content:start}
+.hkn .kt{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:600 12px/1 var(--mono);color:#fff;background:var(--c);border:2px solid #fff;box-shadow:0 0 0 1px var(--ink)}
+.hkn b{display:block;font:600 12px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.hkn em{display:block;font-style:normal;font-size:12.5px;color:var(--ink-3);margin-top:2px}
+.hkn p{font-size:13.5px;line-height:1.5;color:var(--ink-2);margin-top:6px}
+.hkn .k.one{grid-column:1/-1}
+@media (max-width:1000px){.hero .wrap{grid-template-columns:1fr}.hstage-col{order:-1}.hero-copy{padding-top:0}}
+@media (max-width:600px){.hkn{grid-template-columns:1fr}.stage{aspect-ratio:1/1}}
 
 /* SECTIONS */
 section{position:relative}
@@ -312,23 +321,27 @@ footer.site a{text-decoration:none}
 <header class="hero" id="top">
   <div class="wrap">
     <div class="hero-copy">
-      <span class="kicker">Phase 2 &amp; 3 neurology trials · Formerly SC3 Research Group</span>
+      <span class="kicker">Phase 2 &amp; 3 neurology trials · Pasadena</span>
       <h1>Neurology<br><span class="soft">research,</span><br>close to home</h1>
-      <p class="lede">Two studies are enrolling now at our Pasadena clinic, for generalized myasthenia gravis and Alzheimer's disease. Take a 60-second prescreen and a coordinator will walk you through the rest.</p>
+      <p class="lede">A neurology research clinic in Pasadena. Pick a condition to see which parts of the brain it affects, or start a 60-second prescreen for one of our open studies.</p>
       <div class="cta-row">
         <a class="btn btn-teal" href="#qualify"><span class="ic">→</span>See if you qualify</a>
-        <a class="btn btn-glass glass" href="#conditions"><span class="ic">+</span>Explore the brain map</a>
+        <a class="btn btn-glass glass" href="#conditions"><span class="ic">+</span>All 12 conditions</a>
+      </div>
+      <div class="enrolling glass">
+        <h4><i></i>Now enrolling</h4>
+        <a href="#enroll" data-cond="mg"><span><b>Generalized myasthenia gravis</b><small>Phase III · ages 18–85 · about 9 months</small></span><span class="go">Details →</span></a>
+        <a href="#enroll" data-cond="ad"><span><b>Alzheimer's disease</b><small>Eligibility reviewed at prescreen</small></span><span class="go">Details →</span></a>
       </div>
     </div>
-    <div class="stage" id="heroStage">
-      <div class="rays" aria-hidden="true"></div>
-      <div class="halo" aria-hidden="true"></div>
-      <div class="floor" aria-hidden="true"></div>
-      <canvas id="heroCanvas" aria-label="Glossy 3D model of the human brain, lit from within"></canvas>
-      <div class="loading" id="heroLoading">Loading model</div>
-      <div class="hcard c1 glass"><h4>Now enrolling</h4><div><i></i>Generalized myasthenia gravis · Phase III</div><div><i></i>Alzheimer's disease</div></div>
-      <div class="hcard c2 glass"><h4>Neural signal</h4><svg viewBox="0 0 196 40" preserveAspectRatio="none" aria-hidden="true"><polyline id="eegLine" fill="none" stroke="#2b8a9a" stroke-width="1.6" points=""/></svg><span>Studies running in Pasadena</span></div>
-      <div class="hcard c3 glass"><svg viewBox="0 0 46 46" aria-hidden="true"><circle cx="23" cy="23" r="19" fill="none" stroke="rgba(22,29,69,.1)" stroke-width="4"/><circle cx="23" cy="23" r="19" fill="none" stroke="#2b8a9a" stroke-width="4" stroke-linecap="round" stroke-dasharray="90 120" transform="rotate(-90 23 23)"/></svg><div><b>12</b><span>conditions studied</span></div></div>
+    <div class="hstage-col">
+      <div class="hchips" id="heroChips"><span class="lbl">Show me</span></div>
+      <div class="stage" id="heroStage">
+        <canvas id="heroCanvas" aria-label="Rotating 3D brain; the regions linked to the selected condition glow from inside"></canvas>
+        <div class="loading" id="heroLoading">Loading model</div>
+        <div class="hint">Drag to turn</div>
+      </div>
+      <div class="hkn" id="heroKn" aria-live="polite"></div>
     </div>
   </div>
 </header>
@@ -535,11 +548,18 @@ footer.site a{text-decoration:none}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/GammaCorrectionShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
 <script>
 (function(){
 const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MOBILE=innerWidth<760;
-const SLOT=['#2b8a9a','#e48d66','#5b6fc4'];
+const SLOT=['#e4573d','#2b9aa8','#6b6fd4'];
 
 /* ---------- content: keynotes per condition ---------- */
 const R={frontal:0,parietal:1,occipital:2,temporal:3,cerebellum:6,brainstem:7,motor:8};
@@ -620,52 +640,98 @@ function loadBrain(){if(!window.THREE||!THREE.GLTFLoader){document.getElementByI
  new THREE.GLTFLoader().load('brain.gltf',gl=>{BRAIN=prepBrain(gl);waiters.splice(0).forEach(f=>f(BRAIN))},undefined,()=>{document.getElementById('heroLoading').textContent='Model unavailable'})}
 function roundTex(inner,outer){const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');const g=x.createRadialGradient(32,32,0,32,32,32);g.addColorStop(0,inner);g.addColorStop(.5,outer);g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,64,64);return new THREE.CanvasTexture(c)}
 
-/* ---------- HERO: glossy brain, inner light, scan line, orbit ring, sparks ---------- */
+/* ---------- HERO: turntable brain, inner red light, region glows, bloom, keynote markers ---------- */
+const HERO_IDS=['ad','mg','pd','ms','ep'];
+const GLOW_C={frontal:[.36,.25,.62],parietal:[.34,.5,-.25],occipital:[.26,.18,-.8],temporal:[.55,-.2,.1],cerebellum:[.24,-.42,-.6],brainstem:[.05,-.6,-.28],motor:[.34,.55,.08]};
 function Hero(){
- const canvas=document.getElementById('heroCanvas'),el=canvas.parentElement;let renderer;
- try{renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true})}catch(e){return}
- renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.0;
- const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(28,1,.1,50);cam.position.set(0,0,6.2);
- scene.add(new THREE.HemisphereLight(0xffffff,0xb7bde0,.62));
- const key=new THREE.DirectionalLight(0xffffff,.85);key.position.set(-2.5,3,3);scene.add(key);
- const rim=new THREE.DirectionalLight(0x9fdbe2,.9);rim.position.set(2.5,1.5,-3);scene.add(rim);
- const warm=new THREE.PointLight(0xffd2b8,.9,9);scene.add(warm);
+ const canvas=document.getElementById('heroCanvas'),el=document.getElementById('heroStage');let renderer;
+ try{renderer=new THREE.WebGLRenderer({canvas,antialias:true})}catch(e){return null}
+ const lin=h=>new THREE.Color(h).convertSRGBToLinear();
+ const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(29,1,.1,50);cam.position.set(0,.15,5.3);cam.lookAt(0,0,0);
+ // background matches the page field so the masked canvas blends in
+ const bc=document.createElement('canvas');bc.width=8;bc.height=256;const bx=bc.getContext('2d');const bgG=bx.createLinearGradient(0,0,0,256);bgG.addColorStop(0,'#e9ecf8');bgG.addColorStop(1,'#dbe0f3');bx.fillStyle=bgG;bx.fillRect(0,0,8,256);
+ const bt=new THREE.CanvasTexture(bc);bt.encoding=THREE.sRGBEncoding;scene.background=bt;
+ scene.add(new THREE.HemisphereLight(lin('#f6f7ff'),lin('#7d86bd'),.42));
+ const key=new THREE.DirectionalLight(lin('#ffffff'),.62);key.position.set(-2,3.2,3);scene.add(key);
+ const rim=new THREE.DirectionalLight(lin('#86dbe4'),.8);rim.position.set(2.6,1.2,-3);scene.add(rim);
+ const under=new THREE.PointLight(lin('#ff5a36'),2.2,4.5);under.position.set(0,-1.15,.5);scene.add(under);
  const root=new THREE.Group();scene.add(root);
- const U={uTime:{value:0},uGlow:{value:1},uScan:{value:-2}};
- const mat=new THREE.MeshPhysicalMaterial({color:0xf6f7fc,roughness:.3,metalness:0,clearcoat:1,clearcoatRoughness:.14});
+ const U={uTime:{value:0},uIdle:{value:.42},uGP:{value:[0,1,2,3].map(()=>new THREE.Vector3())},uGC:{value:[0,1,2,3].map(()=>new THREE.Color())},uGA:{value:[0,0,0,0]},uRegA:{value:new Array(9).fill(0)},uRegC:{value:new Array(9).fill(0).map(()=>new THREE.Color())}};
+ const mat=new THREE.MeshPhysicalMaterial({color:lin('#d9ddf5'),roughness:.32,metalness:0,clearcoat:1,clearcoatRoughness:.16});
  mat.onBeforeCompile=sh=>{Object.assign(sh.uniforms,U);
-  sh.vertexShader='attribute float aCrease;varying float vCrease;varying vec3 vP;varying vec3 vNw;varying vec3 vWp;\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvCrease=aCrease;vP=position;vNw=normalize(mat3(modelMatrix)*normal);vWp=(modelMatrix*vec4(position,1.0)).xyz;');
-  sh.fragmentShader='uniform float uTime,uGlow,uScan;varying float vCrease;varying vec3 vP;varying vec3 vNw;varying vec3 vWp;\n'+sh.fragmentShader
-   .replace('#include <color_fragment>','#include <color_fragment>\ndiffuseColor.rgb*=1.0-0.38*vCrease;')
+  sh.vertexShader='attribute float aCrease;attribute float aRegion;varying float vCrease;varying float vReg;varying vec3 vP;varying vec3 vNw;varying vec3 vWp;\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvCrease=aCrease;vReg=aRegion;vP=position;vNw=normalize(mat3(modelMatrix)*normal);vWp=(modelMatrix*vec4(position,1.0)).xyz;');
+  sh.fragmentShader='uniform float uTime,uIdle;uniform vec3 uGP[4];uniform vec3 uGC[4];uniform float uGA[4];uniform float uRegA[9];uniform vec3 uRegC[9];varying float vCrease;varying float vReg;varying vec3 vP;varying vec3 vNw;varying vec3 vWp;\n'+sh.fragmentShader
+   .replace('#include <color_fragment>','#include <color_fragment>\ndiffuseColor.rgb*=1.0-0.36*vCrease;')
    .replace('#include <emissivemap_fragment>',`#include <emissivemap_fragment>
-    vec3 core=vec3(0.0,0.28+0.05*sin(uTime*.7),0.0);vec3 dd=vP-core;float g=exp(-dot(dd,dd)/0.6)*uGlow*(0.75+0.35*sin(uTime*1.3));
-    totalEmissiveRadiance+=vec3(1.0,0.6,0.42)*g*(0.12+1.5*vCrease*vCrease);
+    vec3 pp=vec3(abs(vP.x),vP.y,vP.z);
+    vec3 dc=vP-vec3(0.0,-0.12,0.05);float pulse=0.82+0.18*sin(uTime*1.6);
+    vec3 glow=vec3(1.0,0.26,0.1)*exp(-dot(dc,dc)/0.30)*uIdle;
+    vec3 rg=vec3(0.0);
+    for(int i=0;i<4;i++){vec3 d=pp-uGP[i];rg+=uGC[i]*uGA[i]*exp(-dot(d,d)/0.075);}
+    for(int i=0;i<9;i++){if(abs(vReg-float(i))<0.5){rg+=uRegC[i]*uRegA[i]*0.75;}}
+    float leak=0.22+1.9*vCrease*vCrease;
+    totalEmissiveRadiance+=glow*leak*pulse+rg*(0.45+1.3*vCrease)*pulse;
+    diffuseColor.rgb=mix(diffuseColor.rgb,min(rg,vec3(1.0)),clamp(length(rg)*0.35,0.0,0.6));
     vec3 Vv=normalize(cameraPosition-vWp);float fr=pow(1.0-abs(dot(normalize(vNw),Vv)),3.0);
-    totalEmissiveRadiance+=vec3(0.55,0.82,0.88)*fr*0.26;
-    float band=exp(-pow(vP.y-uScan,2.0)/0.0018);totalEmissiveRadiance+=vec3(0.45,0.85,0.9)*band*0.5;`)};
- const ringPts=[];for(let i=0;i<=160;i++){const a=i/160*Math.PI*2;ringPts.push(new THREE.Vector3(Math.cos(a)*1.55,0,Math.sin(a)*1.55))}
- const ring=new THREE.Line(new THREE.BufferGeometry().setFromPoints(ringPts),new THREE.LineDashedMaterial({color:0x161d45,dashSize:.05,gapSize:.06,transparent:true,opacity:.28}));ring.computeLineDistances();ring.rotation.set(1.25,0,.18);root.add(ring);
- const runner=new THREE.Sprite(new THREE.SpriteMaterial({map:roundTex('rgba(255,255,255,1)','rgba(130,215,225,.7)'),transparent:true,depthWrite:false}));runner.scale.set(.16,.16,1);root.add(runner);
- const SN=MOBILE?120:260,sp=new Float32Array(SN*3),seed=[];for(let i=0;i<SN;i++){seed.push([1.15+Math.random()*.8,Math.random()*6.283,(Math.random()-.5)*2.2,Math.random()])}
+    totalEmissiveRadiance+=vec3(0.45,0.78,0.86)*fr*0.22;`)};
+ // sparks
+ const SN=MOBILE?90:180,sp=new Float32Array(SN*3),seed=[];for(let i=0;i<SN;i++)seed.push([1.2+Math.random()*.7,Math.random()*6.283,(Math.random()-.5)*2,Math.random()]);
  const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.BufferAttribute(sp,3));
- root.add(new THREE.Points(sg,new THREE.PointsMaterial({map:roundTex('rgba(255,255,255,1)','rgba(242,169,130,.6)'),size:.05,transparent:true,depthWrite:false,opacity:.85})));
- let visible=true,tx=0,ty=0;const t0=performance.now();const rp=new THREE.Vector3();
- function resize(){const r=el.getBoundingClientRect();if(!r.width)return;renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(r.width,r.height,false);cam.aspect=r.width/r.height;cam.updateProjectionMatrix()}
+ const scn=document.createElement('canvas');scn.width=scn.height=32;const sx=scn.getContext('2d');const sgr=sx.createRadialGradient(16,16,0,16,16,16);sgr.addColorStop(0,'rgba(255,255,255,1)');sgr.addColorStop(.4,'rgba(140,215,225,.7)');sgr.addColorStop(1,'rgba(140,215,225,0)');sx.fillStyle=sgr;sx.fillRect(0,0,32,32);
+ scene.add(new THREE.Points(sg,new THREE.PointsMaterial({map:new THREE.CanvasTexture(scn),size:.045,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending})));
+ // post: bloom + gamma
+ let composer=null,bloom=null;
+ if(THREE.EffectComposer&&THREE.UnrealBloomPass&&THREE.GammaCorrectionShader){composer=new THREE.EffectComposer(renderer);composer.addPass(new THREE.RenderPass(scene,cam));
+  bloom=new THREE.UnrealBloomPass(new THREE.Vector2(512,512),.75,.5,.93);composer.addPass(bloom);composer.addPass(new THREE.ShaderPass(THREE.GammaCorrectionShader))}
+ else{renderer.outputEncoding=THREE.sRGBEncoding}
+ function resize(){const r=canvas.getBoundingClientRect();if(!r.width)return;const pr=Math.min(devicePixelRatio,MOBILE?1.5:1.75);renderer.setPixelRatio(pr);renderer.setSize(r.width,r.height,false);if(composer){composer.setPixelRatio(pr);composer.setSize(r.width,r.height)}cam.aspect=r.width/r.height;cam.updateProjectionMatrix()}
  resize();addEventListener('resize',resize);
- el.addEventListener('pointermove',e=>{if(e.pointerType!=='mouse')return;const r=el.getBoundingClientRect();tx=((e.clientY-r.top)/r.height-.5)*.22;ty=((e.clientX-r.left)/r.width-.5)*.5});
- el.addEventListener('pointerleave',()=>{tx=ty=0});
+ // interaction: mouse drag spins, touch scroll untouched
+ let spin=0,drag=null,vel=0,visible=true;
+ el.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'){drag=e.clientX;el.style.cursor='grabbing'}});
+ addEventListener('pointerup',()=>{drag=null;el.style.cursor=''});
+ addEventListener('pointermove',e=>{if(drag!==null){const d=(e.clientX-drag)*.008;spin+=d;vel=d;drag=e.clientX}});
  new IntersectionObserver(es=>{visible=es[0].isIntersecting}).observe(el);
+ // markers
+ let marks=[];const tgtGA=[0,0,0,0],tgtReg=new Array(9).fill(0);
+ function set(keys){for(let i=0;i<4;i++)tgtGA[i]=0;for(let i=0;i<9;i++)tgtReg[i]=0;
+  el.querySelectorAll('.hmark').forEach(n=>n.remove());
+  marks=keys.map((k,i)=>{const col=lin(SLOT[i]);
+   const c=k in R?GLOW_C[k]:DEEP[k].c;U.uGP.value[i].set(Math.abs(c[0]),c[1],c[2]);U.uGC.value[i].copy(col).multiplyScalar(k in R?2.4:4.0);tgtGA[i]=1;
+   if(k in R){tgtReg[R[k]]=1;U.uRegC.value[R[k]].copy(col)}
+   const m=document.createElement('div');m.className='hmark';m.style.setProperty('--c',SLOT[i]);m.textContent=i+1;el.appendChild(m);return{k,m}})}
+ const v=new THREE.Vector3(),w=new THREE.Vector3(),ctr=new THREE.Vector3();
+ function place(){if(!BRAIN)return;const W=el.clientWidth,H=el.clientHeight,cr=canvas.getBoundingClientRect(),er=el.getBoundingClientRect();
+  ctr.set(0,0,0).applyMatrix4(root.matrixWorld);
+  marks.forEach(o=>{const a=BRAIN.anc[o.k];if(!a){o.m.style.opacity=0;return}
+   v.set(a[0],a[1],a[2]).applyMatrix4(root.matrixWorld);w.set(-a[0],a[1],a[2]).applyMatrix4(root.matrixWorld);
+   const p=(w.z>v.z?w:v);const deep=!(o.k in R);const front=deep?1:Math.max(0,Math.min(1,(p.z-ctr.z)/.25+.35));
+   const q=p.clone().project(cam);o.m.style.left=((q.x*.5+.5)*cr.width+cr.left-er.left)+'px';o.m.style.top=((-q.y*.5+.5)*cr.height+cr.top-er.top)+'px';o.m.style.opacity=front.toFixed(2)})}
  onBrain(B=>{root.add(new THREE.Mesh(B.g,mat));document.getElementById('heroLoading').style.opacity=0});
- root.rotation.set(.32,-1.05,0);
- function frame(now){requestAnimationFrame(frame);if(!visible)return;const tt=REDUCED?0:(now-t0)/1000;U.uTime.value=tt;
-  const cyc=(tt%7.5)/7.5;U.uScan.value=cyc<.55?1.1-cyc/.55*2.3:-3;
-  warm.position.set(Math.cos(tt*.5)*2.4,1.2+Math.sin(tt*.35)*.6,Math.sin(tt*.5)*2.4);
-  const a=tt*.45;rp.set(Math.cos(a)*1.55,0,Math.sin(a)*1.55).applyEuler(ring.rotation);runner.position.copy(rp);
-  for(let i=0;i<SN;i++){const s=seed[i];const ang=s[1]+tt*.05*(1+s[3]);const y=((s[2]+tt*.04*(.5+s[3])+1.1)%2.2+2.2)%2.2-1.1;sp[i*3]=Math.cos(ang)*s[0];sp[i*3+1]=y;sp[i*3+2]=Math.sin(ang)*s[0]}sg.attributes.position.needsUpdate=true;
-  const sway=Math.sin(tt*.22)*.42;
-  root.rotation.x+=((.32+tx)-root.rotation.x)*.05;root.rotation.y+=((-1.05+sway+ty)-root.rotation.y)*.05;root.position.y=Math.sin(tt*.8)*.03;
-  renderer.render(scene,cam)}
- requestAnimationFrame(frame)}
+ const t0=performance.now();let last=t0;
+ function frame(now){requestAnimationFrame(frame);if(!visible)return;const t=(now-t0)/1000,dt=Math.min(.05,(now-last)/1000);last=now;const tt=REDUCED?0:t;U.uTime.value=tt;
+  for(let i=0;i<4;i++)U.uGA.value[i]+=(tgtGA[i]-U.uGA.value[i])*Math.min(1,dt*3);
+  for(let i=0;i<9;i++)U.uRegA.value[i]+=(tgtReg[i]-U.uRegA.value[i])*Math.min(1,dt*3);
+  if(drag===null){vel*=.94;spin+=vel;if(!REDUCED)spin+=dt*.22}
+  root.rotation.set(.22,spin-.9,0);root.position.y=REDUCED?0:Math.sin(tt*.8)*.03;
+  under.intensity=1.6+.35*Math.sin(tt*1.6);
+  for(let i=0;i<SN;i++){const s=seed[i];const ang=s[1]+tt*.06*(1+s[3]);const y=(((s[2]+tt*.05*(.5+s[3])+1)%2)+2)%2-1;sp[i*3]=Math.cos(ang)*s[0];sp[i*3+1]=y;sp[i*3+2]=Math.sin(ang)*s[0]}sg.attributes.position.needsUpdate=true;
+  root.updateMatrixWorld();if(composer)composer.render();else renderer.render(scene,cam);place()}
+ requestAnimationFrame(frame);
+ return{set};
+}
+const heroView=window.THREE?Hero():null;
+const chipsEl=document.getElementById('heroChips'),heroKn=document.getElementById('heroKn');
+let hIdx=0,hTimer=null;
+function heroSet(id,user){const c=CONDS.find(x=>x.id===id);hIdx=HERO_IDS.indexOf(id);
+ chipsEl.querySelectorAll('.chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.id===id));
+ heroView&&heroView.set(c.keys.map(k=>k[0]));
+ heroKn.innerHTML=c.keys.map((k,j)=>`<div class="k glass${c.keys.length===1?' one':''}"><span class="kt" style="--c:${SLOT[j]}">${j+1}</span><div><b>${NAMES[k[0]]}</b><em>${ROLE[k[0]]}</em><p>${k[1]}</p></div></div>`).join('');
+ if(user&&hTimer){clearInterval(hTimer);hTimer=null}}
+HERO_IDS.forEach(id=>{const c=CONDS.find(x=>x.id===id);const b=document.createElement('button');b.type='button';b.className='chip';b.dataset.id=id;b.innerHTML=(c.on?'<span class="dot"></span>':'')+c.name;b.onclick=()=>heroSet(id,true);chipsEl.appendChild(b)});
+const more=document.createElement('a');more.className='chip-more';more.href='#conditions';more.textContent='All 12 →';chipsEl.appendChild(more);
+heroSet('ad');
+if(!REDUCED)hTimer=setInterval(()=>heroSet(HERO_IDS[(hIdx+1)%HERO_IDS.length]),8000);
 
 /* ---------- MAP: architectural white model + numbered keynotes ---------- */
 function MapView(){
@@ -758,8 +824,7 @@ document.getElementById('explode').addEventListener('input',e=>view&&view.explod
 /* ---------- small pieces ---------- */
 (function(){const tl=document.getElementById('tl');[0,.5,1,1.5,2,3,4,5,6,7.5,9].forEach(m=>{const d=document.createElement('span');d.className='v';d.style.left=(m/9*100)+'%';tl.appendChild(d)});
  [0,3,6,9].forEach(m=>{const s=document.createElement('span');s.className='m';s.style.left=(m/9*100)+'%';s.textContent='M'+m;if(m===0)s.style.transform='none';if(m===9)s.style.transform='translateX(-100%)';tl.appendChild(s)})})();
-(function(){const pl=document.getElementById('eegLine');let t=0;function draw(){const pts=[];for(let x=0;x<=196;x+=3){const s=x/196*14+t;let y=20+Math.sin(s)*5+Math.sin(s*2.6)*3;const k=((x/196*3+t*.25)%1.5);if(k<.06)y-=Math.sin(k/.06*Math.PI)*13;pts.push(x+','+y.toFixed(1))}pl.setAttribute('points',pts.join(' '))}
- draw();(function loop(){t+=.03;draw();if(!REDUCED)requestAnimationFrame(loop)})()})();
+
 (function(){const SP=["Novartis","Biogen","Amgen","Sanofi","AbbVie","Janssen","Bristol Myers Squibb","UCB","Otsuka","Jazz","Ionis","Biohaven","Acadia","Sage","Cerevel","Intra-Cellular","Alzheon","Prilenia","NeuroDerm","Revance","TG Therapeutics","Bukwang"],CRO=["IQVIA","ICON","Parexel","Syneos Health","WCT"];
  const html=[...SP.map(s=>`<span>${s}</span>`),...CRO.map(s=>`<span class="cro">${s}</span>`)].join('');const tr=document.getElementById('track');tr.innerHTML=html+html;
  let x=0,vv=36,target=36,half=0,last=performance.now();const measure=()=>{half=tr.scrollWidth/2};measure();addEventListener('resize',measure);document.fonts&&document.fonts.ready.then(measure);
@@ -786,9 +851,6 @@ form.addEventListener('submit',e=>{e.preventDefault();
 show();
 
 select('ad');
-if(window.THREE)Hero();
 loadBrain();
 })();
 </script>
-
-</html>
