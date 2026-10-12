@@ -298,12 +298,13 @@ details p{color:var(--ink-2);padding-bottom:18px;max-width:62ch}
 @media (max-width:860px){.qualify{grid-template-columns:1fr}.form .row{grid-template-columns:1fr}}
 
 footer.site{padding-block:40px 36px;color:var(--ink-2);font-size:14px}
-footer.site .wrap>.glass{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:28px;padding:32px}
+footer.site .wrap>.glass{display:grid;grid-template-columns:1.3fr repeat(4,minmax(0,1fr));gap:28px;padding:32px}
 footer.site h4{font:600 11px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--ink);margin:0 0 12px}
 footer.site ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 footer.site a{text-decoration:none}
 .legal{grid-column:1/-1;border-top:1px solid var(--hair);padding-top:18px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--ink-3)}
-@media (max-width:760px){footer.site .wrap>.glass{grid-template-columns:1fr 1fr}}
+@media (max-width:1020px){footer.site .wrap>.glass{grid-template-columns:repeat(2,minmax(0,1fr))}footer.site .wrap>.glass>div:first-child{grid-column:1/-1}}
+@media (max-width:420px){footer.site .wrap>.glass{grid-template-columns:minmax(0,1fr);padding:24px}}
 
 /* v7: architectural stage overlay, poster, mobile order */
 .stage .poster{position:absolute;inset:-4%;width:108%;height:108%;object-fit:cover;z-index:1;-webkit-mask-image:radial-gradient(closest-side,#000 62%,transparent 100%);mask-image:radial-gradient(closest-side,#000 62%,transparent 100%);transition:opacity .8s}
@@ -403,6 +404,26 @@ footer.site a{text-decoration:none}
 .kn li.mini p{display:none}.kn li.mini{padding-top:4px;padding-bottom:4px}
 .kn .kt.o{background:#fff;color:var(--ink);border:1px solid var(--ink);box-shadow:none}
 
+/* v10: language widget + social */
+.langw{position:relative}
+.langb{display:inline-flex;align-items:center;gap:6px;font:600 12px var(--mono);letter-spacing:.06em;color:var(--ink-2);background:rgba(255,255,255,.55);border:1px solid rgba(22,29,69,.12);border-radius:999px;padding:.55em .8em;cursor:pointer}
+.langb svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.3}
+.langm{position:absolute;right:0;top:calc(100% + 8px);min-width:150px;padding:6px;border-radius:14px;background:rgba(255,255,255,.95);border:1px solid rgba(22,29,69,.1);box-shadow:0 18px 40px -18px rgba(22,29,69,.45);display:grid;gap:2px;z-index:60}
+.langm[hidden]{display:none}
+.langm button{all:unset;cursor:pointer;padding:.6em .8em;border-radius:9px;font:500 14px var(--body);color:var(--ink)}
+.langm button:hover,.langm button:focus-visible{background:rgba(22,29,69,.06)}
+.langm button[aria-checked="true"]{font-weight:700}.langm button[aria-checked="true"]::after{content:"  ✓";color:var(--teal)}
+.follow{margin-top:16px;display:flex;flex-wrap:wrap;gap:6px 10px;font-size:13.5px}
+.follow>span:first-child{font:600 11px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.soc a{color:var(--ink-2);text-decoration:none;border-bottom:1px solid rgba(22,29,69,.25)}.soc a:hover{color:var(--teal-2);border-color:var(--teal)}
+.soc a.todo{border-bottom-style:dashed;cursor:help}
+.soc .dot{margin:0 6px;color:var(--ink-3)}
+.contact-lines .soc{font-size:16px}
+@media (max-width:760px){.langb span{display:none}.langb{padding:.6em}}
+@media (max-width:1020px){.langw{margin-left:auto}.nav .btn{margin-left:8px}}
+.nav ul a{white-space:nowrap}@media (max-width:1300px){.nav .phone{display:none}.nav ul{gap:18px}}
+:lang(zh) h1,:lang(zh) h2{line-height:1.12;letter-spacing:0}:lang(zh) .kicker{letter-spacing:.08em}
+
 @media (prefers-reduced-motion:reduce){.live i,.halo,.rays{animation:none}html{scroll-behavior:auto}}
 </style>
 
@@ -416,15 +437,16 @@ footer.site a{text-decoration:none}
         <span><span class="full">Quantum Clinical Research</span><span class="short">QC Research</span><small>Pasadena · Neurology</small></span>
       </a>
       <ul>
-        <li><a href="#enroll">Now enrolling</a></li>
-        <li><a href="#how">How it works</a></li>
-        <li><a href="#visit">Your visit</a></li>
-        <li><a href="#conditions">Brain map</a></li>
-        <li><a href="#sponsors">Sponsors</a></li>
-        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#enroll" data-t="n1">Now enrolling</a></li>
+        <li><a href="#how" data-t="n2">How it works</a></li>
+        <li><a href="#visit" data-t="n3">Your visit</a></li>
+        <li><a href="#conditions" data-t="n4">Brain map</a></li>
+        <li><a href="#sponsors" data-t="n5">Sponsors</a></li>
+        <li><a href="#faq" data-t="n6">FAQ</a></li>
       </ul>
+      <div class="langw" id="langW"><button type="button" class="langb" id="langB" aria-haspopup="true" aria-expanded="false" aria-label="Choose language"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M2.5 10h15M10 2.5c2.2 2.3 3.2 4.8 3.2 7.5s-1 5.2-3.2 7.5M10 2.5C7.8 4.8 6.8 7.3 6.8 10s1 5.2 3.2 7.5"/></svg><span id="langCur">EN</span></button><div class="langm" id="langM" role="menu" hidden><button type="button" role="menuitemradio" aria-checked="true" data-lang="en" lang="en">English</button><button type="button" role="menuitemradio" aria-checked="false" data-lang="es" lang="es">Español</button><button type="button" role="menuitemradio" aria-checked="false" data-lang="zh" lang="zh">中文</button></div></div>
       <span class="phone">(626) 250-2070</span>
-      <a class="btn btn-teal" href="#qualify">See if you qualify</a>
+      <a class="btn btn-teal" href="#qualify" data-t="nq">See if you qualify</a>
     </div>
   </div>
 </nav>
@@ -432,29 +454,29 @@ footer.site a{text-decoration:none}
 <header class="hero" id="top">
   <div class="wrap">
     <div class="hero-copy">
-      <span class="kicker">Phase 2 &amp; 3 neurology trials · Pasadena</span>
-      <h1>Neurology<br><span class="soft">research,</span><br>close to home</h1>
-      <p class="lede">A neurology research clinic in Pasadena. Pick a condition to see which parts of the brain it affects, or start a 60-second prescreen for one of our open studies.</p>
+      <span class="kicker" data-t="hk">Phase 2 &amp; 3 neurology trials · Pasadena</span>
+      <h1 data-t="h1">Neurology<br><span class="soft">research,</span><br>close to home</h1>
+      <p class="lede" data-t="hl">A neurology research clinic in Pasadena. Pick a condition to see which parts of the brain it affects, or start a 60-second prescreen for one of our open studies.</p>
       <div class="cta-row">
-        <a class="btn btn-teal" href="#qualify"><span class="ic">→</span>See if you qualify</a>
-        <a class="btn btn-glass glass" href="#conditions"><span class="ic">+</span>All 12 conditions</a>
+        <a class="btn btn-teal" href="#qualify"><span class="ic">→</span><span data-t="hq">See if you qualify</span></a>
+        <a class="btn btn-glass glass" href="#conditions"><span class="ic">+</span><span data-t="ha">All 12 conditions</span></a>
       </div>
       <div class="enrolling glass">
-        <h4><i></i>Now enrolling</h4>
+        <h4><i></i><span data-t="ne">Now enrolling</span></h4>
         <a href="#enroll" data-cond="mg"><span><b>Generalized myasthenia gravis</b><small>Phase III · ages 18–85 · about 9 months</small></span><span class="go">Details →</span></a>
         <a href="#enroll" data-cond="ad"><span><b>Alzheimer's disease</b><small>Eligibility reviewed at prescreen</small></span><span class="go">Details →</span></a>
       </div>
     </div>
     <div class="hstage-col">
-      <div class="hchips" id="heroChips"><span class="lbl">Show me</span></div>
+      <div class="hchips" id="heroChips"><span class="lbl" data-t="sm">Show me</span></div>
       <div class="stage" id="heroStage">
         <img class="poster" src="poster.jpg" alt="" decoding="async" fetchpriority="high">
         <svg class="hdim" id="heroDim" aria-hidden="true"></svg>
         <canvas id="heroCanvas" aria-label="Rotating 3D brain drawn in fine dots; the regions linked to the selected condition light up in colour"></canvas>
         <div class="loading" id="heroLoading">Loading model</div>
-        <div class="hint">Drag to turn · click to focus</div>
+        <div class="hint" data-t="dg">Drag to turn · click to focus</div>
       </div>
-      <div class="pctl" id="heroCtl" role="toolbar" aria-label="Brain model controls"><button type="button" data-a="tour" id="tourBtn" aria-pressed="true">Auto tour</button><button type="button" data-a="cine" id="cineBtn" aria-pressed="false">▶ Cinematic</button><span class="sp"></span><button type="button" data-a="out" aria-label="Zoom out">−</button><button type="button" data-a="in" aria-label="Zoom in">+</button><button type="button" data-a="reset">Reset</button></div>
+      <div class="pctl" id="heroCtl" role="toolbar" aria-label="Brain model controls"><button type="button" data-a="tour" id="tourBtn" aria-pressed="true" data-t="at">Auto tour</button><button type="button" data-a="cine" id="cineBtn" aria-pressed="false">▶ Cinematic</button><span class="sp"></span><button type="button" data-a="out" aria-label="Zoom out">−</button><button type="button" data-a="in" aria-label="Zoom in">+</button><button type="button" data-a="reset" data-t="rs">Reset</button></div>
       <div class="hkn" id="heroKn" aria-live="polite"></div>
     </div>
   </div>
@@ -463,8 +485,8 @@ footer.site a{text-decoration:none}
 <section class="sec" id="enroll" style="padding-top:clamp(40px,6vw,80px)">
   <div class="wrap">
     <div class="sec-head">
-      <div><span class="kicker">Study enrollment</span><h2>Now <span class="soft">enrolling</span></h2></div>
-      <p>We're enrolling participants for two studies right now. Each one has its own eligibility rules, so the first step is always a short prescreen. You can withdraw from a study at any time.</p>
+      <div><span class="kicker" data-t="k1">Study enrollment</span><h2 data-t="t1">Now <span class="soft">enrolling</span></h2></div>
+      <p data-t="p1">We're enrolling participants for two studies right now. Each one has its own eligibility rules, so the first step is always a short prescreen. You can withdraw from a study at any time.</p>
     </div>
     <div class="studies">
       <article class="study glass">
@@ -517,8 +539,8 @@ footer.site a{text-decoration:none}
 <section class="sec" id="how" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head">
-      <div><span class="kicker">How enrollment works</span><h2>Five steps, <span class="soft">no surprises</span></h2></div>
-      <p>We explain each step before it happens, and nothing study-related starts until you've signed the consent form.</p>
+      <div><span class="kicker" data-t="k2">How enrollment works</span><h2 data-t="t2">Five steps, <span class="soft">no surprises</span></h2></div>
+      <p data-t="p2">We explain each step before it happens, and nothing study-related starts until you've signed the consent form.</p>
     </div>
     <div class="steps5">
       <div class="step glass"><div class="top"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="9" y="3" width="14" height="26" rx="3"/><path d="M13 16l2.5 2.5L20 13"/><path d="M14 25.5h4"/></svg></span><span class="n">1</span></div><h3>Prescreen</h3><p>Answer a few questions online in about a minute. Your information stays confidential.</p></div>
@@ -539,8 +561,8 @@ footer.site a{text-decoration:none}
 <section class="sec" id="visit" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head">
-      <div><span class="kicker">A study visit, drawn</span><h2>What a visit <span class="soft">looks like</span></h2></div>
-      <p>Most visits follow the same route through our Pasadena clinic. Hover a room to see what happens there. Every study is different, and your coordinator gives you the exact plan for each visit.</p>
+      <div><span class="kicker" data-t="k3">A study visit, drawn</span><h2 data-t="t3">What a visit <span class="soft">looks like</span></h2></div>
+      <p data-t="p3">Most visits follow the same route through our Pasadena clinic. Hover a room to see what happens there. Every study is different, and your coordinator gives you the exact plan for each visit.</p>
     </div>
     <div class="visit">
       <div class="vsheet glass"><div id="visitAxo"></div></div>
@@ -552,8 +574,8 @@ footer.site a{text-decoration:none}
 <section class="sec" id="team" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head">
-      <div><span class="kicker">Who you'll meet</span><h2>People first, <span class="soft">then protocol</span></h2></div>
-      <p>A small team that knows each participant by name. Every study is reviewed and monitored by an independent ethics board before and while it runs.</p>
+      <div><span class="kicker" data-t="k4">Who you'll meet</span><h2 data-t="t4">People first, <span class="soft">then protocol</span></h2></div>
+      <p data-t="p4">A small team that knows each participant by name. Every study is reviewed and monitored by an independent ethics board before and while it runs.</p>
     </div>
     <div class="people">
       <div class="person glass"><div class="ph">Photo</div><div><b>Principal investigator</b><p>The physician who leads each study and oversees your care at every visit.</p></div></div>
@@ -572,8 +594,8 @@ footer.site a{text-decoration:none}
 <section class="sec" id="conditions" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head">
-      <div><span class="kicker">12 areas of study</span><h2>Research <span class="soft">mapped to</span> the brain</h2></div>
-      <p>Scroll through the conditions we study. The model marks the parts of the brain each one affects, and the keynotes explain what those parts do and how the condition changes them.</p>
+      <div><span class="kicker" data-t="k5">12 areas of study</span><h2 data-t="t5">Research <span class="soft">mapped to</span> the brain</h2></div>
+      <p data-t="p5">Scroll through the conditions we study. The model marks the parts of the brain each one affects, and the keynotes explain what those parts do and how the condition changes them.</p>
     </div>
     <div class="map">
       <div class="msteps" id="msteps"></div>
@@ -636,8 +658,8 @@ footer.site a{text-decoration:none}
 <section class="sec" id="stories">
   <div class="wrap">
     <div class="sec-head">
-      <div><span class="kicker">Volunteer stories</span><h2>Real voices, <span class="soft">real impact</span></h2></div>
-      <p>Patients and caregivers on what it was like to take part in a study at our clinic.</p>
+      <div><span class="kicker" data-t="k6">Volunteer stories</span><h2 data-t="t6">Real voices, <span class="soft">real impact</span></h2></div>
+      <p data-t="p6">Patients and caregivers on what it was like to take part in a study at our clinic.</p>
     </div>
     <div class="quotes">
       <figure class="quote glass"><p>“When I was diagnosed with Myasthenia Gravis, I felt uncertain about my future. Joining a clinical trial at Quantum Clinical Research gave me hope and a renewed sense of purpose.”</p><footer><b>David</b><span>Myasthenia gravis</span></footer></figure>
@@ -649,7 +671,7 @@ footer.site a{text-decoration:none}
 
 <section class="sec" id="faq" style="padding-top:0">
   <div class="wrap faq">
-    <div><span class="kicker">Questions</span><h2 style="font-size:clamp(34px,4.4vw,58px);font-weight:800;text-transform:uppercase;letter-spacing:-.045em;line-height:.95;margin-top:18px">Before you <span style="color:var(--ghost)">enroll</span></h2></div>
+    <div><span class="kicker" data-t="k7">Questions</span><h2 style="font-size:clamp(34px,4.4vw,58px);font-weight:800;text-transform:uppercase;letter-spacing:-.045em;line-height:.95;margin-top:18px"><span data-t="t7">Before you <span style="color:var(--ghost)">enroll</span></span></h2></div>
     <div class="faq-list glass">
       <details open><summary>What happens during enrollment?</summary><p>We explain the study in detail, you sign an informed consent form, and then you complete the screening tests and assessments that confirm you're eligible.</p></details>
       <details><summary>How do I know if I qualify?</summary><p>Each study has its own criteria, such as age, diagnosis and current treatment. Start with the prescreen and our team will review your eligibility with you.</p></details>
@@ -668,7 +690,7 @@ footer.site a{text-decoration:none}
       <h2 data-i18n="h" style="font-size:clamp(38px,5vw,66px);font-weight:800;text-transform:uppercase;letter-spacing:-.045em;line-height:.95;margin-top:18px">See if a study <span style="color:var(--ghost)">fits you</span></h2>
       <div class="lang" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="true">English</button><button type="button" data-lang="es" aria-pressed="false" lang="es">Español</button><button type="button" data-lang="zh" aria-pressed="false" lang="zh">中文</button></div>
       <p data-i18n="intro" style="color:var(--ink-2);margin-top:18px;max-width:42ch">Three quick steps. A coordinator reviews your answers and contacts you. Your information is used only to check eligibility.</p>
-      <div class="contact-lines"><div>Phone<b>(626) 250-2070</b></div><div>Email<b>info@qc-research.com</b></div><div>Clinic<b>960 E. Green St., Suite 310, Pasadena, CA 91106</b></div></div>
+      <div class="contact-lines"><div>Follow<b class="soc" data-soc></b></div><div>Phone<b>(626) 250-2070</b></div><div>Email<b>info@qc-research.com</b></div><div>Clinic<b>960 E. Green St., Suite 310, Pasadena, CA 91106</b></div></div>
     </div>
     <form class="form glass" id="qform" novalidate>
       <div class="progress" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
@@ -688,7 +710,7 @@ footer.site a{text-decoration:none}
 
 <footer class="site">
   <div class="wrap"><div class="glass">
-    <div><a class="brand" href="#top"><svg class="qmark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="19" cy="19" r="14" fill="none" stroke="#161d45" stroke-width="3"/><circle cx="19" cy="19" r="5" fill="#2b8a9a"/><path d="M27 27l8 8" stroke="#161d45" stroke-width="3.4" stroke-linecap="round"/></svg><span>Quantum Clinical Research</span></a><p style="max-width:32ch;margin-top:14px">Clinical research center in Pasadena, California, advancing treatments for neurological conditions.</p></div>
+    <div><a class="brand" href="#top"><svg class="qmark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="19" cy="19" r="14" fill="none" stroke="#161d45" stroke-width="3"/><circle cx="19" cy="19" r="5" fill="#2b8a9a"/><path d="M27 27l8 8" stroke="#161d45" stroke-width="3.4" stroke-linecap="round"/></svg><span>Quantum Clinical Research</span></a><p style="max-width:32ch;margin-top:14px">Clinical research center in Pasadena, California, advancing treatments for neurological conditions.</p><p class="follow"><span>Follow</span><span class="soc" data-soc></span></p></div>
     <div><h4>Patients</h4><ul><li><a href="#enroll">Now enrolling</a></li><li><a href="#how">How it works</a></li><li><a href="#conditions">Brain map</a></li><li><a href="#stories">Volunteer stories</a></li></ul></div>
     <div><h4>Conditions</h4><ul id="footConds"></ul></div>
     <div><h4>Research</h4><ul><li><a href="#sponsors">Sponsors &amp; CROs</a></li><li><a href="#faq">Patient safety</a></li><li><a href="#faq">FAQ</a></li></ul></div>
@@ -1118,6 +1140,24 @@ show();
  render();addEventListener('resize',()=>{clearTimeout(timer);timer=setTimeout(render,150)});
  new IntersectionObserver(es=>{if(es[0].isIntersecting){host.classList.add('drawn');if(!REDUCED&&!host._cyc)host._cyc=setInterval(()=>{if(!user)mark(active%5+1)},2600)}},{threshold:.35}).observe(host);
 })();
+
+/* ---------- site language widget (nav) ---------- */
+const TT={"n1": {"es": "Inscripciones abiertas", "zh": "正在招募"}, "n2": {"es": "Cómo funciona", "zh": "参与流程"}, "n3": {"es": "Su visita", "zh": "就诊流程"}, "n4": {"es": "Mapa del cerebro", "zh": "脑部图谱"}, "n5": {"es": "Patrocinadores", "zh": "申办方"}, "n6": {"es": "Preguntas", "zh": "常见问题"}, "nq": {"es": "Vea si califica", "zh": "资格筛查"}, "hk": {"es": "Ensayos de neurología de fase 2 y 3 · Pasadena", "zh": "神经科二期和三期临床试验 · 帕萨迪纳"}, "h1": {"es": "Investigación<br><span class=\"soft\">neurológica,</span><br>cerca de casa", "zh": "神经科<br><span class=\"soft\">研究，</span><br>就在您身边"}, "hl": {"es": "Una clínica de investigación neurológica en Pasadena. Elija una condición para ver qué partes del cerebro afecta, o haga una preevaluación de 60 segundos para uno de nuestros estudios abiertos.", "zh": "位于帕萨迪纳的神经科研究诊所。选择一种疾病，看看它影响大脑的哪些部位；或花60秒完成我们正在招募研究的初步筛查。"}, "hq": {"es": "Vea si califica", "zh": "看看您是否符合条件"}, "ha": {"es": "Las 12 condiciones", "zh": "全部12种疾病"}, "ne": {"es": "Inscripciones abiertas", "zh": "正在招募"}, "sm": {"es": "Mostrar", "zh": "查看"}, "dg": {"es": "Arrastre para girar · haga clic para enfocar", "zh": "拖动旋转 · 点击聚焦"}, "at": {"es": "Recorrido", "zh": "自动导览"}, "rs": {"es": "Restablecer", "zh": "重置"}, "k1": {"es": "Inscripción en estudios", "zh": "研究招募"}, "t1": {"es": "Inscripciones <span class=\"soft\">abiertas</span>", "zh": "正在<span class=\"soft\">招募</span>"}, "p1": {"es": "Ahora estamos inscribiendo participantes para dos estudios. Cada uno tiene sus propios requisitos, así que el primer paso siempre es una breve preevaluación. Puede retirarse de un estudio en cualquier momento.", "zh": "我们目前正在为两项研究招募参与者。每项研究都有各自的参与条件，所以第一步总是一个简短的初步筛查。您可以随时退出研究。"}, "k2": {"es": "Cómo funciona la inscripción", "zh": "招募流程"}, "t2": {"es": "Cinco pasos, <span class=\"soft\">sin sorpresas</span>", "zh": "五个步骤，<span class=\"soft\">清清楚楚</span>"}, "p2": {"es": "Le explicamos cada paso antes de que ocurra, y nada relacionado con el estudio comienza hasta que usted firme el formulario de consentimiento.", "zh": "每一步开始前我们都会先向您说明。在您签署知情同意书之前，不会开始任何研究相关的程序。"}, "k3": {"es": "Una visita del estudio, dibujada", "zh": "研究就诊示意图"}, "t3": {"es": "Cómo es <span class=\"soft\">una visita</span>", "zh": "一次就诊<span class=\"soft\">是什么样的</span>"}, "p3": {"es": "La mayoría de las visitas siguen la misma ruta por nuestra clínica en Pasadena. Pase el cursor sobre una sala para ver qué sucede allí. Cada estudio es diferente, y su coordinador le dará el plan exacto de cada visita.", "zh": "大多数就诊都会按同样的路线经过我们帕萨迪纳的诊所。将鼠标移到房间上可查看那里会做什么。每项研究都不同，您的协调员会告诉您每次就诊的具体安排。"}, "k4": {"es": "A quién conocerá", "zh": "您会见到谁"}, "t4": {"es": "Primero las personas, <span class=\"soft\">luego el protocolo</span>", "zh": "以人为先，<span class=\"soft\">再谈流程</span>"}, "p4": {"es": "Un equipo pequeño que conoce a cada participante por su nombre. Cada estudio es revisado y supervisado por un comité de ética independiente antes y durante su realización.", "zh": "一个能叫出每位参与者名字的小团队。每项研究在开始前和进行中都由独立的伦理委员会审查和监督。"}, "k5": {"es": "12 áreas de estudio", "zh": "12个研究领域"}, "t5": {"es": "La investigación <span class=\"soft\">en el mapa</span> del cerebro", "zh": "研究<span class=\"soft\">对应到</span>大脑"}, "p5": {"es": "Desplácese por las condiciones que estudiamos. El modelo marca las partes del cerebro que afecta cada una, y las notas explican qué hacen esas partes y cómo las cambia la condición.", "zh": "滚动浏览我们研究的疾病。模型会标出每种疾病影响的大脑部位，图注说明这些部位的作用以及疾病如何改变它们。"}, "k6": {"es": "Historias de voluntarios", "zh": "志愿者故事"}, "t6": {"es": "Voces reales, <span class=\"soft\">impacto real</span>", "zh": "真实的声音，<span class=\"soft\">真实的影响</span>"}, "p6": {"es": "Pacientes y cuidadores cuentan cómo fue participar en un estudio en nuestra clínica.", "zh": "患者和照护者讲述在我们诊所参与研究的经历。"}, "k7": {"es": "Preguntas", "zh": "问题"}, "t7": {"es": "Antes de <span style=\"color:var(--ghost)\">inscribirse</span>", "zh": "参与<span style=\"color:var(--ghost)\">之前</span>"}};const TEN={};document.querySelectorAll('[data-t]').forEach(n=>TEN[n.dataset.t]=n.innerHTML);
+const langB=document.getElementById('langB'),langM=document.getElementById('langM');
+function setSite(l){document.documentElement.lang=l==='zh'?'zh-Hans':l;
+ document.querySelectorAll('[data-t]').forEach(n=>{const k=n.dataset.t;n.innerHTML=l==='en'?TEN[k]:((TT[k]&&TT[k][l])||TEN[k])});
+ setLang(l);document.getElementById('langCur').textContent={en:'EN',es:'ES',zh:'中文'}[l];
+ langM.querySelectorAll('button').forEach(b=>b.setAttribute('aria-checked',b.dataset.lang===l));try{localStorage.setItem('qcrLang',l)}catch(e){}}
+function menu(open){langM.hidden=!open;langB.setAttribute('aria-expanded',open);if(open)langM.querySelector('[aria-checked="true"]').focus()}
+langB.addEventListener('click',e=>{e.stopPropagation();menu(langM.hidden)});
+langM.addEventListener('click',e=>{const b=e.target.closest('button');if(b){setSite(b.dataset.lang);menu(false);langB.focus()}});
+addEventListener('click',e=>{if(!langM.hidden&&!e.target.closest('#langW'))menu(false)});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!langM.hidden){menu(false);langB.focus()}});
+document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>setSite(b.dataset.lang));
+(function(){let l=null;try{l=localStorage.getItem('qcrLang')}catch(e){}if(!l){const n=(navigator.language||'').toLowerCase();l=n.startsWith('es')?'es':n.startsWith('zh')?'zh':null}if(l&&l!=='en')setSite(l)})();
+/* ---------- social links: fill the handles once the accounts are confirmed ---------- */
+const SOCIAL=[['Instagram',''],['Facebook',''],['LinkedIn',''],['Google Maps','https://www.google.com/maps/search/?api=1&query=Quantum%20Clinical%20Research%20960%20E%20Green%20St%20Pasadena%20CA']];
+document.querySelectorAll('[data-soc]').forEach(el=>{el.innerHTML=SOCIAL.map(([n,u])=>u?`<a href="${u}" target="_blank" rel="noopener">${n}</a>`:`<a class="todo" href="#" title="Link coming soon" aria-disabled="true" onclick="return false">${n}</a>`).join('<span class="dot">·</span>')});
 
 document.getElementById('footConds').innerHTML=CONDS.map(c=>`<li><a href="conditions/${c.id}.html">${c.name}</a></li>`).join('');
 select('ad');
