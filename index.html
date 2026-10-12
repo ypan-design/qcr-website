@@ -346,7 +346,7 @@ footer.site a{text-decoration:none}
     <div class="hstage-col">
       <div class="hchips" id="heroChips"><span class="lbl">Show me</span></div>
       <div class="stage" id="heroStage">
-        <canvas id="heroCanvas" aria-label="Rotating 3D brain; the regions linked to the selected condition are highlighted in colour"></canvas>
+        <canvas id="heroCanvas" aria-label="Rotating glass 3D brain; the regions linked to the selected condition are highlighted in colour inside it"></canvas>
         <div class="loading" id="heroLoading">Loading model</div>
         <div class="hint">Drag to turn</div>
       </div>
@@ -666,10 +666,11 @@ function Hero(){
  const under=new THREE.PointLight(lin('#ff5a36'),2.2,4.5);under.position.set(0,-1.15,.5);scene.add(under);
  const root=new THREE.Group();scene.add(root);
  const U={uTime:{value:0},uIdle:{value:.42},uGP:{value:[0,1,2,3].map(()=>new THREE.Vector3())},uGC:{value:[0,1,2,3].map(()=>new THREE.Color())},uGA:{value:[0,0,0,0]},uRegA:{value:new Array(9).fill(0)},uRegC:{value:new Array(9).fill(0).map(()=>new THREE.Color())}};
- const mat=new THREE.MeshPhysicalMaterial({color:lin('#d9ddf5'),roughness:.32,metalness:0,clearcoat:1,clearcoatRoughness:.16});
+ Object.assign(U,{uGlass:{value:0},uC0:{value:new THREE.Color()},uC1:{value:new THREE.Color()},uWA0:{value:0},uWA1:{value:0}});
+ const mat=new THREE.MeshPhysicalMaterial({color:lin('#d9ddf5'),roughness:.32,metalness:0,clearcoat:1,clearcoatRoughness:.16,transparent:true,depthWrite:false,depthFunc:THREE.LessEqualDepth});
  mat.onBeforeCompile=sh=>{Object.assign(sh.uniforms,U);
-  sh.vertexShader='attribute float aCrease;attribute float aRegion;varying float vCrease;varying float vReg;varying vec3 vP;varying vec3 vNw;varying vec3 vWp;\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvCrease=aCrease;vReg=aRegion;vP=position;vNw=normalize(mat3(modelMatrix)*normal);vWp=(modelMatrix*vec4(position,1.0)).xyz;');
-  sh.fragmentShader='uniform float uTime,uIdle;uniform vec3 uGP[4];uniform vec3 uGC[4];uniform float uGA[4];uniform float uRegA[9];uniform vec3 uRegC[9];varying float vCrease;varying float vReg;varying vec3 vP;varying vec3 vNw;varying vec3 vWp;\n'+sh.fragmentShader
+  sh.vertexShader='attribute float aCrease;attribute float aRegion;attribute float aW0;attribute float aW1;varying float vW0;varying float vW1;varying float vCrease;varying float vReg;varying vec3 vP;varying vec3 vNw;varying vec3 vWp;\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvW0=aW0;vW1=aW1;vCrease=aCrease;vReg=aRegion;vP=position;vNw=normalize(mat3(modelMatrix)*normal);vWp=(modelMatrix*vec4(position,1.0)).xyz;');
+  sh.fragmentShader='uniform float uTime,uIdle,uGlass,uWA0,uWA1;uniform vec3 uC0;uniform vec3 uC1;varying float vW0;varying float vW1;uniform vec3 uGP[4];uniform vec3 uGC[4];uniform float uGA[4];uniform float uRegA[9];uniform vec3 uRegC[9];varying float vCrease;varying float vReg;varying vec3 vP;varying vec3 vNw;varying vec3 vWp;\n'+sh.fragmentShader
    .replace('#include <color_fragment>','#include <color_fragment>\ndiffuseColor.rgb*=1.0-0.36*vCrease;')
    .replace('#include <emissivemap_fragment>',`#include <emissivemap_fragment>
     vec3 pp=vec3(abs(vP.x),vP.y,vP.z);
@@ -678,8 +679,16 @@ function Hero(){
     vec3 rg=vec3(0.0);
     float leak=0.22+1.9*vCrease*vCrease;
     totalEmissiveRadiance+=glow*leak*pulse+rg*(0.45+1.3*vCrease)*pulse;
-    vec3 Vv=normalize(cameraPosition-vWp);float fr=pow(1.0-abs(dot(normalize(vNw),Vv)),3.0);
-    totalEmissiveRadiance+=vec3(0.45,0.78,0.86)*fr*0.22;`)};
+    vec3 Vv=normalize(cameraPosition-vWp);float f1=1.0-abs(dot(normalize(vNw),Vv));float fr=pow(f1,3.0);
+    totalEmissiveRadiance+=vec3(0.45,0.78,0.86)*fr*0.22;
+    float w0=vW0*uWA0,w1=vW1*uWA1,ws=clamp(w0+w1,0.0,1.0);
+    vec3 tint=(uC0*w0+uC1*w1)/max(w0+w1,0.001);
+    diffuseColor.rgb=mix(diffuseColor.rgb,tint*(1.0-0.35*vCrease),ws*0.9);
+    totalEmissiveRadiance+=tint*ws*(0.22+1.15*vCrease)*pulse;
+    float edge=(1.0-smoothstep(0.0,0.09,abs(vW0-0.5)))*uWA0+(1.0-smoothstep(0.0,0.09,abs(vW1-0.5)))*uWA1;
+    diffuseColor.rgb=mix(diffuseColor.rgb,vec3(0.086,0.114,0.27),clamp(edge,0.0,1.0)*0.55);
+    float al=mix(0.46,0.96,pow(f1,1.1));al=max(al,ws*0.93);al=max(al,clamp(edge,0.0,1.0)*0.9);
+    diffuseColor.rgb=mix(diffuseColor.rgb,diffuseColor.rgb*vec3(0.86,0.88,1.0),uGlass*(1.0-ws));diffuseColor.a=mix(1.0,al,uGlass);`)};
  // sparks
  const SN=MOBILE?90:180,sp=new Float32Array(SN*3),seed=[];for(let i=0;i<SN;i++)seed.push([1.2+Math.random()*.7,Math.random()*6.283,(Math.random()-.5)*2,Math.random()]);
  const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.BufferAttribute(sp,3));
@@ -699,26 +708,31 @@ function Hero(){
  addEventListener('pointermove',e=>{if(drag!==null){const d=(e.clientX-drag)*.008;spin+=d;vel=d;drag=e.clientX}});
  new IntersectionObserver(es=>{visible=es[0].isIntersecting}).observe(el);
  // 3D region highlights: surface lobes as glossy coloured skins, deep nuclei as glowing solids seen through the cortex
- const regMesh={},deepGrp={},fade=[];const HL=new THREE.Vector2();
- function skinMat(){const m=new THREE.MeshPhysicalMaterial({color:0xffffff,emissive:0x000000,roughness:.3,clearcoat:1,clearcoatRoughness:.12,transparent:true,opacity:0,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-4});
-  m.onBeforeCompile=sh=>{sh.vertexShader='attribute float aCrease;varying float vCr;\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvCr=aCrease;');
-   sh.fragmentShader='varying float vCr;\n'+sh.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\ndiffuseColor.rgb*=1.0-0.45*vCr;')
-    .replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\nfloat hz=step(0.82,fract((gl_FragCoord.x+gl_FragCoord.y)/7.0));totalEmissiveRadiance+=diffuseColor.rgb*(0.10*hz+0.55*vCr);')};
-  m.userData.t=0;fade.push(m);return m}
- function deepMat(){const m=new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xffffff,emissiveIntensity:.55,roughness:.35,transparent:true,opacity:0,depthTest:false,depthWrite:false});m.userData.t=0;fade.push(m);return m}
- function blob(d,side){const g=new THREE.SphereGeometry(1,32,20);g.scale(d.r[0]*1.25,d.r[1]*1.25,d.r[2]*1.25);g.rotateY(d.rot*side);g.translate(d.c[0]*side,d.c[1],d.c[2]);return g}
- onBrain(B=>{root.add(new THREE.Mesh(B.g,mat));document.getElementById('heroLoading').style.opacity=0;
-  for(const key in R){const k=R[key];if(!B.sub[k])continue;const g=new THREE.BufferGeometry();g.setAttribute('position',B.g.attributes.position);g.setAttribute('normal',B.g.attributes.normal);g.setAttribute('aCrease',B.g.attributes.aCrease);g.setIndex(B.sub[k]);
-   const m=new THREE.Mesh(g,skinMat());m.renderOrder=2;m.visible=false;root.add(m);regMesh[key]=m}
-  for(const key in DEEP){const gr=new THREE.Group(),dm=deepMat();[1,-1].forEach(s=>{const m=new THREE.Mesh(blob(DEEP[key],s),dm);m.renderOrder=5;gr.add(m)});gr.visible=false;root.add(gr);deepGrp[key]=gr;gr.userData.m=dm}
+ // inside the glass: deep nuclei as solid lit forms, plus a red core light; surface regions are baked into the shell
+ const deepGrp={},WC={};
+ function weights(key){if(WC[key])return WC[key];const g=BRAIN.g,n=g.attributes.position.count,idx=g.index.array,rg=g.attributes.aRegion.array;let w=new Float32Array(n);
+  if(key in R)for(let i=0;i<n;i++)w[i]=rg[i]===R[key]?1:0;
+  for(let it=0;it<5;it++){const sm=new Float32Array(n),c=new Uint16Array(n);for(let t=0;t<idx.length;t+=3){const x=idx[t],y=idx[t+1],z=idx[t+2],v=w[x]+w[y]+w[z];sm[x]+=v;sm[y]+=v;sm[z]+=v;c[x]+=3;c[y]+=3;c[z]+=3}for(let i=0;i<n;i++)sm[i]=c[i]?sm[i]/c[i]:w[i];w=sm}
+  return WC[key]=w}
+ function blob(d,side){const g=new THREE.SphereGeometry(1,40,26);g.scale(d.r[0]*1.05,d.r[1]*1.05,d.r[2]*1.05);g.rotateY(d.rot*side);g.translate(d.c[0]*side,d.c[1],d.c[2]);return g}
+ const core=new THREE.Sprite(new THREE.SpriteMaterial({map:roundTex('rgba(255,96,60,1)','rgba(255,70,40,.35)'),blending:THREE.AdditiveBlending,transparent:true,depthWrite:false,opacity:0}));
+ core.scale.set(1.7,1.25,1);core.position.set(0,-.22,.05);core.renderOrder=1;
+ let glassT=0;const waT=[0,0];
+ onBrain(B=>{const n=B.g.attributes.position.count;B.g.setAttribute('aW0',new THREE.BufferAttribute(new Float32Array(n),1));B.g.setAttribute('aW1',new THREE.BufferAttribute(new Float32Array(n),1));
+  const pre=new THREE.Mesh(B.g,new THREE.MeshBasicMaterial({colorWrite:false,transparent:true}));pre.renderOrder=1.5;
+  const shell=new THREE.Mesh(B.g,mat);shell.renderOrder=2;root.add(core,pre,shell);document.getElementById('heroLoading').style.opacity=0;
+  for(const key in DEEP){const gr=new THREE.Group(),dm=new THREE.MeshPhysicalMaterial({color:0xffffff,emissive:0xffffff,roughness:.28,clearcoat:1,clearcoatRoughness:.1});
+   [1,-1].forEach(sd=>gr.add(new THREE.Mesh(blob(DEEP[key],sd),dm)));gr.visible=false;gr.scale.setScalar(.01);gr.userData={m:dm,t:0};root.add(gr);deepGrp[key]=gr}
   if(pending)set(pending)});
  // keynotes: boxes sit outside the brain, a straight horizontal leader tracks each region as it turns
  const layer=document.createElement('div');layer.className='hkl';layer.innerHTML='<svg></svg>';el.appendChild(layer);const svg=layer.querySelector('svg');
  const NS='http://www.w3.org/2000/svg';let notes=[],pending=null,idleT=.42;
  function set(keys){pending=keys;idleT=.62;
-  for(const k in regMesh)regMesh[k].material.userData.t=0;for(const k in deepGrp)deepGrp[k].userData.m.userData.t=0;
-  keys.forEach((k,i)=>{const col=lin(SLOT[i]);const m=regMesh[k]?regMesh[k].material:deepGrp[k]?deepGrp[k].userData.m:null;if(!m)return;
-   m.color.copy(col);m.emissive.copy(col).multiplyScalar(k in R?.28:1);m.userData.t=k in R?.92:.95;(regMesh[k]||deepGrp[k]).visible=true});
+  for(const k in deepGrp)deepGrp[k].userData.t=0;let deep=false;
+  if(BRAIN&&BRAIN.g.attributes.aW0){[0,1].forEach(i=>{const k=keys[i],at=BRAIN.g.attributes['aW'+i];waT[i]=0;U['uWA'+i].value=0;
+    if(k&&k in R){at.array.set(weights(k));at.needsUpdate=true;U['uC'+i].value.copy(lin(SLOT[i]));waT[i]=1}});
+   keys.forEach((k,i)=>{const gr=deepGrp[k];if(!gr)return;deep=true;const col=lin(SLOT[i]);gr.userData.m.color.copy(col);gr.userData.m.emissive.copy(col).multiplyScalar(.2);gr.userData.t=1;gr.visible=true})}
+  glassT=keys.length?(deep?1:.82):0;
   notes.forEach(n=>{n.box.remove();n.g.remove()});
   notes=keys.map((k,i)=>{const side=i%2?-1:1;const box=document.createElement('div');box.className='hkb '+(side>0?'r':'l');box.style.setProperty('--c',SLOT[i]);
    box.innerHTML=`<span class="n">${i+1}</span><span class="t"><b>${NAMES[k]}</b><em>${ROLE[k]}</em></span>`;layer.appendChild(box);
@@ -737,7 +751,8 @@ function Hero(){
    ring.setAttribute('cx',o.x.toFixed(1));ring.setAttribute('cy',y.toFixed(1));dot.setAttribute('cx',o.x.toFixed(1));dot.setAttribute('cy',y.toFixed(1));o.g.style.opacity=(.4+.6*o.f).toFixed(2)})}
  const t0=performance.now();let last=t0;
  function frame(now){requestAnimationFrame(frame);if(!visible)return;const t=(now-t0)/1000,dt=Math.min(.05,(now-last)/1000);last=now;const tt=REDUCED?0:t;U.uTime.value=tt;
-  fade.forEach(m=>{m.opacity+=(m.userData.t-m.opacity)*Math.min(1,dt*3.5)});idleT+=(.45-idleT)*dt*.4;U.uIdle.value+=(idleT-U.uIdle.value)*Math.min(1,dt*3);
+  const kk=Math.min(1,dt*3);U.uGlass.value+=(glassT-U.uGlass.value)*kk;U.uWA0.value+=(waT[0]-U.uWA0.value)*kk;U.uWA1.value+=(waT[1]-U.uWA1.value)*kk;core.material.opacity=U.uGlass.value*(.62+.12*Math.sin(tt*1.6));
+  for(const k in deepGrp){const gr=deepGrp[k],sc=gr.scale.x+(Math.max(.01,gr.userData.t)-gr.scale.x)*kk;gr.scale.setScalar(sc);if(gr.userData.t===0&&sc<.03)gr.visible=false}idleT+=(.45-idleT)*dt*.4;U.uIdle.value+=(idleT-U.uIdle.value)*Math.min(1,dt*3);
   if(drag===null){vel*=.94;spin+=vel;if(!REDUCED)spin+=dt*.22}
   root.rotation.set(.22,spin-.9,0);root.position.y=REDUCED?0:Math.sin(tt*.8)*.03;
   under.intensity=(1.2+.35*Math.sin(tt*1.6))*(U.uIdle.value/.42);
@@ -770,7 +785,7 @@ function MapView(){
  const U={uAmt:{value:new Array(9).fill(0)},uCol:{value:new Array(9).fill(0).map(()=>new THREE.Color(SLOT[0]))}};
  const mat=new THREE.MeshStandardMaterial({color:0xf1f2f7,roughness:.78,metalness:0,transparent:true});
  mat.onBeforeCompile=sh=>{Object.assign(sh.uniforms,U);
-  sh.vertexShader='attribute float aCrease;attribute float aRegion;varying float vCrease;varying float vReg;\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvCrease=aCrease;vReg=aRegion;');
+  sh.vertexShader='attribute float aCrease;attribute float aRegion;attribute float aW0;attribute float aW1;varying float vW0;varying float vW1;varying float vCrease;varying float vReg;\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvW0=aW0;vW1=aW1;vCrease=aCrease;vReg=aRegion;');
   sh.fragmentShader='uniform float uAmt[9];uniform vec3 uCol[9];varying float vCrease;varying float vReg;\n'+sh.fragmentShader
    .replace('#include <color_fragment>',`#include <color_fragment>
     diffuseColor.rgb*=1.0-0.34*vCrease;float am=0.0;vec3 cc=vec3(1.0);
