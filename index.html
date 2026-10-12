@@ -91,6 +91,15 @@ p{margin:0}
 .stage{position:relative;aspect-ratio:1.15/1;width:100%;max-width:100%}
 .stage canvas{position:absolute;inset:-4%;width:108%;height:108%;display:block;z-index:1;-webkit-mask-image:radial-gradient(closest-side,#000 62%,transparent 100%);mask-image:radial-gradient(closest-side,#000 62%,transparent 100%)}
 .loading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);transition:opacity .4s}
+.hkl{position:absolute;inset:0;z-index:3;pointer-events:none}
+.hkl svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.hkb{position:absolute;left:0;top:0;width:168px;display:grid;grid-template-columns:24px minmax(0,1fr);gap:9px;align-items:center;padding:9px 11px;border-radius:12px;background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.9);box-shadow:0 0 0 1px rgba(22,29,69,.08),0 8px 24px -12px rgba(22,29,69,.35);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);opacity:0;transition:opacity .45s}
+.hkb.on{opacity:1}
+.hkb .n{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:600 11px/1 var(--mono);color:#fff;background:var(--c);box-shadow:0 0 0 2px #fff,0 0 0 3px var(--ink)}
+.hkb b{display:block;font:600 11px/1.25 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink)}
+.hkb em{display:block;font-style:normal;font-size:11.5px;line-height:1.3;color:var(--ink-3);margin-top:2px}
+.hkb.r{border-left:2px solid var(--c)}.hkb.l{border-right:2px solid var(--c)}
+@media (max-width:760px){.hkb{width:96px;padding:6px 7px;grid-template-columns:18px minmax(0,1fr);gap:6px;border-radius:10px}.hkb .n{width:17px;height:17px;font-size:9.5px}.hkb b{font-size:8.5px;letter-spacing:.04em}.hkb em{display:none}}
 .hmark{position:absolute;z-index:3;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;display:grid;place-items:center;font:600 12px/1 var(--mono);color:#fff;background:var(--c);border:2px solid #fff;box-shadow:0 0 0 1px var(--ink),0 0 18px 2px var(--c);transition:opacity .35s;pointer-events:none}
 .hmark::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:1px solid var(--c);opacity:.7;animation:ring 2.4s ease-out infinite}
 @keyframes ring{from{transform:scale(.6);opacity:.8}to{transform:scale(1.5);opacity:0}}
@@ -337,7 +346,7 @@ footer.site a{text-decoration:none}
     <div class="hstage-col">
       <div class="hchips" id="heroChips"><span class="lbl">Show me</span></div>
       <div class="stage" id="heroStage">
-        <canvas id="heroCanvas" aria-label="Rotating 3D brain; the regions linked to the selected condition glow from inside"></canvas>
+        <canvas id="heroCanvas" aria-label="Rotating 3D brain; the regions linked to the selected condition are highlighted in colour"></canvas>
         <div class="loading" id="heroLoading">Loading model</div>
         <div class="hint">Drag to turn</div>
       </div>
@@ -647,7 +656,7 @@ function Hero(){
  const canvas=document.getElementById('heroCanvas'),el=document.getElementById('heroStage');let renderer;
  try{renderer=new THREE.WebGLRenderer({canvas,antialias:true})}catch(e){return null}
  const lin=h=>new THREE.Color(h).convertSRGBToLinear();
- const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(29,1,.1,50);cam.position.set(0,.15,5.3);cam.lookAt(0,0,0);
+ const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(29,1,.1,50);cam.position.set(0,.15,MOBILE?7.3:6.0);cam.lookAt(0,0,0);
  // background matches the page field so the masked canvas blends in
  const bc=document.createElement('canvas');bc.width=8;bc.height=256;const bx=bc.getContext('2d');const bgG=bx.createLinearGradient(0,0,0,256);bgG.addColorStop(0,'#e9ecf8');bgG.addColorStop(1,'#dbe0f3');bx.fillStyle=bgG;bx.fillRect(0,0,8,256);
  const bt=new THREE.CanvasTexture(bc);bt.encoding=THREE.sRGBEncoding;scene.background=bt;
@@ -667,11 +676,8 @@ function Hero(){
     vec3 dc=vP-vec3(0.0,-0.12,0.05);float pulse=0.82+0.18*sin(uTime*1.6);
     vec3 glow=vec3(1.0,0.26,0.1)*exp(-dot(dc,dc)/0.30)*uIdle;
     vec3 rg=vec3(0.0);
-    for(int i=0;i<4;i++){vec3 d=pp-uGP[i];rg+=uGC[i]*uGA[i]*exp(-dot(d,d)/0.075);}
-    for(int i=0;i<9;i++){if(abs(vReg-float(i))<0.5){rg+=uRegC[i]*uRegA[i]*0.75;}}
     float leak=0.22+1.9*vCrease*vCrease;
     totalEmissiveRadiance+=glow*leak*pulse+rg*(0.45+1.3*vCrease)*pulse;
-    diffuseColor.rgb=mix(diffuseColor.rgb,min(rg,vec3(1.0)),clamp(length(rg)*0.35,0.0,0.6));
     vec3 Vv=normalize(cameraPosition-vWp);float fr=pow(1.0-abs(dot(normalize(vNw),Vv)),3.0);
     totalEmissiveRadiance+=vec3(0.45,0.78,0.86)*fr*0.22;`)};
  // sparks
@@ -692,29 +698,49 @@ function Hero(){
  addEventListener('pointerup',()=>{drag=null;el.style.cursor=''});
  addEventListener('pointermove',e=>{if(drag!==null){const d=(e.clientX-drag)*.008;spin+=d;vel=d;drag=e.clientX}});
  new IntersectionObserver(es=>{visible=es[0].isIntersecting}).observe(el);
- // markers
- let marks=[];const tgtGA=[0,0,0,0],tgtReg=new Array(9).fill(0);
- function set(keys){for(let i=0;i<4;i++)tgtGA[i]=0;for(let i=0;i<9;i++)tgtReg[i]=0;
-  el.querySelectorAll('.hmark').forEach(n=>n.remove());
-  marks=keys.map((k,i)=>{const col=lin(SLOT[i]);
-   const c=k in R?GLOW_C[k]:DEEP[k].c;U.uGP.value[i].set(Math.abs(c[0]),c[1],c[2]);U.uGC.value[i].copy(col).multiplyScalar(k in R?2.4:4.0);tgtGA[i]=1;
-   if(k in R){tgtReg[R[k]]=1;U.uRegC.value[R[k]].copy(col)}
-   const m=document.createElement('div');m.className='hmark';m.style.setProperty('--c',SLOT[i]);m.textContent=i+1;el.appendChild(m);return{k,m}})}
- const v=new THREE.Vector3(),w=new THREE.Vector3(),ctr=new THREE.Vector3();
- function place(){if(!BRAIN)return;const W=el.clientWidth,H=el.clientHeight,cr=canvas.getBoundingClientRect(),er=el.getBoundingClientRect();
-  ctr.set(0,0,0).applyMatrix4(root.matrixWorld);
-  marks.forEach(o=>{const a=BRAIN.anc[o.k];if(!a){o.m.style.opacity=0;return}
-   v.set(a[0],a[1],a[2]).applyMatrix4(root.matrixWorld);w.set(-a[0],a[1],a[2]).applyMatrix4(root.matrixWorld);
-   const p=(w.z>v.z?w:v);const deep=!(o.k in R);const front=deep?1:Math.max(0,Math.min(1,(p.z-ctr.z)/.25+.35));
-   const q=p.clone().project(cam);o.m.style.left=((q.x*.5+.5)*cr.width+cr.left-er.left)+'px';o.m.style.top=((-q.y*.5+.5)*cr.height+cr.top-er.top)+'px';o.m.style.opacity=front.toFixed(2)})}
- onBrain(B=>{root.add(new THREE.Mesh(B.g,mat));document.getElementById('heroLoading').style.opacity=0});
+ // 3D region highlights: surface lobes as glossy coloured skins, deep nuclei as glowing solids seen through the cortex
+ const regMesh={},deepGrp={},fade=[];const HL=new THREE.Vector2();
+ function skinMat(){const m=new THREE.MeshPhysicalMaterial({color:0xffffff,emissive:0x000000,roughness:.3,clearcoat:1,clearcoatRoughness:.12,transparent:true,opacity:0,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-4});
+  m.onBeforeCompile=sh=>{sh.vertexShader='attribute float aCrease;varying float vCr;\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvCr=aCrease;');
+   sh.fragmentShader='varying float vCr;\n'+sh.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\ndiffuseColor.rgb*=1.0-0.45*vCr;')
+    .replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\nfloat hz=step(0.82,fract((gl_FragCoord.x+gl_FragCoord.y)/7.0));totalEmissiveRadiance+=diffuseColor.rgb*(0.10*hz+0.55*vCr);')};
+  m.userData.t=0;fade.push(m);return m}
+ function deepMat(){const m=new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xffffff,emissiveIntensity:.55,roughness:.35,transparent:true,opacity:0,depthTest:false,depthWrite:false});m.userData.t=0;fade.push(m);return m}
+ function blob(d,side){const g=new THREE.SphereGeometry(1,32,20);g.scale(d.r[0]*1.25,d.r[1]*1.25,d.r[2]*1.25);g.rotateY(d.rot*side);g.translate(d.c[0]*side,d.c[1],d.c[2]);return g}
+ onBrain(B=>{root.add(new THREE.Mesh(B.g,mat));document.getElementById('heroLoading').style.opacity=0;
+  for(const key in R){const k=R[key];if(!B.sub[k])continue;const g=new THREE.BufferGeometry();g.setAttribute('position',B.g.attributes.position);g.setAttribute('normal',B.g.attributes.normal);g.setAttribute('aCrease',B.g.attributes.aCrease);g.setIndex(B.sub[k]);
+   const m=new THREE.Mesh(g,skinMat());m.renderOrder=2;m.visible=false;root.add(m);regMesh[key]=m}
+  for(const key in DEEP){const gr=new THREE.Group(),dm=deepMat();[1,-1].forEach(s=>{const m=new THREE.Mesh(blob(DEEP[key],s),dm);m.renderOrder=5;gr.add(m)});gr.visible=false;root.add(gr);deepGrp[key]=gr;gr.userData.m=dm}
+  if(pending)set(pending)});
+ // keynotes: boxes sit outside the brain, a straight horizontal leader tracks each region as it turns
+ const layer=document.createElement('div');layer.className='hkl';layer.innerHTML='<svg></svg>';el.appendChild(layer);const svg=layer.querySelector('svg');
+ const NS='http://www.w3.org/2000/svg';let notes=[],pending=null,idleT=.42;
+ function set(keys){pending=keys;idleT=.62;
+  for(const k in regMesh)regMesh[k].material.userData.t=0;for(const k in deepGrp)deepGrp[k].userData.m.userData.t=0;
+  keys.forEach((k,i)=>{const col=lin(SLOT[i]);const m=regMesh[k]?regMesh[k].material:deepGrp[k]?deepGrp[k].userData.m:null;if(!m)return;
+   m.color.copy(col);m.emissive.copy(col).multiplyScalar(k in R?.28:1);m.userData.t=k in R?.92:.95;(regMesh[k]||deepGrp[k]).visible=true});
+  notes.forEach(n=>{n.box.remove();n.g.remove()});
+  notes=keys.map((k,i)=>{const side=i%2?-1:1;const box=document.createElement('div');box.className='hkb '+(side>0?'r':'l');box.style.setProperty('--c',SLOT[i]);
+   box.innerHTML=`<span class="n">${i+1}</span><span class="t"><b>${NAMES[k]}</b><em>${ROLE[k]}</em></span>`;layer.appendChild(box);
+   const g=document.createElementNS(NS,'g');g.innerHTML=`<line stroke="#161d45" stroke-width="1"/><circle r="9" fill="none" stroke="${SLOT[i]}" stroke-width="1.2" opacity=".55"/><circle r="4.2" fill="${SLOT[i]}" stroke="#fff" stroke-width="1.6"/>`;svg.appendChild(g);
+   requestAnimationFrame(()=>box.classList.add('on'));return{k,side,box,g,x:null,y:null}})}
+ const v=new THREE.Vector3(),ctr=new THREE.Vector3();
+ function place(){if(!BRAIN||!notes.length)return;const cr=canvas.getBoundingClientRect(),er=el.getBoundingClientRect(),W=er.width,H=er.height;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);ctr.set(0,0,0).applyMatrix4(root.matrixWorld);
+  notes.forEach(o=>{const a=BRAIN.anc[o.k];if(!a)return;const deep=!(o.k in R);let best=null,bs=-1e9;
+   [a[0],-a[0]].forEach(x=>{v.set(x,a[1],a[2]).applyMatrix4(root.matrixWorld);const front=deep?1:Math.max(0,Math.min(1,(v.z-ctr.z)/.3+.45));v.project(cam);
+    const sx=(v.x*.5+.5)*cr.width+cr.left-er.left,sy=(-v.y*.5+.5)*cr.height+cr.top-er.top;const sc=front*2+o.side*(sx-W/2)/W*1.4;if(sc>bs){bs=sc;best={sx,sy,front}}});
+   if(o.x===null){o.x=best.sx;o.y=best.sy;o.f=best.front}else{o.x+=(best.sx-o.x)*.18;o.y+=(best.sy-o.y)*.18;o.f+=(best.front-o.f)*.18}
+   const bw=o.box.offsetWidth,bh=o.box.offsetHeight,y=Math.max(bh/2+4,Math.min(H-bh/2-4,o.y));
+   const bx=o.side>0?W-bw:0,edge=o.side>0?bx:bw;o.box.style.transform=`translate(${bx}px,${(y-bh/2).toFixed(1)}px)`;
+   const [ln,ring,dot]=o.g.children;ln.setAttribute('x1',o.x.toFixed(1));ln.setAttribute('x2',edge);ln.setAttribute('y1',y.toFixed(1));ln.setAttribute('y2',y.toFixed(1));
+   ring.setAttribute('cx',o.x.toFixed(1));ring.setAttribute('cy',y.toFixed(1));dot.setAttribute('cx',o.x.toFixed(1));dot.setAttribute('cy',y.toFixed(1));o.g.style.opacity=(.4+.6*o.f).toFixed(2)})}
  const t0=performance.now();let last=t0;
  function frame(now){requestAnimationFrame(frame);if(!visible)return;const t=(now-t0)/1000,dt=Math.min(.05,(now-last)/1000);last=now;const tt=REDUCED?0:t;U.uTime.value=tt;
-  for(let i=0;i<4;i++)U.uGA.value[i]+=(tgtGA[i]-U.uGA.value[i])*Math.min(1,dt*3);
-  for(let i=0;i<9;i++)U.uRegA.value[i]+=(tgtReg[i]-U.uRegA.value[i])*Math.min(1,dt*3);
+  fade.forEach(m=>{m.opacity+=(m.userData.t-m.opacity)*Math.min(1,dt*3.5)});idleT+=(.45-idleT)*dt*.4;U.uIdle.value+=(idleT-U.uIdle.value)*Math.min(1,dt*3);
   if(drag===null){vel*=.94;spin+=vel;if(!REDUCED)spin+=dt*.22}
   root.rotation.set(.22,spin-.9,0);root.position.y=REDUCED?0:Math.sin(tt*.8)*.03;
-  under.intensity=1.6+.35*Math.sin(tt*1.6);
+  under.intensity=(1.2+.35*Math.sin(tt*1.6))*(U.uIdle.value/.42);
   for(let i=0;i<SN;i++){const s=seed[i];const ang=s[1]+tt*.06*(1+s[3]);const y=(((s[2]+tt*.05*(.5+s[3])+1)%2)+2)%2-1;sp[i*3]=Math.cos(ang)*s[0];sp[i*3+1]=y;sp[i*3+2]=Math.sin(ang)*s[0]}sg.attributes.position.needsUpdate=true;
   root.updateMatrixWorld();if(composer)composer.render();else renderer.render(scene,cam);place()}
  requestAnimationFrame(frame);
