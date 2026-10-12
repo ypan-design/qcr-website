@@ -307,7 +307,7 @@ footer.site a{text-decoration:none}
 
 /* v7: architectural stage overlay, poster, mobile order */
 .stage .poster{position:absolute;inset:-4%;width:108%;height:108%;object-fit:cover;z-index:1;-webkit-mask-image:radial-gradient(closest-side,#000 62%,transparent 100%);mask-image:radial-gradient(closest-side,#000 62%,transparent 100%);transition:opacity .8s}
-.stage canvas{opacity:0;transition:opacity .8s}.stage.live canvas{opacity:1}.stage.live .poster{opacity:0}
+.stage canvas{opacity:0;transition:opacity .8s}.stage.ready canvas{opacity:1}.stage.ready .poster{opacity:0}
 .hdim{position:absolute;inset:0;z-index:2;pointer-events:none;width:100%;height:100%;overflow:visible}
 .hdim .ring{fill:none;stroke:rgba(22,29,69,.16);stroke-width:1}
 .hdim .tk{stroke:rgba(22,29,69,.28);stroke-width:1}.hdim .tk.mj{stroke:rgba(22,29,69,.5)}
@@ -411,7 +411,7 @@ footer.site a{text-decoration:none}
       <div class="stage" id="heroStage">
         <img class="poster" src="poster.jpg" alt="" decoding="async" fetchpriority="high">
         <svg class="hdim" id="heroDim" aria-hidden="true"></svg>
-        <canvas id="heroCanvas" aria-label="Rotating glass 3D brain; the regions linked to the selected condition are highlighted in colour inside it"></canvas>
+        <canvas id="heroCanvas" aria-label="Rotating 3D brain drawn in fine dots; the regions linked to the selected condition light up in colour"></canvas>
         <div class="loading" id="heroLoading">Loading model</div>
         <div class="hint">Drag to turn</div>
       </div>
@@ -659,13 +659,6 @@ footer.site a{text-decoration:none}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/GammaCorrectionShader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
 <script>
 (function(){
 const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -756,47 +749,43 @@ const HERO_IDS=['ad','mg','pd','ms','ep'];
 const GLOW_C={frontal:[.36,.25,.62],parietal:[.34,.5,-.25],occipital:[.26,.18,-.8],temporal:[.55,-.2,.1],cerebellum:[.24,-.42,-.6],brainstem:[.05,-.6,-.28],motor:[.34,.55,.08]};
 function Hero(){
  const canvas=document.getElementById('heroCanvas'),el=document.getElementById('heroStage');let renderer;
- try{renderer=new THREE.WebGLRenderer({canvas,antialias:true})}catch(e){return null}
- const lin=h=>new THREE.Color(h).convertSRGBToLinear();
+ try{renderer=new THREE.WebGLRenderer({canvas,antialias:false,alpha:true,premultipliedAlpha:false})}catch(e){return null}
+ renderer.setClearColor(0x000000,0);
+ const lin=h=>new THREE.Color(h);
  const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(29,1,.1,50);cam.position.set(0,.15,MOBILE?7.3:6.0);cam.lookAt(0,0,0);
- // background matches the page field so the masked canvas blends in
- const bc=document.createElement('canvas');bc.width=8;bc.height=256;const bx=bc.getContext('2d');const bgG=bx.createLinearGradient(0,0,0,256);bgG.addColorStop(0,'#e9ecf8');bgG.addColorStop(1,'#dbe0f3');bx.fillStyle=bgG;bx.fillRect(0,0,8,256);
- const bt=new THREE.CanvasTexture(bc);bt.encoding=THREE.sRGBEncoding;scene.background=bt;
- scene.add(new THREE.HemisphereLight(lin('#f6f7ff'),lin('#7d86bd'),.42));
- const key=new THREE.DirectionalLight(lin('#ffffff'),.62);key.position.set(-2,3.2,3);scene.add(key);
- const rim=new THREE.DirectionalLight(lin('#86dbe4'),.8);rim.position.set(2.6,1.2,-3);scene.add(rim);
- const under=new THREE.PointLight(lin('#ff5a36'),2.2,4.5);under.position.set(0,-1.15,.5);scene.add(under);
  const root=new THREE.Group();scene.add(root);
- const U={uTime:{value:0},uIdle:{value:.42},uGP:{value:[0,1,2,3].map(()=>new THREE.Vector3())},uGC:{value:[0,1,2,3].map(()=>new THREE.Color())},uGA:{value:[0,0,0,0]},uRegA:{value:new Array(9).fill(0)},uRegC:{value:new Array(9).fill(0).map(()=>new THREE.Color())}};
- Object.assign(U,{uGlass:{value:0},uC0:{value:new THREE.Color()},uC1:{value:new THREE.Color()},uWA0:{value:0},uWA1:{value:0}});
- const mat=new THREE.MeshPhysicalMaterial({color:lin('#d9ddf5'),roughness:.32,metalness:0,clearcoat:1,clearcoatRoughness:.16,transparent:true,depthWrite:false,depthFunc:THREE.LessEqualDepth});
- mat.onBeforeCompile=sh=>{Object.assign(sh.uniforms,U);
-  sh.vertexShader='attribute float aCrease;attribute float aRegion;attribute float aW0;attribute float aW1;varying float vW0;varying float vW1;varying float vCrease;varying float vReg;varying vec3 vP;varying vec3 vNw;varying vec3 vWp;\n'+sh.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvW0=aW0;vW1=aW1;vCrease=aCrease;vReg=aRegion;vP=position;vNw=normalize(mat3(modelMatrix)*normal);vWp=(modelMatrix*vec4(position,1.0)).xyz;');
-  sh.fragmentShader='uniform float uTime,uIdle,uGlass,uWA0,uWA1;uniform vec3 uC0;uniform vec3 uC1;varying float vW0;varying float vW1;uniform vec3 uGP[4];uniform vec3 uGC[4];uniform float uGA[4];uniform float uRegA[9];uniform vec3 uRegC[9];varying float vCrease;varying float vReg;varying vec3 vP;varying vec3 vNw;varying vec3 vWp;\n'+sh.fragmentShader
-   .replace('#include <color_fragment>','#include <color_fragment>\ndiffuseColor.rgb*=1.0-0.36*vCrease;')
-   .replace('#include <emissivemap_fragment>',`#include <emissivemap_fragment>
-    vec3 pp=vec3(abs(vP.x),vP.y,vP.z);
-    vec3 dc=vP-vec3(0.0,-0.12,0.05);float pulse=0.82+0.18*sin(uTime*1.6);
-    vec3 glow=vec3(1.0,0.26,0.1)*exp(-dot(dc,dc)/0.30)*uIdle;
-    vec3 rg=vec3(0.0);
-    float leak=0.22+1.9*vCrease*vCrease;
-    totalEmissiveRadiance+=glow*leak*pulse+rg*(0.45+1.3*vCrease)*pulse;
-    vec3 Vv=normalize(cameraPosition-vWp);float f1=1.0-abs(dot(normalize(vNw),Vv));float fr=pow(f1,3.0);
-    totalEmissiveRadiance+=vec3(0.45,0.78,0.86)*fr*0.22;
-    float w0=vW0*uWA0,w1=vW1*uWA1,ws=clamp(w0+w1,0.0,1.0);
-    vec3 tint=(uC0*w0+uC1*w1)/max(w0+w1,0.001);
-    diffuseColor.rgb=mix(diffuseColor.rgb,tint*(1.0-0.35*vCrease),ws*0.9);
-    totalEmissiveRadiance+=tint*ws*(0.22+1.15*vCrease)*pulse;
-    float edge=(1.0-smoothstep(0.0,0.09,abs(vW0-0.5)))*uWA0+(1.0-smoothstep(0.0,0.09,abs(vW1-0.5)))*uWA1;
-    diffuseColor.rgb=mix(diffuseColor.rgb,vec3(0.086,0.114,0.27),clamp(edge,0.0,1.0)*0.55);
-    float al=mix(0.46,0.96,pow(f1,1.1));al=max(al,ws*0.93);al=max(al,clamp(edge,0.0,1.0)*0.9);
-    diffuseColor.rgb=mix(diffuseColor.rgb,diffuseColor.rgb*vec3(0.86,0.88,1.0),uGlass*(1.0-ws));diffuseColor.a=mix(1.0,al,uGlass);`)};
- // post: bloom + gamma
- let composer=null,bloom=null;
- if(THREE.EffectComposer&&THREE.UnrealBloomPass&&THREE.GammaCorrectionShader){composer=new THREE.EffectComposer(renderer);composer.addPass(new THREE.RenderPass(scene,cam));
-  bloom=new THREE.UnrealBloomPass(new THREE.Vector2(512,512),.75,.5,.93);composer.addPass(bloom);composer.addPass(new THREE.ShaderPass(THREE.GammaCorrectionShader))}
- else{renderer.outputEncoding=THREE.sRGBEncoding}
- function resize(){const r=canvas.getBoundingClientRect();if(!r.width)return;const pr=Math.min(devicePixelRatio,MOBILE?1.5:1.75);renderer.setPixelRatio(pr);renderer.setSize(r.width,r.height,false);if(composer){composer.setPixelRatio(pr);composer.setSize(r.width,r.height)}cam.aspect=r.width/r.height;cam.updateProjectionMatrix()}
+ const PR=Math.min(devicePixelRatio,MOBILE?1.5:1.75);
+ const U={uTime:{value:0},uAsm:{value:REDUCED?1:0},uPR:{value:PR},uSize:{value:MOBILE?8.5:8.2},uC0:{value:new THREE.Color()},uC1:{value:new THREE.Color()},uWA0:{value:0},uWA1:{value:0},uBurst:{value:0},uWarm:{value:.55}};
+ // powder: tens of thousands of dots sampled on the cortex; dense at the silhouette, thin through the middle, loose grains drift off
+ const VS=`attribute vec3 normal2;attribute vec4 aRand;attribute float aCr;attribute float aW0;attribute float aW1;
+ uniform float uTime,uAsm,uPR,uSize,uWA0,uWA1,uBurst,uWarm;uniform vec3 uC0;uniform vec3 uC1;
+ varying vec3 vCol;varying float vA;
+ void main(){vec3 n=normal2;vec3 p=position;float r=aRand.x;
+  float w0=aW0*uWA0,w1=aW1*uWA1,w=clamp(w0+w1,0.0,1.0);
+  p+=n*0.010*sin(uTime*1.3+aRand.y*40.0);
+  p+=0.005*vec3(sin(uTime*.9+aRand.z*31.0),sin(uTime*1.1+aRand.w*27.0),sin(uTime*.7+aRand.y*19.0));
+  p+=n*w*(0.03+0.02*sin(uTime*2.2+aRand.z*12.0))+n*w*uBurst*0.16*(0.5+aRand.w);
+  float fade=1.0;
+  if(r<0.085){float ph=fract(uTime*0.055*(0.6+aRand.y)+aRand.z);p+=(n*0.85+vec3(0.12,0.32,0.0))*ph*ph*1.1+n*0.02;fade=(1.0-ph)*smoothstep(0.0,0.08,ph);}
+  vec3 sc=p*(1.7+aRand.w*1.4)+(aRand.yzw-0.5)*2.2;
+  float st=clamp(uAsm*1.9-aRand.x*0.9,0.0,1.0);st=st*st*(3.0-2.0*st);
+  vec4 mv=modelViewMatrix*vec4(mix(sc,p,st),1.0);gl_Position=projectionMatrix*mv;
+  vec3 nv=normalize(normalMatrix*n);float facing=dot(nv,normalize(-mv.xyz));float rim=1.0-abs(facing);
+  vec3 ink=vec3(0.11,0.15,0.38),ind=vec3(0.24,0.29,0.62),tl=vec3(0.17,0.54,0.60),lav=vec3(0.56,0.59,0.84),warm=vec3(0.93,0.42,0.30);
+  vec3 c=aRand.y<0.42?mix(ink,ind,aRand.z):(aRand.y<0.8?tl:lav);
+  c=mix(c,ink,aCr*0.55);
+  float low=smoothstep(-0.05,-0.55,position.y)*smoothstep(0.75,0.1,abs(position.x)+0.2);c=mix(c,warm,low*uWarm*(0.55+0.45*aRand.w));
+  vec3 tint=(uC0*w0+uC1*w1)/max(w0+w1,0.001);c=mix(c,tint,w*0.92);
+  float a=0.08+0.88*pow(rim,1.8)+0.16*aCr;if(facing<0.0)a*=0.42;a=max(a,w*(0.55+0.4*rim));a=min(a,1.0)*fade*st;
+  vA=a;vCol=c;
+  gl_PointSize=uSize*uPR*(0.55+aRand.w*0.95)*(1.0+w*0.7)/-mv.z*(0.6+0.4*st);}`;
+ const FS=`varying vec3 vCol;varying float vA;void main(){vec2 d=gl_PointCoord-0.5;float r=dot(d,d);if(r>0.25)discard;gl_FragColor=vec4(vCol,vA*smoothstep(0.25,0.05,r));}`;
+ const powderMat=new THREE.ShaderMaterial({uniforms:U,vertexShader:VS,fragmentShader:FS,transparent:true,depthWrite:false,depthTest:false});
+ // deep nuclei: tight clouds of coloured grains inside the cortex
+ const DVS=`attribute vec4 aRand;uniform float uTime,uAmt,uPR;varying float vA;void main(){vec3 p=position+0.012*vec3(sin(uTime*1.7+aRand.x*40.0),cos(uTime*1.3+aRand.y*40.0),sin(uTime*1.1+aRand.z*40.0));
+  vec4 mv=modelViewMatrix*vec4(p,1.0);gl_Position=projectionMatrix*mv;vA=uAmt*(0.25+0.6*aRand.w);gl_PointSize=uPR*(5.5+6.5*aRand.w)/-mv.z*(0.4+0.6*uAmt);}`;
+ const DFS=`uniform vec3 uCol;varying float vA;void main(){vec2 d=gl_PointCoord-0.5;float r=dot(d,d);if(r>0.25)discard;gl_FragColor=vec4(uCol,vA*smoothstep(0.25,0.03,r));}`;
+ function resize(){const r=canvas.getBoundingClientRect();if(!r.width)return;renderer.setPixelRatio(PR);renderer.setSize(r.width,r.height,false);cam.aspect=r.width/r.height;cam.updateProjectionMatrix()}
  resize();addEventListener('resize',resize);
  // interaction: mouse drag spins, touch scroll untouched
  let spin=0,drag=null,vel=0,visible=true;
@@ -804,37 +793,48 @@ function Hero(){
  addEventListener('pointerup',()=>{drag=null;el.style.cursor=''});
  addEventListener('pointermove',e=>{if(drag!==null){const d=(e.clientX-drag)*.008;spin+=d;vel=d;drag=e.clientX}});
  new IntersectionObserver(es=>{visible=es[0].isIntersecting}).observe(el);
- // 3D region highlights: surface lobes as glossy coloured skins, deep nuclei as glowing solids seen through the cortex
- // inside the glass: deep nuclei as solid lit forms, plus a red core light; surface regions are baked into the shell
- const deepGrp={},WC={};
+ const deepGrp={},WC={};let PW=null;
  function weights(key){if(WC[key])return WC[key];const g=BRAIN.g,n=g.attributes.position.count,idx=g.index.array,rg=g.attributes.aRegion.array;let w=new Float32Array(n);
   if(key in R)for(let i=0;i<n;i++)w[i]=rg[i]===R[key]?1:0;
-  for(let it=0;it<5;it++){const sm=new Float32Array(n),c=new Uint16Array(n);for(let t=0;t<idx.length;t+=3){const x=idx[t],y=idx[t+1],z=idx[t+2],v=w[x]+w[y]+w[z];sm[x]+=v;sm[y]+=v;sm[z]+=v;c[x]+=3;c[y]+=3;c[z]+=3}for(let i=0;i<n;i++)sm[i]=c[i]?sm[i]/c[i]:w[i];w=sm}
+  for(let it=0;it<4;it++){const sm=new Float32Array(n),c=new Uint16Array(n);for(let t=0;t<idx.length;t+=3){const x=idx[t],y=idx[t+1],z=idx[t+2],v=w[x]+w[y]+w[z];sm[x]+=v;sm[y]+=v;sm[z]+=v;c[x]+=3;c[y]+=3;c[z]+=3}for(let i=0;i<n;i++)sm[i]=c[i]?sm[i]/c[i]:w[i];w=sm}
   return WC[key]=w}
- function blob(d,side){const g=new THREE.SphereGeometry(1,40,26);g.scale(d.r[0]*1.05,d.r[1]*1.05,d.r[2]*1.05);g.rotateY(d.rot*side);g.translate(d.c[0]*side,d.c[1],d.c[2]);return g}
- const core=new THREE.Sprite(new THREE.SpriteMaterial({map:roundTex('rgba(255,96,60,1)','rgba(255,70,40,.35)'),blending:THREE.AdditiveBlending,transparent:true,depthWrite:false,opacity:0}));
- core.scale.set(1.7,1.25,1);core.position.set(0,-.22,.05);core.renderOrder=1;
- let glassT=0;const waT=[0,0];
- onBrain(B=>{const n=B.g.attributes.position.count;B.g.setAttribute('aW0',new THREE.BufferAttribute(new Float32Array(n),1));B.g.setAttribute('aW1',new THREE.BufferAttribute(new Float32Array(n),1));
-  const pre=new THREE.Mesh(B.g,new THREE.MeshBasicMaterial({colorWrite:false,transparent:true}));pre.renderOrder=1.5;
-  const shell=new THREE.Mesh(B.g,mat);shell.renderOrder=2;root.add(core,pre,shell);document.getElementById('heroLoading').style.opacity=0;
-  for(const key in DEEP){const gr=new THREE.Group(),dm=new THREE.MeshPhysicalMaterial({color:0xffffff,emissive:0xffffff,roughness:.28,clearcoat:1,clearcoatRoughness:.1});
-   [1,-1].forEach(sd=>gr.add(new THREE.Mesh(blob(DEEP[key],sd),dm)));gr.visible=false;gr.scale.setScalar(.01);gr.userData={m:dm,t:0};root.add(gr);deepGrp[key]=gr}
+ function samplePowder(B,N){const g=B.g,P=g.attributes.position.array,Nr=g.attributes.normal.array,idx=g.index.array,Cr=g.attributes.aCrease.array,T=idx.length/3,cum=new Float64Array(T);let tot=0;
+  for(let t=0;t<T;t++){const a=idx[t*3]*3,b=idx[t*3+1]*3,c=idx[t*3+2]*3;const ux=P[b]-P[a],uy=P[b+1]-P[a+1],uz=P[b+2]-P[a+2],vx=P[c]-P[a],vy=P[c+1]-P[a+1],vz=P[c+2]-P[a+2];
+   const cx=uy*vz-uz*vy,cy=uz*vx-ux*vz,cz=ux*vy-uy*vx;tot+=Math.sqrt(cx*cx+cy*cy+cz*cz)*.5;cum[t]=tot}
+  const pos=new Float32Array(N*3),nor=new Float32Array(N*3),rnd=new Float32Array(N*4),cr=new Float32Array(N),vi=new Uint32Array(N);
+  for(let i=0;i<N;i++){const r=Math.random()*tot;let lo=0,hi=T-1;while(lo<hi){const m=(lo+hi)>>1;if(cum[m]<r)lo=m+1;else hi=m}
+   let u=Math.random(),v=Math.random();if(u+v>1){u=1-u;v=1-v}const wa=1-u-v,ia=idx[lo*3],ib=idx[lo*3+1],ic=idx[lo*3+2];
+   let nx=0,ny=0,nz=0;for(let k=0;k<3;k++){const q=[ia,ib,ic][k],f=[wa,u,v][k];pos[i*3+k]=P[ia*3+k]*wa+P[ib*3+k]*u+P[ic*3+k]*v}
+   nx=Nr[ia*3]*wa+Nr[ib*3]*u+Nr[ic*3]*v;ny=Nr[ia*3+1]*wa+Nr[ib*3+1]*u+Nr[ic*3+1]*v;nz=Nr[ia*3+2]*wa+Nr[ib*3+2]*u+Nr[ic*3+2]*v;const nl=Math.hypot(nx,ny,nz)||1;
+   nor[i*3]=nx/nl;nor[i*3+1]=ny/nl;nor[i*3+2]=nz/nl;const j=(Math.random()-.5)*.03;pos[i*3]+=nor[i*3]*j;pos[i*3+1]+=nor[i*3+1]*j;pos[i*3+2]+=nor[i*3+2]*j;
+   cr[i]=Cr[ia]*wa+Cr[ib]*u+Cr[ic]*v;vi[i]=wa>=u&&wa>=v?ia:(u>=v?ib:ic);for(let k=0;k<4;k++)rnd[i*4+k]=Math.random()}
+  const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(pos,3));pg.setAttribute('normal2',new THREE.BufferAttribute(nor,3));pg.setAttribute('aRand',new THREE.BufferAttribute(rnd,4));
+  pg.setAttribute('aCr',new THREE.BufferAttribute(cr,1));pg.setAttribute('aW0',new THREE.BufferAttribute(new Float32Array(N),1));pg.setAttribute('aW1',new THREE.BufferAttribute(new Float32Array(N),1));
+  pg.boundingSphere=new THREE.Sphere(new THREE.Vector3(),3);return{pg,vi,N}}
+ function deepCloud(d,M){const pos=new Float32Array(M*3),rnd=new Float32Array(M*4),e=new THREE.Euler(),v=new THREE.Vector3();
+  for(let i=0;i<M;i++){const side=i%2?-1:1;let x,y,z;do{x=Math.random()*2-1;y=Math.random()*2-1;z=Math.random()*2-1}while(x*x+y*y+z*z>1);const f=Math.pow(Math.random(),.35);
+   v.set(x*d.r[0]*1.15*f,y*d.r[1]*1.15*f,z*d.r[2]*1.15*f).applyEuler(e.set(0,d.rot*side,0));pos[i*3]=v.x+d.c[0]*side;pos[i*3+1]=v.y+d.c[1];pos[i*3+2]=v.z+d.c[2];for(let k=0;k<4;k++)rnd[i*4+k]=Math.random()}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('aRand',new THREE.BufferAttribute(rnd,4));g.boundingSphere=new THREE.Sphere(new THREE.Vector3(),3);return g}
+ let asmStart=null;
+ onBrain(B=>{PW=samplePowder(B,MOBILE?52000:115000);const pts=new THREE.Points(PW.pg,powderMat);pts.frustumCulled=false;root.add(pts);
+  for(const key in DEEP){const m=new THREE.ShaderMaterial({uniforms:{uTime:U.uTime,uPR:U.uPR,uAmt:{value:0},uCol:{value:new THREE.Color()}},vertexShader:DVS,fragmentShader:DFS,transparent:true,depthWrite:false,depthTest:false});
+   const p=new THREE.Points(deepCloud(DEEP[key],MOBILE?1400:2600),m);p.frustumCulled=false;p.visible=false;p.userData={t:0};root.add(p);deepGrp[key]=p}
+  document.getElementById('heroLoading').style.opacity=0;asmStart=performance.now();
   if(pending)set(pending)});
  // keynotes: boxes sit outside the brain, a straight horizontal leader tracks each region as it turns
  const layer=document.createElement('div');layer.className='hkl';layer.innerHTML='<svg></svg>';el.appendChild(layer);const svg=layer.querySelector('svg');
- const NS='http://www.w3.org/2000/svg';let notes=[],pending=null,idleT=.42;
- function set(keys){pending=keys;idleT=.62;
-  for(const k in deepGrp)deepGrp[k].userData.t=0;let deep=false;
-  if(BRAIN&&BRAIN.g.attributes.aW0){[0,1].forEach(i=>{const k=keys[i],at=BRAIN.g.attributes['aW'+i];waT[i]=0;U['uWA'+i].value=0;
-    if(k&&k in R){at.array.set(weights(k));at.needsUpdate=true;U['uC'+i].value.copy(lin(SLOT[i]));waT[i]=1}});
-   keys.forEach((k,i)=>{const gr=deepGrp[k];if(!gr)return;deep=true;const col=lin(SLOT[i]);gr.userData.m.color.copy(col);gr.userData.m.emissive.copy(col).multiplyScalar(.2);gr.userData.t=1;gr.visible=true})}
-  glassT=keys.length?(deep?1:.82):0;
+ const NS='http://www.w3.org/2000/svg';let notes=[],pending=null;
+ function set(keys){pending=keys;
+  for(const k in deepGrp)deepGrp[k].userData.t=0;
+  if(PW){[0,1].forEach(i=>{const k=keys[i],at=PW.pg.attributes['aW'+i];U['uWA'+i].value=0;waT[i]=0;
+    if(k&&k in R){const wv=weights(k),arr=at.array;for(let j=0;j<PW.N;j++)arr[j]=wv[PW.vi[j]];at.needsUpdate=true;U['uC'+i].value.set(SLOT[i]);waT[i]=1}});
+   keys.forEach((k,i)=>{const p=deepGrp[k];if(!p)return;p.material.uniforms.uCol.value.set(SLOT[i]);p.userData.t=1;p.visible=true});U.uBurst.value=1;warmT=.95}
   notes.forEach(n=>{n.box.remove();n.g.remove()});
   notes=keys.map((k,i)=>{const side=i%2?-1:1;const box=document.createElement('div');box.className='hkb '+(side>0?'r':'l');box.style.setProperty('--c',SLOT[i]);
    box.innerHTML=`<span class="n">${i+1}</span><span class="t"><b>${NAMES[k]}</b><em>${ROLE[k]}</em></span>`;layer.appendChild(box);
    const g=document.createElementNS(NS,'g');g.innerHTML=`<line stroke="#161d45" stroke-width="1"/><circle r="9" fill="none" stroke="${SLOT[i]}" stroke-width="1.2" opacity=".55"/><circle r="4.2" fill="${SLOT[i]}" stroke="#fff" stroke-width="1.6"/>`;svg.appendChild(g);
    requestAnimationFrame(()=>box.classList.add('on'));return{k,side,box,g,x:null,y:null}})}
+ const waT=[0,0];let warmT=.55;
  const v=new THREE.Vector3(),ctr=new THREE.Vector3();
  function place(){if(!BRAIN||!notes.length)return;const cr=canvas.getBoundingClientRect(),er=el.getBoundingClientRect(),W=er.width,H=er.height;
   svg.setAttribute('viewBox',`0 0 ${W} ${H}`);ctr.set(0,0,0).applyMatrix4(root.matrixWorld);
@@ -857,14 +857,15 @@ function Hero(){
  drawDim();addEventListener('resize',drawDim);let shown=false;
  const t0=performance.now();let last=t0;
  function frame(now){requestAnimationFrame(frame);if(!visible)return;const t=(now-t0)/1000,dt=Math.min(.05,(now-last)/1000);last=now;const tt=REDUCED?0:t;U.uTime.value=tt;
-  const kk=Math.min(1,dt*3);U.uGlass.value+=(glassT-U.uGlass.value)*kk;U.uWA0.value+=(waT[0]-U.uWA0.value)*kk;U.uWA1.value+=(waT[1]-U.uWA1.value)*kk;core.material.opacity=U.uGlass.value*(.62+.12*Math.sin(tt*1.6));
-  for(const k in deepGrp){const gr=deepGrp[k],sc=gr.scale.x+(Math.max(.01,gr.userData.t)-gr.scale.x)*kk;gr.scale.setScalar(sc);if(gr.userData.t===0&&sc<.03)gr.visible=false}idleT+=(.45-idleT)*dt*.4;U.uIdle.value+=(idleT-U.uIdle.value)*Math.min(1,dt*3);
+  const kk=Math.min(1,dt*3);U.uWA0.value+=(waT[0]-U.uWA0.value)*kk;U.uWA1.value+=(waT[1]-U.uWA1.value)*kk;U.uBurst.value*=Math.pow(.18,dt);
+  warmT+=(.55-warmT)*dt*.25;U.uWarm.value+=(warmT-U.uWarm.value)*kk;
+  if(asmStart!==null&&!REDUCED)U.uAsm.value=Math.min(1,(now-asmStart)/2600);
+  for(const k in deepGrp){const p=deepGrp[k],u=p.material.uniforms.uAmt;u.value+=(p.userData.t-u.value)*kk;if(p.userData.t===0&&u.value<.02)p.visible=false}
   if(drag===null){vel*=.94;spin+=vel;if(!REDUCED)spin+=dt*.22}
   root.rotation.set(.22,spin-.9,0);root.position.y=REDUCED?0:Math.sin(tt*.8)*.03;
-  under.intensity=(1.2+.35*Math.sin(tt*1.6))*(U.uIdle.value/.42);
-  root.updateMatrixWorld();if(composer)composer.render();else renderer.render(scene,cam);place();
+  root.updateMatrixWorld();renderer.render(scene,cam);place();
   if(dimG){const deg=((((spin-.9)*180/Math.PI)%360)+360)%360;dimG.style.transform=`rotate(${deg.toFixed(1)}deg)`;dimTxt.textContent='ROT '+String(Math.round(deg)).padStart(3,'0')+'°'}
-  if(BRAIN&&!shown){shown=true;el.classList.add('live')}}
+  if(BRAIN&&!shown){shown=true;el.classList.add('ready')}}
  requestAnimationFrame(frame);
  return{set};
 }
